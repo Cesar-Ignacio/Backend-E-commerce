@@ -9,19 +9,29 @@ routes.get("/", async (req, res) => {
     let data = await pm.getProducts();
     (limite) && (data = data.filter((product, i) => i < limite));
     res.send(data)
-})
+});
 
 routes.get("/:pid",async(req,res)=>{
     const id=req.params.pid;
     const data=await pm.getProductById(parseInt(id));
     res.status(200).send(data);
-})
+});
 
 routes.post("/",async(req,res)=>{
     const campos=req.body;
-    // console.log()
-    await pm.addProduct(campos._title,campos._description,campos._price,campos._thumbnail,campos._code,campos._stock)
+    await pm.addProduct(campos._title,campos._description,campos._price,campos._thumbnail,campos._code,campos._stock);
     res.status(200).send(campos)
+});
+
+routes.put("/:pid",async (req,res)=>{
+    const id=req.params.pid
+    const campos=req.body;
+    await pm.updateProduct(parseInt(id),campos);
+})
+
+routes.delete("/:pid",async(req,res)=>{
+    const id=req.params.pid;
+    await pm.deleteProduct(parseInt(id));
 })
 
 export default routes;

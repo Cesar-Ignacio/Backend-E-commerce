@@ -106,6 +106,7 @@ export class ProductManager {
 
             this._products = this._products.filter(product => product._id != idProducto);
             await this.writeFile();
+            console.log("Se elimino el producto con ID :"+ idProducto)
 
         } catch (error) {
             console.log(error)

@@ -10,9 +10,9 @@
 		"_id": 1
 	},
 	{
-		"_title": "Gato",
+		"_title": "Gaaato",
 		"_description": "El mejor gato",
-		"_price": 50,
+		"_price": 500,
 		"_thumbnail": "img",
 		"_code": 402,
 		"_stock": 50,
@@ -20,23 +20,13 @@
 		"_id": 2
 	},
 	{
-		"_title": "Lavadora",
-		"_description": "Lavadora de carga frontal",
-		"_price": 399,
-		"_thumbnail": "lavadora.jpg",
-		"_code": "LD1234",
-		"_stock": 15,
+		"_title": "Gaaato",
+		"_description": "El mejor gato",
+		"_price": 500,
+		"_thumbnail": "img",
+		"_code": 403,
+		"_stock": 50,
 		"_status": true,
 		"_id": 3
-	},
-	{
-		"_title": "Refrigerador",
-		"_description": "Refrigerador de dos puertas",
-		"_price": 799,
-		"_thumbnail": "refrigerador.jpg",
-		"_code": "RD5678",
-		"_stock": 10,
-		"_status": true,
-		"_id": 4
 	}
 ]
