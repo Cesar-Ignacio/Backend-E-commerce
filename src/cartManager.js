@@ -13,7 +13,7 @@ class Cart {
  
 export class CartManager {
     constructor() {
-        this._PATH = "cart.json";
+        this._PATH = "carrito.json";
         this._carts = [];
     }
 
@@ -37,7 +37,7 @@ export class CartManager {
         console.log("Nuevo carrito creado")
     }
 
-    async addProductCart(idCart, idProduct, quantity) {
+    async addProductCart(idCart, idProduct, quantity=1) {
         await this.startData();
         const data = this._carts.map(cart => {
             if (cart._idCart === idCart) {
@@ -58,8 +58,13 @@ export class CartManager {
 
     /**Devuelve el tamaño del array contenedor de carritos */
     async proximoId() {
-        const data = JSON.parse(await this.readFile());
-        return data.length;
+        
+        try {
+            const data = JSON.parse(await this.readFile()).pop();
+            return data._idCart+1;
+        } catch (error) {
+            return 0;
+        }
     }
 
     readFile() {
@@ -72,7 +77,8 @@ export class CartManager {
 
 }
 
-// const cm = new CartManager();
+//const cm = new CartManager();
+//console.log(await cm.proximoId())
 // const data=await cm.getProductCart(1)
 // console.log(data)
 
