@@ -4,29 +4,10 @@
 		"_description": "El mejor gato",
 		"_price": 50,
 		"_thumbnail": "img",
-		"_code": 401,
-		"_stock": 50,
-		"_status": true,
-		"_id": 1
-	},
-	{
-		"_title": "Gaaato",
-		"_description": "El mejor gato",
-		"_price": 500,
-		"_thumbnail": "img",
 		"_code": 402,
 		"_stock": 50,
 		"_status": true,
-		"_id": 2
-	},
-	{
-		"_title": "Gaaato",
-		"_description": "El mejor gato",
-		"_price": 500,
-		"_thumbnail": "img",
-		"_code": 403,
-		"_stock": 50,
-		"_status": true,
-		"_id": 3
+		"_category": "Animal",
+		"_id": 0
 	}
 ]

@@ -13,12 +13,14 @@ routes.get("/:cid", async (req, res) => {
 
 /**Crea un nuevo carrito vacio */
 routes.post("/", async (req, res) => {
-    await cm.addCart();
+    const nuevoCarrito= await cm.addCart();
+    res.status(200).send(nuevoCarrito);
 })
 
 /**Agregamos un producto en un carrito */
 routes.post("/:cid/product/:pid", async (req, res) => {
-    await cm.addProductCart(parseInt(req.params.cid), parseInt(req.params.pid))
+    const cart=await cm.addProductCart(parseInt(req.params.cid), parseInt(req.params.pid))
+    res.status(200).send(cart);
 })
 
 export default routes;

@@ -35,6 +35,7 @@ export class CartManager {
         this._carts.push(cart)
         await this.writeFile();
         console.log("Nuevo carrito creado")
+        return cart;
     }
 
     async addProductCart(idCart, idProduct, quantity=1) {
@@ -43,12 +44,14 @@ export class CartManager {
             if (cart._idCart === idCart) {
                 const product = cart._products.find(p => p.idProduct === idProduct);
                 (product) ?
-                    (product.quantity += quantity,console.log("Cantidad Modificada Pr ID:"+idProduct))
-                    : (cart._products.push({ idProduct, quantity }),console.log("Se agrego un nuevo producto ID:" +idProduct))
-            }
+                    (product.quantity += quantity,console.log("Cantidad Modificada Pr ID:"+idProduct+" del carrito con ID:"+idCart))
+                    : (cart._products.push({ idProduct, quantity }),console.log("Se agrego producto al carrito con ID:" +idCart))
+            
+                }
             return cart;
         })
         await this.writeFile(data);
+        return data.find(cart=>cart._idCart===idCart)
     }
 
     async getProductCart(idCart){
@@ -78,7 +81,9 @@ export class CartManager {
 }
 
 //const cm = new CartManager();
+//await cm.addCart();
 //console.log(await cm.proximoId())
-// const data=await cm.getProductCart(1)
-// console.log(data)
+//const data=await cm.getProductCart(1)
+//console.log(data)
+//await cm.addProductCart(7,444,2)
 

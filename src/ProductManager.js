@@ -1,7 +1,7 @@
 import fs, { promises } from 'fs';
 
 class Product {
-    constructor(id, title, description, price, thumbnail, code, stock) {
+    constructor(id, title, description, price, thumbnail, code, stock, categoria) {
         this._title = title;
         this._description = description;
         this._price = price;
@@ -9,12 +9,10 @@ class Product {
         this._code = code;
         this._stock = stock;
         this._status = true;
+        this._category = categoria;
         this._id = id;
     }
 
-    toString() {
-        console.log(`ID: ${this._id} Title ${this._title}, Description ${this._description} `)
-    }
 }
 
 export class ProductManager {
@@ -45,13 +43,12 @@ export class ProductManager {
         const id = await this.proximoId()
         const code = campos[4];
         const existeCode = this._products.some(product => product._code === code);
-
-        (campos.length > 5) ? (
+        (campos.length > 6) ? (
             (existeCode) ? (console.log(`El code "${code}" ya existe`))
                 : (this._products.push(new Product(id, ...campos)),
                     await this.writeFile(), console.log("Se agrego el producto"))
         ) :
-            (console.log("Se espera 6 parametros"))
+            (console.log("Se espera 7 parametros"))
     }
 
     async getProducts() {
@@ -106,7 +103,7 @@ export class ProductManager {
 
             this._products = this._products.filter(product => product._id != idProducto);
             await this.writeFile();
-            console.log("Se elimino el producto con ID :"+ idProducto)
+            console.log("Se elimino el producto con ID :" + idProducto)
 
         } catch (error) {
             console.log(error)
@@ -121,7 +118,7 @@ export class ProductManager {
     async proximoId() {
         try {
             const data = JSON.parse(await this.readFile()).pop();
-            return data._id+1;
+            return data._id + 1;
         } catch (error) {
             return 0;
         }
@@ -129,9 +126,9 @@ export class ProductManager {
 
 }
 
-//const pm = new ProductManager();
+const pm = new ProductManager();
 //console.log(await pm.proximoId())
-//await pm.addProduct("Gato", "El mejor gato", 50, "img", 402, 50)
+await pm.addProduct("Gato", "El mejor gato", 50, "img", 402, 50,"animal")
 //console.log(await pm.getProductById(0))
 //await pm.updateProduct(1, { '_title': "Caballo" });
 //await pm.deleteProduct(0);
