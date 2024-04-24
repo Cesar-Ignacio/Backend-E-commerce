@@ -7,5 +7,8 @@ API REST para Carrito de Compras con Express.js 🛍️
 git clone https://github.com/Cesar-Ignacio/Backend-E-commerce.git
 ```
 ```bash
+cd Backend-E-commerce
+```
+```bash
 npm install
 ```
