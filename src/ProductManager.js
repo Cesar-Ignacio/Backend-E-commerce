@@ -126,9 +126,9 @@ export class ProductManager {
 
 }
 
-const pm = new ProductManager();
+//const pm = new ProductManager();
 //console.log(await pm.proximoId())
-await pm.addProduct("Gato", "El mejor gato", 50, "img", 402, 50,"animal")
+//await pm.addProduct("Gato", "El mejor gato", 50, "img", 402, 50,"animal")
 //console.log(await pm.getProductById(0))
 //await pm.updateProduct(1, { '_title': "Caballo" });
 //await pm.deleteProduct(0);

@@ -1,13 +1,57 @@
 [
 	{
-		"_title": "Gato",
-		"_description": "El mejor gato",
-		"_price": 50,
-		"_thumbnail": "img",
-		"_code": 402,
-		"_stock": 50,
+		"_title": "Teléfono móvil",
+		"_description": "El mejor teléfono móvil",
+		"_price": 4,
+		"_thumbnail": "phone_img",
+		"_code": 102,
+		"_stock": 60,
 		"_status": true,
-		"_category": "Animal",
-		"_id": 0
+		"_category": "Tecnología",
+		"_id": 1
+	},
+	{
+		"_title": "Tablet",
+		"_description": "La mejor tablet",
+		"_price": 500,
+		"_thumbnail": "tablet_img",
+		"_code": 103,
+		"_stock": 40,
+		"_status": true,
+		"_category": "Tecnología",
+		"_id": 2
+	},
+	{
+		"_title": "Smartwatch",
+		"_description": "El mejor smartwatch",
+		"_price": 300,
+		"_thumbnail": "watch_img",
+		"_code": 104,
+		"_stock": 30,
+		"_status": true,
+		"_category": "Tecnología",
+		"_id": 3
+	},
+	{
+		"_title": "Auriculares inalámbricos",
+		"_description": "Los mejores auriculares inalámbricos",
+		"_price": 150,
+		"_thumbnail": "headphones_img",
+		"_code": 105,
+		"_stock": 25,
+		"_status": true,
+		"_category": "Tecnología",
+		"_id": 4
+	},
+	{
+		"_title": "Camara inalámbricos",
+		"_description": "Los mejores Camara inalámbricos",
+		"_price": 150,
+		"_thumbnail": "camara_img",
+		"_code": 106,
+		"_stock": 25,
+		"_status": true,
+		"_category": "Tecnología",
+		"_id": 5
 	}
 ]
