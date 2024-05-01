@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { CartManager } from "../cartManager.js";
+import { CartManager } from "../class/cartManager.js";
+
 
 const routes=Router();
 
-const cm = new CartManager();
+const cm = new CartManager;
 
 /**Devuelve un carrito  */
 routes.get("/:cid", async (req, res) => {

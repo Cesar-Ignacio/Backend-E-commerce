@@ -1,5 +1,5 @@
 import fs, { promises } from 'fs';
-
+import { config } from '../config.js';
 class Product {
     constructor(id, title, description, price, thumbnail, code, stock, categoria) {
         this._title = title;
@@ -17,7 +17,7 @@ class Product {
 
 export class ProductManager {
     constructor() {
-        this._PATH = "productos.json";
+        this._PATH = `${config.DIRNAME}/data/productos.json`;
         this._products = [];
     }
 
@@ -132,3 +132,4 @@ export class ProductManager {
 //console.log(await pm.getProductById(0))
 //await pm.updateProduct(1, { '_title': "Caballo" });
 //await pm.deleteProduct(0);
+

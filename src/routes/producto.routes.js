@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { ProductManager } from "../ProductManager.js";
 import { uploader } from "../uploader.js";
+import { ProductManager } from "../class/ProductManager.js";
 
 const routes = Router();
-const pm = new ProductManager();
+const pm = new ProductManager;
 
 /**Devuelve todos los productos */
 routes.get("/", async (req, res) => {
@@ -22,11 +22,10 @@ routes.get("/:pid", async (req, res) => {
 
 /**Crea un nuevo producto */
 routes.post("/", uploader.single("thumbnail"), async (req, res) => {
-
     const campos = req.body;
     const thumbnail = req.file?.path || "sin imagen";
     await pm.addProduct(campos._title, campos._description, campos._price, thumbnail, campos._code, campos._stock, campos._category);
-    res.status(200).send(campos)
+    res.status(200).send({...campos,'thumbnail':thumbnail})
 });
 
 /**Edita un producto */
@@ -34,6 +33,7 @@ routes.put("/:pid", async (req, res) => {
     const id = req.params.pid
     const campos = req.body;
     await pm.updateProduct(parseInt(id), campos);
+    res.status(200);
 })
 
 /**Elimina un producto */

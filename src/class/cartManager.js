@@ -1,6 +1,6 @@
 
 import fs, { promises } from "fs"
-
+import { config } from "../config.js";
 class Cart {
     constructor(id) {
         this._idCart = id;
@@ -13,7 +13,7 @@ class Cart {
  
 export class CartManager {
     constructor() {
-        this._PATH = "carrito.json";
+        this._PATH = `${config.DIRNAME}/data/carrito.json`;
         this._carts = [];
     }
 
@@ -22,7 +22,7 @@ export class CartManager {
             this._carts = JSON.parse(await this.readFile());
         }
         catch (error) {
-            await promises.writeFile(this._PATH, JSON.stringify(this._carts));
+            await this.writeFile();
         }
 
     }
@@ -87,3 +87,4 @@ export class CartManager {
 //console.log(data)
 //await cm.addProductCart(7,444,2)
 
+/** */

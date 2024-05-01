@@ -92,5 +92,14 @@
 				"quantity": 2
 			}
 		]
+	},
+	{
+		"_idCart": 7,
+		"_products": [
+			{
+				"idProduct": 111,
+				"quantity": 1
+			}
+		]
 	}
 ]
