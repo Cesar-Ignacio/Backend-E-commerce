@@ -1,0 +1,46 @@
+<div>
+    <h1>Producto realTimeProducts</h1>
+    <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;" id="catalogo">
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    const socketClient = io();
+
+    const catalogo = document.querySelector("#catalogo");
+
+    socketClient.on("getProducts", products => {
+        catalogo.innerHTML = " ";
+        products.forEach(pro => {
+            cardProduct(pro);
+        })
+    })
+    const cardProduct=(pro)=>{
+        const cardProducto = document.createElement("div");
+        cardProducto.setAttribute("style", "border: solid 1px black; padding: 0.5em;")
+
+        const contenedorImg = document.createElement("div");
+        const img = document.createElement("img");
+        img.setAttribute("style", "width: 100%; height: 100%")
+        img.alt = "img";
+        img.src = `/static/img/${pro._thumbnail}`;
+        contenedorImg.appendChild(img);
+
+        const contenedorInfo = document.createElement("div");
+        contenedorInfo.setAttribute("style", "display:flex; flex-direction: column;")
+        const titulo = document.createElement("strong");
+        titulo.innerText = `${pro._title}`;
+        const precio = document.createElement("strong");
+        precio.innerText = `$${pro._price}`;
+        contenedorInfo.append(titulo, precio);
+
+        const boton = document.createElement("button");
+        boton.innerText = "Ver";
+        cardProducto.append(contenedorImg, contenedorInfo, boton);
+
+        catalogo.appendChild(cardProducto);
+    }
+
+</script>
