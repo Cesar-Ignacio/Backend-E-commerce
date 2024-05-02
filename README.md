@@ -12,3 +12,6 @@ cd Backend-E-commerce
 ```bash
 npm install
 ```
+```bash
+node --watch src/app.js
+```
