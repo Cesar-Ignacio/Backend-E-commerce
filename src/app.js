@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 /**Configuracion para handlebars */
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
-app.set('views', `${config.DIR_VIEWS}`);
+app.set('views', `${config.VIEWS_DIR}`);
 
 /**Configuracion archivo estaticos */
 app.use(`/static`,express.static(`${config.STATIC_DIR}`))
