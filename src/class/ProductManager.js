@@ -79,18 +79,24 @@ export class ProductManager {
     async updateProduct(idProducto, campos) {
 
         await this.inicializarValores()
+        let producctoEditado;
 
         if (this.existeProducto(idProducto)) {
             this._products = this._products.map(producto => {
                 (producto._id === idProducto) && (
-                    producto = { ...producto, ...campos }
+                    producto = { ...producto, ...campos },
+                    producctoEditado=producto
                 )
                 return producto;
-            })
+            }) 
             await this.writeFile();
             console.log("Se actualizo el producto con ID ", idProducto)
         }
-
+        
+        return {
+         "accion":"actualizacion",
+         "producto":producctoEditado
+        }
     }
 
     async deleteProduct(idProducto) {

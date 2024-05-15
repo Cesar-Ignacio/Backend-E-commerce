@@ -46,12 +46,23 @@
 	{
 		"_title": "Camara inalámbricos",
 		"_description": "Los mejores Camara inalámbricos",
-		"_price": 150,
+		"_price": 10,
 		"_thumbnail": "default.png",
 		"_code": 106,
-		"_stock": 25,
+		"_stock": true,
 		"_status": true,
 		"_category": "Tecnología",
 		"_id": 5
+	},
+	{
+		"_title": "Parlante",
+		"_description": "El mejor p",
+		"_price": 18,
+		"_thumbnail": "auricular.jpg",
+		"_code": "102",
+		"_stock": true,
+		"_status": true,
+		"_category": "Tecnologia",
+		"_id": 6
 	}
 ]

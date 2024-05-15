@@ -27,7 +27,6 @@ routes.post("/", uploader.single("thumbnail"), async (req, res) => {
     const thumbnail = req.file?.originalname || "default.png";
     await pm.addProduct(campos._title, campos._description, campos._price, thumbnail, campos._code, campos._stock, campos._category);
     res.status(200).send({ ...campos, 'thumbnail': thumbnail })
-
     socketServer.emit("getProducts", await pm.getProducts());
 });
 
@@ -35,8 +34,8 @@ routes.post("/", uploader.single("thumbnail"), async (req, res) => {
 routes.put("/:pid", async (req, res) => {
     const id = req.params.pid
     const campos = req.body;
-    await pm.updateProduct(parseInt(id), campos);
-    res.status(200);
+    const data=await pm.updateProduct(parseInt(id), campos);
+    res.status(200).send(data);
 })
 
 /**Elimina un producto */
