@@ -13,5 +13,5 @@ cd Backend-E-commerce
 npm install
 ```
 ```bash
-node run dev
+npm run dev
 ```
