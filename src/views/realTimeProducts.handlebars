@@ -25,15 +25,15 @@
         const img = document.createElement("img");
         img.setAttribute("style", "width: 100%; height: 100%")
         img.alt = "img";
-        img.src = `/static/img/${pro._thumbnail}`;
+        img.src = `/static/img/${pro.thumbnail}`;
         contenedorImg.appendChild(img);
 
         const contenedorInfo = document.createElement("div");
         contenedorInfo.setAttribute("style", "display:flex; flex-direction: column;")
         const titulo = document.createElement("strong");
-        titulo.innerText = `${pro._title}`;
+        titulo.innerText = `${pro.title}`;
         const precio = document.createElement("strong");
-        precio.innerText = `$${pro._price}`;
+        precio.innerText = `$${pro.price}`;
         contenedorInfo.append(titulo, precio);
 
         const boton = document.createElement("button");

@@ -2,14 +2,14 @@ import fs, { promises } from 'fs';
 import { config } from '../config.js';
 class Product {
     constructor(id, title, description, price, thumbnail, code, stock, categoria) {
-        this._title = title;
-        this._description = description;
-        this._price = price;
-        this._thumbnail = thumbnail;
-        this._code = code;
-        this._stock = stock;
-        this._status = true;
-        this._category = categoria;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.thumbnail = thumbnail;
+        this.code = code;
+        this.stock = stock;
+        this.status = true;
+        this.category = categoria;
         this._id = id;
     }
 
@@ -42,7 +42,7 @@ export class ProductManager {
         await this.inicializarValores();
         const id = await this.proximoId()
         const code = campos[4];
-        const existeCode = this._products.some(product => product._code === code);
+        const existeCode = this._products.some(product => product.code === code);
         (campos.length > 6) ? (
             (existeCode) ? (console.log(`El code "${code}" ya existe`))
                 : (this._products.push(new Product(id, ...campos)),
@@ -140,6 +140,6 @@ export class ProductManager {
 //console.log(await pm.proximoId())
 //await pm.addProduct("Gato", "El mejor gato", 50, "img", 402, 50,"animal")
 //console.log(await pm.getProductById(0))
-//await pm.updateProduct(1, { '_title': "Caballo" });
+//await pm.updateProduct(1, { 'title': "Caballo" });
 //await pm.deleteProduct(0);
 
