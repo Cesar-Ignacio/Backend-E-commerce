@@ -101,10 +101,14 @@ export class ProductManager {
                 throw new Error("No existe el ID " + idProducto)
             }
 
+            const productoEliminado = this._products.find(product => product._id === idProducto);
             this._products = this._products.filter(product => product._id != idProducto);
             await this.writeFile();
             console.log("Se elimino el producto con ID :" + idProducto)
-
+            return {
+                'accion': "eliminacion",
+                'producto': productoEliminado
+            };
         } catch (error) {
             console.log(error)
         }

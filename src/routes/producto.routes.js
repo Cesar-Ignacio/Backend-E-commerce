@@ -10,7 +10,7 @@ routes.get("/", async (req, res) => {
     const limite = req.query.limit;
     let data = await pm.getProducts();
     (limite) && (data = data.filter((product, i) => i < limite));
-    res.send(data)
+    res.status(201).send(data)
 });
 
 /**Devuelve un producto  */
@@ -22,12 +22,12 @@ routes.get("/:pid", async (req, res) => {
 
 /**Crea un nuevo producto */
 routes.post("/", uploader.single("thumbnail"), async (req, res) => {
-    
     const socketServer = req.app.get("socketServer");
     const campos = req.body;
     const thumbnail = req.file?.originalname || "default.png";
     await pm.addProduct(campos._title, campos._description, campos._price, thumbnail, campos._code, campos._stock, campos._category);
     res.status(200).send({ ...campos, 'thumbnail': thumbnail })
+
     socketServer.emit("getProducts", await pm.getProducts());
 });
 
@@ -41,10 +41,11 @@ routes.put("/:pid", async (req, res) => {
 
 /**Elimina un producto */
 routes.delete("/:pid", async (req, res) => {
-    const socketServer=req.app.get("socketServer")
+    const socketServer = req.app.get("socketServer")
     const id = req.params.pid;
-    await pm.deleteProduct(parseInt(id));
-    socketServer.emit("getProducts",await pm.getProducts())
+    const data=await pm.deleteProduct(parseInt(id));
+    res.status(200).send(data);
+    socketServer.emit("getProducts", await pm.getProducts())
 })
 
 export default routes;

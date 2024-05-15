@@ -4,12 +4,11 @@ import carritoRoutes from './routes/carrito.routes.js'
 import productoRoutes from './routes/producto.routes.js'
 import viewsRoutes from './routes/views.routes.js';
 import { engine } from 'express-handlebars';
-import { Server } from 'socket.io';
-import { ProductManager } from './class/ProductManager.js';
+import { initSocketServer } from './sockets.js';
 
 const app = express();
-const pm = new ProductManager();
 
+/**Middleware de aplicacion */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,14 +29,10 @@ app.use(viewsRoutes);
 const httpServer = app.listen(config.PORT, () => {
     console.log(`Servidor activo http://localhost:${config.PORT}/`)
 })
-/**Inicio socket */
-const socketServer = new Server(httpServer);
 
+/**Inicio socket */
+const socketServer = initSocketServer(httpServer);
 app.set('socketServer', socketServer);
 
-socketServer.on("connection", async (socket) => {
-    console.log("Cliente conectado");
-    socket.emit("getProducts", await pm.getProducts())
-})
 
 
