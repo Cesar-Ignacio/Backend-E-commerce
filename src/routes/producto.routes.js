@@ -25,7 +25,7 @@ routes.post("/", uploader.single("thumbnail"), async (req, res) => {
     const socketServer = req.app.get("socketServer");
     const campos = req.body;
     const thumbnail = req.file?.originalname || "default.png";
-    await pm.addProduct(campos._title, campos._description, campos._price, thumbnail, campos._code, campos._stock, campos._category);
+    await pm.addProduct(campos.title, campos.description, campos.price, thumbnail, campos.code, campos.stock, campos.category);
     res.status(200).send({ ...campos, 'thumbnail': thumbnail })
     socketServer.emit("getProducts", await pm.getProducts());
 });

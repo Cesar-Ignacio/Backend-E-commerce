@@ -1,25 +1,25 @@
 
-import fs, { promises } from "fs"
+import { promises } from "fs"
 import { config } from "../config.js";
 class Cart {
     constructor(id) {
-        this._idCart = id;
-        this._products = [];
+        this.id = id;
+        this.products = [];
     }
     addProduct(idProduct, quantity) {
-        this._products.push({ idProduct, quantity })
+        this.products.push({ idProduct, quantity })
     }
 }
  
 export class CartManager {
     constructor() {
         this._PATH = `${config.DIRNAME}/data/carrito.json`;
-        this._carts = [];
+        this.carts = [];
     }
 
     async startData() {
         try {
-            this._carts = JSON.parse(await this.readFile());
+            this.carts = JSON.parse(await this.readFile());
         }
         catch (error) {
             await this.writeFile();
@@ -32,31 +32,31 @@ export class CartManager {
         await this.startData();
         const id = await this.proximoId();
         const cart = new Cart(id);
-        this._carts.push(cart)
+        this.carts.push(cart)
         await this.writeFile();
         console.log("Nuevo carrito creado")
         return cart;
     }
 
-    async addProductCart(idCart, idProduct, quantity=1) {
+    async addProductCart(id, idProduct, quantity=1) {
         await this.startData();
-        const data = this._carts.map(cart => {
-            if (cart._idCart === idCart) {
-                const product = cart._products.find(p => p.idProduct === idProduct);
+        const data = this.carts.map(cart => {
+            if (cart.id === id) {
+                const product = cart.products.find(p => p.idProduct === idProduct);
                 (product) ?
-                    (product.quantity += quantity,console.log("Cantidad Modificada Pr ID:"+idProduct+" del carrito con ID:"+idCart))
-                    : (cart._products.push({ idProduct, quantity }),console.log("Se agrego producto al carrito con ID:" +idCart))
+                    (product.quantity += quantity,console.log("Cantidad Modificada Pr ID:"+idProduct+" del carrito con ID:"+id))
+                    : (cart.products.push({ idProduct, quantity }),console.log("Se agrego producto al carrito con ID:" +id))
             
                 }
             return cart;
         })
         await this.writeFile(data);
-        return data.find(cart=>cart._idCart===idCart)
+        return data.find(cart=>cart.id===id)
     }
 
-    async getProductCart(idCart){
+    async getProductCart(id){
         await this.startData();
-        return this._carts.find(cart=>cart._idCart===idCart);
+        return this.carts.find(cart=>cart.id===id);
     }
 
     /**Devuelve el tamaño del array contenedor de carritos */
@@ -64,7 +64,7 @@ export class CartManager {
         
         try {
             const data = JSON.parse(await this.readFile()).pop();
-            return data._idCart+1;
+            return data.id+1;
         } catch (error) {
             return 0;
         }
@@ -74,7 +74,7 @@ export class CartManager {
         return promises.readFile(this._PATH, "utf-8");
     }
 
-    writeFile(data = this._carts) {
+    writeFile(data = this.carts) {
         return promises.writeFile(this._PATH, JSON.stringify(data, null, '\t'));
     }
 
