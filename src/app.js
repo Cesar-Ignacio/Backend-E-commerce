@@ -27,7 +27,7 @@ app.use(viewsRoutes);
 
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, () => {
-    console.log(`Servidor activo http://localhost:${config.PORT}/`)
+    console.log(`Servidor activo en PORT:${config.PORT}`)
 })
 
 /**Inicio socket */
