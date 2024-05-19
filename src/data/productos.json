@@ -1,24 +1,13 @@
 [
 	{
-		"title": "Heladera",
-		"description": "El mejor H",
-		"price": "74",
-		"thumbnail": "heladera.jpg",
-		"code": "102",
-		"stock": "10",
-		"status": true,
-		"category": "Tecnologia",
-		"_id": 0
-	},
-	{
-		"title": "Heladera",
-		"description": "El mejor k",
-		"price": "74",
-		"thumbnail": "default.png",
+		"title": "Licuadora",
+		"description": "El mejor L",
+		"price": "10",
+		"thumbnail": "licuadora.webp",
 		"code": "103",
 		"stock": "10",
 		"status": true,
 		"category": "Tecnologia",
-		"_id": 1
+		"_id": 0
 	}
 ]

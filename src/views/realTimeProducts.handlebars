@@ -38,7 +38,18 @@
 
         const boton = document.createElement("button");
         boton.innerText = "Ver";
-        cardProducto.append(contenedorImg, contenedorInfo, boton);
+        
+        const btnEliminar=document.createElement("button");
+        btnEliminar.innerText="Eliminar";
+        btnEliminar.addEventListener("click",async()=>{
+            console.log(pro._id)
+            const data=await fetch(`/api/products/${pro._id}`,{
+             method:"DELETE"   
+            })
+            console.log(data)
+        })
+
+        cardProducto.append(contenedorImg, contenedorInfo, boton,btnEliminar);
 
         catalogo.appendChild(cardProducto);
     }

@@ -67,7 +67,7 @@ export class ProductManager {
 
             const product = data.find(product => product._id === idProducto);
 
-            return product || new Error("Error id no encontrado");
+            return product;
 
         } catch (error) {
 
@@ -78,24 +78,26 @@ export class ProductManager {
 
     async updateProduct(idProducto, campos) {
 
-        await this.inicializarValores()
-        let producctoEditado;
+        try {
+            await this.inicializarValores()
+            let producctoEditado;
 
-        if (this.existeProducto(idProducto)) {
-            this._products = this._products.map(producto => {
-                (producto._id === idProducto) && (
-                    producto = { ...producto, ...campos },
-                    producctoEditado=producto
-                )
-                return producto;
-            }) 
-            await this.writeFile();
-            console.log("Se actualizo el producto con ID ", idProducto)
-        }
-        
-        return {
-         "accion":"actualizacion",
-         "producto":producctoEditado
+            if (this.existeProducto(idProducto)) {
+                this._products = this._products.map(producto => {
+                    (producto._id === idProducto) && (
+                        producto = { ...producto, ...campos },
+                        producctoEditado = producto
+                    )
+                    return producto;
+                })
+                await this.writeFile();
+                console.log("Se actualizo el producto con ID ", idProducto)
+            }
+
+            return producctoEditado;
+
+        } catch (error) {
+            console.log("No se pudo leer el archivo");
         }
     }
 
@@ -111,10 +113,8 @@ export class ProductManager {
             this._products = this._products.filter(product => product._id != idProducto);
             await this.writeFile();
             console.log("Se elimino el producto con ID :" + idProducto)
-            return {
-                'accion': "eliminacion",
-                'producto': productoEliminado
-            };
+            return productoEliminado;
+
         } catch (error) {
             console.log(error)
         }
