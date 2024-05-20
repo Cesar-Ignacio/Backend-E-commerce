@@ -8,7 +8,6 @@ import { initSocketServer } from './sockets.js';
 import mongoose from 'mongoose';
 
 const app = express();
-
 /**Middleware de aplicacion */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
