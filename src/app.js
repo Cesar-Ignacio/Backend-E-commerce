@@ -5,6 +5,7 @@ import productoRoutes from './routes/producto.routes.js'
 import viewsRoutes from './routes/views.routes.js';
 import { engine } from 'express-handlebars';
 import { initSocketServer } from './sockets.js';
+import mongoose from 'mongoose';
 
 const app = express();
 
@@ -26,7 +27,8 @@ app.use("/api/products", productoRoutes);
 app.use(viewsRoutes);
 
 /**Inicio de servidor */
-const httpServer = app.listen(config.PORT, () => {
+const httpServer = app.listen(config.PORT, async() => {
+    await mongoose.connect(config.MONGODB_URI);
     console.log(`Servidor activo en PORT:${config.PORT}`)
 })
 

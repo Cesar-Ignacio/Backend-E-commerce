@@ -1,4 +1,5 @@
 import { ProductManager } from "../class/ProductManager.js";
+import { modelProduct } from "../dao/models/product.model.js";
 
 const pm = new ProductManager();
 
@@ -7,8 +8,11 @@ export const handleCreateProduct = async (req, res) => {
     try {
         const socketServer = req.app.get("socketServer");
         const campos = req.body;
+        const {title,description,price,code, stock, category}=req.body;
         const thumbnail = req.file?.originalname || "default.png";
         await pm.addProduct(campos.title, campos.description, campos.price, thumbnail, campos.code, campos.stock, campos.category);
+        // let product=new modelProduct({title, description,price, thumbnail, code, stock,category});        
+        // await product.save();
         res.status(201).send({ ...campos, 'thumbnail': thumbnail })
         socketServer.emit("getProducts", await pm.getProducts());
 

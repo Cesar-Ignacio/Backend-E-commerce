@@ -1,16 +1,10 @@
 import { Router } from "express";
-import { ProductManager } from "../class/ProductManager.js";
+import { renderViewHoma,renderViewRealTimeProducts } from "../controllers/views.controller.js";
 
-const routes =Router();
-const pm=new ProductManager();
+const routes = Router();
 
-routes.get("/",async (req,res)=>{
-    const data=await pm.getProducts();
-    res.status(200).render("home",{data:data})
-})
+routes.get("/", renderViewHoma)
 
-routes.get("/realTimeProducts",(req,res)=>{
-    res.status(200).render('realTimeProducts');
-})
+routes.get("/realTimeProducts", renderViewRealTimeProducts)
 
 export default routes;

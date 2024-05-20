@@ -9,5 +9,38 @@
 		"status": true,
 		"category": "Tecnologia",
 		"_id": 0
+	},
+	{
+		"title": "Televisor",
+		"description": "El mejor T",
+		"price": "71",
+		"thumbnail": "tv.webp",
+		"code": "111",
+		"stock": "10",
+		"status": true,
+		"category": "Tecnologia",
+		"_id": 1
+	},
+	{
+		"title": "Televisor",
+		"description": "El mejor T",
+		"price": "71",
+		"thumbnail": "tv.webp",
+		"code": "112",
+		"stock": "10",
+		"status": true,
+		"category": "Tecnologia",
+		"_id": 2
+	},
+	{
+		"title": "Televisor",
+		"description": "El mejor T",
+		"price": "71",
+		"thumbnail": "tv.webp",
+		"code": "113",
+		"stock": "10",
+		"status": true,
+		"category": "Tecnologia",
+		"_id": 3
 	}
 ]
