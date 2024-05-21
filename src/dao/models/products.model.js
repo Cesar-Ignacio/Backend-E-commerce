@@ -4,7 +4,7 @@ mongoose.pluralize(null);
 
 const collection = 'products';
 
-const shema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -40,4 +40,4 @@ const shema = new mongoose.Schema({
     }
 })
 
-export const modelProduct=mongoose.model(collection,shema);
+export const modelProduct=mongoose.model(collection,schema);

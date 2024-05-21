@@ -42,5 +42,16 @@
 		"status": true,
 		"category": "Tecnologia",
 		"_id": 3
+	},
+	{
+		"title": "ss",
+		"description": "sss",
+		"price": "650",
+		"thumbnail": "imgCesar-fotor-bg-remover-2024042692540.png",
+		"code": "147",
+		"stock": "50",
+		"status": true,
+		"category": "Tecnologia",
+		"_id": 4
 	}
 ]

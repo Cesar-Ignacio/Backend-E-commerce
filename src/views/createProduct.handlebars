@@ -1,0 +1,77 @@
+<div class="seccionCreateProduct">
+    <div class="containerCreateProduct">
+        <h2>Crear Producto</h2>
+        <form action="" class="formCreateProduct" id="form">
+            <div class="inputArea">
+                <label for="title">
+                    Title:
+                </label>
+                <input type="text" id="title">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Description:
+                </label>
+                <input type="text" id="description">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Price:
+                </label>
+                <input type="text" id="price">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Thumbnail:
+                </label>
+                <input type="file" id="thumbnail">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Code:
+                </label>
+                <input type="text" id="code">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Stock:
+                </label>
+                <input type="text" id="stock">
+            </div>
+            <div class="inputArea">
+                <label for="">
+                    Category:
+                </label>
+                <input type="text" id="category">
+            </div>
+            <button type="submit" class="btnSend">Send</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.querySelector("#form");
+    form.addEventListener("submit", async(e) => {
+        e.preventDefault();
+        const inputTitle = document.querySelector('#title');
+        const inputDescription = document.querySelector('#description');
+        const inputPrice = document.querySelector('#price');
+        const inputThumbnail = document.querySelector('#thumbnail');
+        const inputCode = document.querySelector('#code');
+        const inputStock = document.querySelector('#stock');
+        const inputCategory = document.querySelector('#category');
+        const formData = new FormData();
+        formData.append('title', inputTitle.value);
+        formData.append('description', inputDescription.value);
+        formData.append('price', inputPrice.value);
+        formData.append('thumbnail', inputThumbnail.files[0]);
+        formData.append('code', inputCode.value);
+        formData.append('stock', inputStock.value);
+        formData.append('category', inputCategory.value);
+        fetch('/api/products', {
+            method: 'POST',
+            body: formData
+        }).then(res=>alert("Se agrego el producto"))
+
+    })
+</script>
