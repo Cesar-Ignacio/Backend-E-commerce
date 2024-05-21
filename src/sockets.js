@@ -1,8 +1,6 @@
 import { Server } from "socket.io";
-import { ProductManager } from "./dao/ProductManager.js";
 import { ProductsModelManager } from "./dao/products.mdb.js";
 
-const pm=new ProductManager();
 const pmm=new ProductsModelManager();
 export const initSocketServer=(httpServer)=>{
 

@@ -1,23 +1,24 @@
 import { ProductManager } from "../dao/ProductManager.js";
-import { modelProduct } from "../dao/models/products.model.js";
+import { ProductsModelManager } from "../dao/products.mdb.js";
 
 const pm = new ProductManager();
+const pmm = new ProductsModelManager();
 
 export const handleCreateProduct = async (req, res) => {
 
     try {
         const socketServer = req.app.get("socketServer");
-        const campos = req.body;
-        const {title,description,price,code, stock, category}=req.body;
-        const thumbnail = req.file?.originalname || "default.png";
-        //await pm.addProduct(campos.title, campos.description, campos.price, thumbnail, campos.code, campos.stock, campos.category);
-        let product=new modelProduct({title, description,price, thumbnail, code, stock,category});        
-        await product.save();
-        res.status(201).send({ ...campos, 'thumbnail': thumbnail })
-        socketServer.emit("getProducts", await pm.getProducts());
-
+        const thumbnail = req.file?.originalname ?? "default.png";
+        const datos = {
+            ...req.body,
+            thumbnail: thumbnail || "default.png"
+        }        
+        await pmm.createProduct(datos);        
+        res.status(201).send(datos)
+        socketServer.emit("getProducts", await pmm.getAll());
     } catch (error) {
         res.status(500).send({ message: 'Internal Server Error' });
+        console.log({ message: 'Internal Server Error' })
     }
 
 }
@@ -26,10 +27,11 @@ export const handleDeleteProductRequest = async (req, res) => {
     try {
         const socketServer = req.app.get("socketServer")
         const productId = req.params.pid;
-        const productData = await pm.deleteProduct(parseInt(productId));
-        if (productData) {
-            res.status(200).send(productData);
-            socketServer.emit("getProducts", await pm.getProducts())
+        //const productData = await pm.deleteProduct(parseInt(productId));
+        const da = await pmm.deleteProduct(productId);
+        if (da) {
+            res.status(200).send("bien");;
+            socketServer.emit("getProducts", await pmm.getAll())
         }
         else {
             res.status(404).send({ message: 'Product not found' });
@@ -44,6 +46,7 @@ export const handleEditProductRequest = async (req, res) => {
         const productId = req.params.pid
         const campos = req.body;
         const productData = await pm.updateProduct(parseInt(productId), campos);
+
         if (productData) {
             res.status(200).send(productData);
         }

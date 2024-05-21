@@ -17,10 +17,6 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    thumbnail: {
-        type: String,
-        required: true
-    },
     code: {
         type: String,
         required: true,
@@ -33,6 +29,10 @@ const schema = new mongoose.Schema({
     category: {
         type: String,
         required: true
+    },
+    thumbnail: {
+        type: String,
+        required: true,
     },
     status: {
         type: Boolean,
