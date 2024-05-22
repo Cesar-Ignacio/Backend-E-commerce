@@ -12,13 +12,18 @@ export const handleCreateProduct = async (req, res) => {
         const datos = {
             ...req.body,
             thumbnail: thumbnail || "default.png"
-        }        
-        await pmm.createProduct(datos);        
-        res.status(201).send(datos)
+        }
+        if (!datos.price || !datos.category) {
+            return res.status(400).send({ message: "Faltan datos obligatorios: precio y categoría." });
+        }
+        const product=await pmm.createProduct(datos);
+        res.status(201).send({
+            message: "Producto creado exitosamente.",
+            product: product
+        })
         socketServer.emit("getProducts", await pmm.getAll());
     } catch (error) {
-        res.status(500).send({ message: 'Internal Server Error' });
-        console.log({ message: 'Internal Server Error' })
+        res.status(500).send({ message: error.message });
     }
 
 }
@@ -27,17 +32,13 @@ export const handleDeleteProductRequest = async (req, res) => {
     try {
         const socketServer = req.app.get("socketServer")
         const productId = req.params.pid;
-        //const productData = await pm.deleteProduct(parseInt(productId));
-        const da = await pmm.deleteProduct(productId);
-        if (da) {
-            res.status(200).send("bien");;
-            socketServer.emit("getProducts", await pmm.getAll())
-        }
-        else {
-            res.status(404).send({ message: 'Product not found' });
-        }
+        // fileSystem  const productData = await pm.deleteProduct(parseInt(productId));
+        const data=await pmm.deleteProduct(productId);
+        res.status(200).send(data);
+        socketServer.emit("getProducts", await pmm.getAll())
+
     } catch (error) {
-        res.status(500).send({ message: 'Internal Server Error' });
+        res.status(500).send({ message: error.message });
     }
 }
 
@@ -62,25 +63,22 @@ export const handleEditProductRequest = async (req, res) => {
 export const handleGetProductByIdRequest = async (req, res) => {
     try {
         const productId = req.params.pid;
-        const productData = await pm.getProductById(parseInt(productId));
-        if (productData) {
-            res.status(200).send(productData);
-        } else {
-            res.status(404).send({ message: 'Product not found' });
-        }
+        // fileSystem const productData = await pm.getProductById(parseInt(productId));
+        const productDataM = await pmm.getProductById(productId)
+        res.status(200).send(productDataM);
     } catch (error) {
-        res.status(500).send({ message: 'Internal Server Error' });
+        res.status(500).send({ message: error.message });
     }
 }
 
 export const handleGetProductsRequest = async (req, res) => {
     try {
         const limite = req.query.limit;
-        let data = await pm.getProducts();
-        (limite) && (data = data.slice(0, limite));
+        // fileSystem let data = await pm.getProducts();
+        // (limite) && (data = data.slice(0, limite));
+        let data = await pmm.getLimitedProducts(limite)
         res.status(200).send(data)
-
     } catch (error) {
-        res.status(500).send({ message: 'Internal Server Error' });
+        res.status(500).send({ message: error.message });
     }
 }

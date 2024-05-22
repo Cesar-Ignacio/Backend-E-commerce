@@ -68,10 +68,16 @@
         formData.append('code', inputCode.value);
         formData.append('stock', inputStock.value);
         formData.append('category', inputCategory.value);
-        fetch('/api/products', {
+        const response=await fetch('/api/products', {
             method: 'POST',
             body: formData
-        }).then(res=>alert("Se agrego el producto"))
+        })
+        if(response.ok){
+            alert("Se creo el producto")
+        }
+        else{
+            alert("Hubo un error complemente nuevamento los datos")
+        }
 
     })
 </script>
