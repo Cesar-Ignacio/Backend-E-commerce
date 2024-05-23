@@ -6,6 +6,7 @@ import viewsRoutes from './routes/views.routes.js';
 import { engine } from 'express-handlebars';
 import { initSocketServer } from './sockets.js';
 import mongoose from 'mongoose';
+import messagesRoutes from './routes/message.routes.js';
 
 const app = express();
 /**Middleware de aplicacion */
@@ -23,6 +24,7 @@ app.use(`/static`,express.static(`${config.STATIC_DIR}`))
 /**Routes */
 app.use("/api/carts", carritoRoutes);
 app.use("/api/products", productoRoutes);
+app.use("/api/messages",messagesRoutes);
 app.use(viewsRoutes);
 
 /**Inicio de servidor */

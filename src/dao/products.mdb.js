@@ -7,7 +7,8 @@ export class ProductsModelManager {
         try {
             return await modelProduct.find().lean();
         } catch (error) {
-            console.log(error);
+            console.error("Error al devolver los productos:", error);
+            throw error;
         }
     }
 
@@ -26,7 +27,24 @@ export class ProductsModelManager {
             return product;
         } catch (error) {
             console.error("Error al crear el producto:", error);
-            throw error; 
+            throw error;
+        }
+    }
+    
+    async updateProduct(idProduct, campos) {
+        try {
+            const updatedProduct = await modelProduct.findByIdAndUpdate(idProduct, campos, { new: true, runValidators: true });
+
+            // Verificar que si se actulizo el producto
+            if (!updatedProduct) {
+                throw new Error(`El producto con ID ${idProduct} no fue encontrado o no pudo ser actulizado`);
+            }
+
+            return updatedProduct;
+
+        } catch (error) {
+            console.error("Error al actualizar el producto:", error)
+            throw error;
         }
     }
 

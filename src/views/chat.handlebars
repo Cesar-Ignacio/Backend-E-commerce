@@ -1,0 +1,58 @@
+<div>
+    <h1>Chat</h1>
+    <hr>
+    <div style="border: solid 2px black; padding: 0.5em;">
+        <form action="" id="form">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="" id="email">
+            </div>
+            <div>
+                <label for="message">Menssage</label>
+                <input type="text" name="" id="message">
+            </div>
+            <button type="submit">enviar</button>
+        </form>
+    </div>
+    <div id="containerMessages"
+        style="border: gray 1px dashed; padding: 0.5em; display: flex; flex-direction: column; gap: 0.5em;">
+
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const form = document.querySelector("#form");
+    const containerMessages = document.querySelector('#containerMessages');
+    
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.querySelector("#email").value;
+        const message = document.querySelector('#message').value;
+        const data = {
+            email, message
+        }
+        await fetch('/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+    })
+
+    socket.on('messages', messages => {
+        containerMessages.innerHTML = " ";
+        messages.forEach(mes => {
+            containerMessages.innerHTML += `<div style="background-color:rgb(221, 202, 202);padding: 0.5em;">
+                        <strong>${mes.email}</strong>
+                        <p>${mes.message}</p>
+                    </div>`
+
+        });
+    })
+
+
+
+</script>
