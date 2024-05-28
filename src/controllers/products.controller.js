@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { ProductManager } from "../dao/ProductManager.js";
 import { ProductsModelManager } from "../dao/products.mdb.js";
 
+
 const pm = new ProductManager();
 const pmm = new ProductsModelManager();
 
@@ -71,11 +72,8 @@ export const handleGetProductByIdRequest = async (req, res) => {
 
 export const handleGetProductsRequest = async (req, res) => {
     try {
-        const limite = req.query.limit;
-        // fileSystem let data = await pm.getProducts();
-        // (limite) && (data = data.slice(0, limite));
-        let data = await pmm.getLimitedProducts(limite)
-        res.status(200).send(data)
+        let data = await pmm.getPaginatedProducts(req.query);
+        res.status(200).send(data);
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
