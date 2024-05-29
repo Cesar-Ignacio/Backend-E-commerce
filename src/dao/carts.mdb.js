@@ -1,4 +1,5 @@
 import { modelCart } from "./models/carts.model.js";
+import { modelProduct } from "./models/products.model.js";
 
 export class CartModelManager {
     constructor() {
@@ -7,7 +8,7 @@ export class CartModelManager {
 
     async getCartById(idCart) {
         try {
-            const cart = await modelCart.findById(idCart);
+            const cart = await modelCart.findById(idCart).populate({ path: 'products._id', model: modelProduct });
             if (!cart) {
                 throw new Error("No se encontro el carrito");
             }
@@ -30,10 +31,10 @@ export class CartModelManager {
         }
     }
 
-    async addProductCart(idCart, idProduct) {
+    async addProductCart({ cid, pid }) {
         try {
 
-            const updatedCart = await modelCart.findByIdAndUpdate(idCart, { $push: { products: { _id: idProduct } } }, { new: true, useFindAndModify: false })
+            const updatedCart = await modelCart.findByIdAndUpdate(cid, { $push: { products: { _id: pid } } }, { new: true, useFindAndModify: false })
 
             if (!updatedCart) {
                 throw new Error('Carrito no encontrado');
@@ -50,10 +51,30 @@ export class CartModelManager {
     async deleteProductCart({ cid, pid }) {
         try {
             const cart = await modelCart.findOneAndUpdate({ _id: cid }, { $pull: { products: { _id: pid } } }, { new: true })
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
             return cart;
         } catch (error) {
             throw error;
         }
     }
 
+    async updateProductQuantity({ cid, pid }, { quantity }) {
+        try {
+            const cart = await modelCart.findOneAndUpdate({ _id: cid, "products._id": pid }, { $set: { "products.$.quantity": quantity } }, { new: true });
+            return cart;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteAllProductsCart({ cid }) {
+        try {
+            const cart = await modelCart.findByIdAndUpdate(cid, { $set: { products: [] } }, { new: true });
+            return cart
+        } catch (error) {
+            throw error
+        }
+    }
 }

@@ -70,7 +70,7 @@ export class ProductsModelManager {
         }
     }
 
-    async getPaginatedProducts({ limit = '10', page = '1', query = '{}', sort = 1 }) {
+    async getPaginatedProducts({ limit = '3', page = '1', query = '{}', sort = 1 }) {
         const VALID_SORT_VALUES = [1, -1];
         try {
             const sortOrder = parseInt(sort);

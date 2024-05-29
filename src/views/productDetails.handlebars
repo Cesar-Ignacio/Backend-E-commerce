@@ -1,0 +1,18 @@
+<div>
+    <h1>Product Details</h1>
+    <div class="product-details" style="border: 1px solid #ccc; padding: 20px; max-width: 400px; margin: auto;">
+        <img src="/static/img/{{thumbnail}}" alt="{{title}}" style="max-width: 100%;">
+        <h1 style="font-size: 24px; margin: 0 0 10px;">{{title}}</h1>
+        <p style="margin: 5px 0;"><strong>Description:</strong> {{description}}</p>
+        <p style="margin: 5px 0;"><strong>Price:</strong> ${{price}}</p>
+        <p style="margin: 5px 0;"><strong>Code:</strong> {{code}}</p>
+        <p style="margin: 5px 0;"><strong>Stock:</strong> {{stock}}</p>
+        <p style="margin: 5px 0;"><strong>Category:</strong> {{category}}</p>
+        {{#if status}}
+            <p style="margin: 5px 0;"><strong>Status:</strong> In stock</p>
+        {{else}}
+            <p style="margin: 5px 0;"><strong>Status:</strong> Out of stock</p>
+        {{/if}}
+        <a href="#" id="buyButton" class="buy-button" style="display: block; width: 100%; padding: 10px; background-color: #28a745; color: white; text-align: center; text-decoration: none; border-radius: 5px; margin-top: 10px;">Buy Now</a>
+    </div>
+</div>
