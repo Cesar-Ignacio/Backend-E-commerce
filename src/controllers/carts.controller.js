@@ -57,11 +57,21 @@ export const handleAddProductCartById = async (req, res) => {
 
 export const handleDeleteProductCartById = async (req, res) => {
     try {
-        const { cid, pid } = req.params;
-        //{ usuarioId: mongoose.Types.ObjectId(usuarioId) }
-        const data = await modelCart.findOneAndUpdate({_id:cid}, { $pull: { products: { _id: pid } } })
-        res.status(200).send(data)
+        validateObjectIds(req.params)
+        const data = await cmm.deleteProductCart(req.params);
+        res.status(200).send(data);
     } catch ({ message }) {
-        res.status(500).send({ message: message })
+        res.status(500).send({ message: message });
     }
 }
+
+const validateObjectIds = ({ cid, pid }) => {
+    const ids = [cid, pid];
+    ids.forEach(id => {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error(`ID inválido: ${id}`);
+        }
+    });
+};
+
+

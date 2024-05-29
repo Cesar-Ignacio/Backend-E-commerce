@@ -47,5 +47,13 @@ export class CartModelManager {
         }
     }
 
+    async deleteProductCart({ cid, pid }) {
+        try {
+            const cart = await modelCart.findOneAndUpdate({ _id: cid }, { $pull: { products: { _id: pid } } }, { new: true })
+            return cart;
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }
