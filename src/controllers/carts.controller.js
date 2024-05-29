@@ -26,8 +26,8 @@ export const handleCreateCart = async (req, res) => {
     try {
 
         const idUser = req.params.uid;
-        // validamos el id user
         //const data= await cm.addCart();
+        // validamos el id user
         if (!mongoose.Types.ObjectId.isValid(idUser)) {
             return res.status(400).send({ message: 'ID de usuario inválido' });
         }
@@ -52,5 +52,16 @@ export const handleAddProductCartById = async (req, res) => {
         res.status(200).send(updatedCart);
     } catch (error) {
         res.status(500).send({ message: error.message })
+    }
+}
+
+export const handleDeleteProductCartById = async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+        //{ usuarioId: mongoose.Types.ObjectId(usuarioId) }
+        const data = await modelCart.findOneAndUpdate({_id:cid}, { $pull: { products: { _id: pid } } })
+        res.status(200).send(data)
+    } catch ({ message }) {
+        res.status(500).send({ message: message })
     }
 }
