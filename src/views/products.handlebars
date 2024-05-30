@@ -9,8 +9,8 @@
     <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;" id="catalogo">
     </div>
     <div style="display: flex; gap: 1rem; margin: 1rem 0;">
-        <button id="btnNext">Next</button>
         <button id="btnPrev">Previous</button>
+        <button id="btnNext">Next</button>
     </div>
 </div>
 
@@ -51,14 +51,16 @@
         const btnSee = document.createElement("button");
         btnSee.innerText = "See";
 
-        btnSee.addEventListener('click',async()=>{
+        btnSee.addEventListener('click', async () => {
             window.location.href = `/productDetails/${pro._id}`;
-            //await fetch('/productDetails');
         })
 
-        const btnAddCart=document.createElement("button");
-        btnAddCart.innerText="Add Cart "
-
+        const btnAddCart = document.createElement("button");
+        btnAddCart.innerText = "Add Cart "
+        btnAddCart.addEventListener('click', async () => {
+            const data = await fetch(`/api/carts/664e6f34e850e3ab7e2b8ba5/product/${pro._id}`, { method: 'POST' })
+            if (data.ok) { alert("Se agrego el producto al carrito") }
+        })
 
         const btnEliminar = document.createElement("button");
         btnEliminar.innerText = "Delete";
@@ -68,7 +70,7 @@
             })
         })
 
-        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar,btnAddCart);
+        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
 
         catalogo.appendChild(cardProducto);
     }
@@ -79,7 +81,7 @@
         spanPage.innerText = page;
         spantotPag.innerText = totalPages;
         btnNext.value = nextPage;
-        btnPrev.value=prevPage;
+        btnPrev.value = prevPage;
         catalogo.innerHTML = " ";
         docs.forEach(pro => {
             cardProduct(pro);
@@ -92,7 +94,7 @@
         renderizarProductos(data)
     })
 
-    btnPrev.addEventListener('click',async({target:{value}})=>{
+    btnPrev.addEventListener('click', async ({ target: { value } }) => {
         const res = await fetch(`/api/products?page=${value}`);
         const data = await res.json();
         renderizarProductos(data)

@@ -5,15 +5,27 @@ export class CartModelManager {
     constructor() {
 
     }
-
     async getCartById(idCart) {
         try {
-            const cart = await modelCart.findById(idCart).populate({ path: 'products._id', model: modelProduct });
+            const cart = await modelCart.findById(idCart).populate({ path: 'products._id', model: modelProduct }).lean();
             if (!cart) {
                 throw new Error("No se encontro el carrito");
             }
             return cart
         } catch (error) {
+            console.error('Error al obtener el carrito:', error.message);
+            throw error
+        }
+    }
+
+    async getProductCart(idCart){
+        try {
+            const cart=await modelCart.findById(idCart).lean();
+            if (!cart) {
+                throw new Error("No se encontro el carrito");
+            }
+            return cart
+        } catch  (error) {
             console.error('Error al obtener el carrito:', error.message);
             throw error
         }
