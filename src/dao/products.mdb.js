@@ -18,10 +18,8 @@ export class ProductsModelManager {
             if (!datos || typeof datos !== 'object') {
                 throw new Error("Los datos del producto deben ser un objeto no nulo.");
             }
-
             // Crear una instancia del producto
             const product = new modelProduct(datos);
-
             // Guardar el producto en la base de datos
             await product.save();
             return product;
@@ -30,7 +28,7 @@ export class ProductsModelManager {
             throw error;
         }
     }
-    
+
     async updateProduct(idProduct, campos) {
         try {
             const updatedProduct = await modelProduct.findByIdAndUpdate(idProduct, campos, { new: true, runValidators: true });
@@ -72,10 +70,17 @@ export class ProductsModelManager {
         }
     }
 
-    async getLimitedProducts(limit) {
+    async getPaginatedProducts({ limit = '3', page = '1', query = '{}', sort = 1 }) {
+        const VALID_SORT_VALUES = [1, -1];
         try {
-            const products = await modelProduct.find().limit(limit);
+            const sortOrder = parseInt(sort);
+            if (!VALID_SORT_VALUES.includes(sortOrder)) {
+                throw new Error("Valor del 'sort' no válido, valores permitidos: -1 = DESC, 1 = ASC");
+            }
+            const filter = JSON.parse(query);
+            const products = await modelProduct.paginate(filter, { page: page, limit: limit, sort: { price: sortOrder } });
             return products;
+
         } catch (error) {
             console.error("Error al obtener los productos:", error);
             throw error;

@@ -1,0 +1,23 @@
+<div>
+    <h1>Cart</h1>
+    <p>ID Cart:{{_id}}</p>
+    <hr>
+    <h2>Producto</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 8px;">ID Producto</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;">{{_id}}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">{{quantity}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+</div>

@@ -10,7 +10,7 @@ export const initSocketServer=(httpServer)=>{
 
     io.on("connection", async (socket) => {
         console.log("Cliente conectado");
-        socket.emit("getProducts", await pmm.getAll());
+        socket.emit("getProducts", await pmm.getPaginatedProducts({}));
         socket.emit("messages",await mm.getAll());
     })
 

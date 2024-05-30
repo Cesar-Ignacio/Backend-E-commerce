@@ -26,8 +26,8 @@ export const handleCreateCart = async (req, res) => {
     try {
 
         const idUser = req.params.uid;
-        // validamos el id user
         //const data= await cm.addCart();
+        // validamos el id user
         if (!mongoose.Types.ObjectId.isValid(idUser)) {
             return res.status(400).send({ message: 'ID de usuario inválido' });
         }
@@ -41,16 +41,50 @@ export const handleCreateCart = async (req, res) => {
 
 export const handleAddProductCartById = async (req, res) => {
     try {
-        const idCart = req.params.cid;
-        const productId = req.params.pid;
         // fileSystem  const data=await cm.addProductCart(parseInt(req.params.cid), parseInt(req.params.pid))
-        // validar que los id sean correctos
-        if (!mongoose.Types.ObjectId.isValid(idCart) || !mongoose.Types.ObjectId.isValid(productId)) {
-            throw new Error('ID de carrito o producto inválido');
-        }
-        const updatedCart = await cmm.addProductCart(idCart, productId)
+        validateObjectIds(req.params)
+        const updatedCart = await cmm.addProductCart(req.params)
         res.status(200).send(updatedCart);
     } catch (error) {
         res.status(500).send({ message: error.message })
     }
 }
+
+export const handleDeleteProductCartById = async (req, res) => {
+    try {
+        validateObjectIds(req.params)
+        const data = await cmm.deleteProductCart(req.params);
+        res.status(200).send(data);
+    } catch ({ message }) {
+        res.status(500).send({ message: message });
+    }
+}
+
+export const handleUpdateProductQuantity = async (req, res) => {
+    try {
+        const data = await cmm.updateProductQuantity(req.params, req.body)
+        res.status(200).send(data);
+    } catch ({ message }) {
+        res.status(500).send({ message: message });
+    }
+}
+
+export const handleDeleteAllProductsCart = async (req, res) => {
+    try {
+        const data = await cmm.deleteAllProductsCart(req.params)
+        res.status(200).send(data);
+    } catch ({ message }) {
+        res.status(500).send({ message: message });
+    }
+}
+
+const validateObjectIds = ({ cid, pid }) => {
+    const ids = [cid, pid];
+    ids.forEach(id => {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error(`ID inválido: ${id}`);
+        }
+    });
+};
+
+

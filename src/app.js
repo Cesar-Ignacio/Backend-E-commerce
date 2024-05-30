@@ -1,6 +1,6 @@
 import express from 'express'
 import { config } from './config.js';
-import carritoRoutes from './routes/carrito.routes.js'
+import cartRoutes from './routes/cart.routes.js'
 import productoRoutes from './routes/producto.routes.js'
 import viewsRoutes from './routes/views.routes.js';
 import { engine } from 'express-handlebars';
@@ -22,7 +22,7 @@ app.set('views', `${config.VIEWS_DIR}`);
 app.use(`/static`,express.static(`${config.STATIC_DIR}`))
 
 /**Routes */
-app.use("/api/carts", carritoRoutes);
+app.use("/api/carts", cartRoutes);
 app.use("/api/products", productoRoutes);
 app.use("/api/messages",messagesRoutes);
 app.use(viewsRoutes);
