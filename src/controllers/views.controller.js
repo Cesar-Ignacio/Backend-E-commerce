@@ -25,7 +25,8 @@ export const renderViewProductDetails = async (req, res) => {
 
 export const renderViewCarts = async (req, res) => {
     const { cid } = req.params;
-    const cart = await cmm.getProductCart(cid); 
-    res.status(200).render('carts',cart);
+    const { products } = await cmm.getCartById(cid);
+    const productOfCart = products.map(({ _id, quantity }) =>({..._id,quantity}));
+    res.status(200).render('carts', { products: productOfCart, idCart: cid });
 }
 
