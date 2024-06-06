@@ -18,19 +18,6 @@ export class CartModelManager {
         }
     }
 
-    async getProductCart(idCart){
-        try {
-            const cart=await modelCart.findById(idCart).lean();
-            if (!cart) {
-                throw new Error("No se encontro el carrito");
-            }
-            return cart
-        } catch  (error) {
-            console.error('Error al obtener el carrito:', error.message);
-            throw error
-        }
-    }
-
     async createCart(idUser) {
         try {
             const cart = new modelCart({ '_user_id': idUser, "products": [] })

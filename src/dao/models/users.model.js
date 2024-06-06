@@ -9,7 +9,7 @@ const schema=new mongoose.Schema({
     lastName:{type:String,required:true},
     email:{type:String,required:true},
     password:{type:String,required:true},
-    rol:{type:String,enum:['admin','primium'],default:'user'}
+    role:{type:String,enum:['admin','primium','user'],default:'user'}
 })
 
 export const modelUser=mongoose.model(collection,schema);
