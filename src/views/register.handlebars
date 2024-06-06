@@ -1,0 +1,59 @@
+<div>
+    <form id="registerForm">
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+    <p id="info"></p>
+</div>
+
+<script>
+    const form = document.querySelector("#registerForm")
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const info=document.querySelector("#info")
+        const signUp = {
+            firstName,
+            lastName,
+            email,
+            password
+        };
+
+        const res = await fetch('/api/users/createUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(signUp)
+        });
+
+        const { message } = await res.json();
+        if (message?.ok) {
+            window.location.href = message.url
+        } else {
+            info.innerText = message
+        }
+
+    })
+
+
+</script>

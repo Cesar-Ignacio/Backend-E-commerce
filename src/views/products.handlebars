@@ -1,4 +1,9 @@
 <div>
+    <div style="border-bottom:solid 2px yellow ;">
+        <p>Bienvenido {{user.firstName}}</p>
+        <p>{{user.role}}</p>
+        <button id="btnlogout">Log Out</button>
+    </div>
     <h1>Productos</h1>
     <div style="border: solid 1px black; display: flex; gap: 1rem; margin-bottom: 1rem;">
         <p>Limit: <span id="limit"></span></p>
@@ -26,6 +31,7 @@
     const spanPage = document.querySelector("#page");
     const btnNext = document.querySelector("#btnNext")
     const btnPrev = document.querySelector("#btnPrev")
+    const btnLogout = document.querySelector("#btnlogout")
     socketClient.on("getProducts", data => {
         renderizarProductos(data)
     })
@@ -98,6 +104,21 @@
         const res = await fetch(`/api/products?page=${value}`);
         const data = await res.json();
         renderizarProductos(data)
+    })
+
+    btnLogout.addEventListener('click', async () => {
+        const res = await fetch('/api/session/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const {message}=await res.json();
+
+        if(message?.ok){
+            window.location.href=message.url
+        }
+
     })
 
 </script>
