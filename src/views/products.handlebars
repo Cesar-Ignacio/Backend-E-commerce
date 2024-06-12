@@ -107,7 +107,7 @@
     })
 
     btnLogout.addEventListener('click', async () => {
-        const res = await fetch('/api/session/logout', {
+        const res = await fetch('/api/sessions/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
