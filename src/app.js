@@ -31,7 +31,7 @@ app.use(`/static`, express.static(`${config.STATIC_DIR}`))
 app.use(session({
   store: MongoStore.create({
     mongoUrl: config.MONGODB_URI,
-    ttl: 15
+    ttl: 60*20 
   }),
   secret: config.SECRET,
   resave: true,

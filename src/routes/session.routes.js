@@ -1,28 +1,40 @@
 import { Router } from "express";
-import {handleLoginPassportLocal, handleLogout } from "../controllers/sessions.controller.js";
-import {validateLoginWithJoi } from "../middleware/validacionCampos.js";
-import { initAuthStrategies } from "../auth/passport.strategies.js";
 import passport from "passport";
+import { handleLoginPassportLocal, handleLogout } from "../controllers/sessions.controller.js";
+import { validateLoginWithJoi } from "../middleware/validacionCampos.js";
+import { initAuthStrategies, passportCall } from "../auth/passport.strategies.js";
+
 
 const routesSession = Router();
 
+
 initAuthStrategies();
 
-routesSession.post('/login', validateLoginWithJoi,passport.authenticate('login') ,handleLoginPassportLocal)
+routesSession.post('/login', validateLoginWithJoi, passportCall('login'), handleLoginPassportLocal)
 
-routesSession.get('/getSession', (req, res) => {
-    res.send(req.session.user)
+routesSession.get('/current', (req, res) => {
+    try {
+        if (!req.session.user) {
+            res.redirect('/login');
+        }
+        res.status(200).send({ status: false, message: 'ok', data: { user: req.session.user } })
+    } catch ({ message }) {
+        res.status(500).send({ status: false, message });
+    }
+
 })
 
-routesSession.get('/ghlogin', passport.authenticate('ghlogin', {scope: ['user']}), async (req, res) => {
+routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user'] }), async (req, res) => {
 });
 
 routesSession.get('/ghlogincallback', passport.authenticate('ghlogin'), async (req, res) => {
     try {
-        req.session.user = req.user // req.user es inyectado AUTOMATICAMENTE por Passport al parsear el done()
+
+        // req.user es inyectado AUTOMATICAMENTE por Passport al parsear el done()
+        req.session.user = req.user;
         req.session.save(err => {
             if (err) return res.status(500).send({ origin: config.SERVER, payload: null, error: err.message });
-        
+
             res.redirect('/');
         });
     } catch (err) {

@@ -1,4 +1,3 @@
-import { modelUser } from "../dao/models/users.model.js"
 import { UsersModelManager } from "../dao/users.mdb.js";
 import { checkPassword } from "../utils/bcrypt.js";
 
@@ -24,11 +23,8 @@ export const handleLogin = async (req, res) => {
 export const handleLoginPassportLocal = async (req, res) => {
     try {
         const { message } = req.authInfo;
-        if (typeof req.user !== 'object') {
-            return res.status(401).send({ status: false, message, data: {} });
-        }
         req.session.user = req.user;
-        res.status(200).send({ status: true, message, data: { url: '/', user: req.session.user } });
+        res.status(200).send({ status: true, message, data: { url: '/' } });
 
     } catch ({ message }) {
         res.status(500).send({ status: false, message });

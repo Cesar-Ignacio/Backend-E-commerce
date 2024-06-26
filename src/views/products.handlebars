@@ -2,6 +2,7 @@
     <div style="border-bottom:solid 2px yellow ;">
         <p>Bienvenido {{user.firstName}}</p>
         <p>{{user.role}}</p>
+        <input type="hidden" id="cartId" value={{user.cart_id}}>
         <button id="btnlogout">Log Out</button>
     </div>
     <h1>Productos</h1>
@@ -12,6 +13,7 @@
         <p>Total Pages: <span id="totPag"></span></p>
     </div>
     <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;" id="catalogo">
+    {{!-- List Products --}}
     </div>
     <div style="display: flex; gap: 1rem; margin: 1rem 0;">
         <button id="btnPrev">Previous</button>
@@ -32,6 +34,7 @@
     const btnNext = document.querySelector("#btnNext")
     const btnPrev = document.querySelector("#btnPrev")
     const btnLogout = document.querySelector("#btnlogout")
+    const cartId =document.querySelector('#cartId').value;
     socketClient.on("getProducts", data => {
         renderizarProductos(data)
     })
@@ -64,7 +67,7 @@
         const btnAddCart = document.createElement("button");
         btnAddCart.innerText = "Add Cart "
         btnAddCart.addEventListener('click', async () => {
-            const data = await fetch(`/api/carts/664e6f34e850e3ab7e2b8ba5/product/${pro._id}`, { method: 'POST' })
+            const data = await fetch(`/api/carts/${cartId}/product/${pro._id}`, { method: 'POST' })
             if (data.ok) { alert("Se agrego el producto al carrito") }
         })
 

@@ -6,10 +6,7 @@ const pmm = new ProductsModelManager();
 const cmm = new CartModelManager();
 
 export const renderViewHoma = async (req, res) => {
-    if (!req.session.user) {
-       return res.redirect('login')
-    }
-    res.status(200).render("products",{user:req.session.user})
+    res.status(200).render("products", { user: req.user })
 };
 
 export const renderViewCreateProduct = (req, res) => {
@@ -27,16 +24,16 @@ export const renderViewProductDetails = async (req, res) => {
 }
 
 export const renderViewCarts = async (req, res) => {
-    const { cid } = req.params;
-    const { products } = await cmm.getCartById(cid);
+    const user = req.user;
+    const { products } = await cmm.getCartById(user.cart_id);
     const productOfCart = products.map(({ _id, quantity }) => ({ ..._id, quantity }));
-    res.status(200).render('carts', { products: productOfCart, idCart: cid });
+    res.status(200).render('carts', { products: productOfCart, user: user });
 }
 
 export const renderViewLogin = async (req, res) => {
     res.status(200).render('login');
 }
 
-export const renderViewRegister=async(req,res)=>{
+export const renderViewRegister = async (req, res) => {
     res.status(200).render('register');
 }
