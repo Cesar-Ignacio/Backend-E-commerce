@@ -4,9 +4,11 @@ import GitHubStrategy from 'passport-github2'
 import { UsersModelManager } from "../dao/users.mdb.js";
 import { checkPassword, hashPassword } from "../utils/bcrypt.js";
 import { config } from "../config.js";
+import { CartModelManager } from "../dao/carts.mdb.js";
 
 
 const umm = new UsersModelManager();
+const cmm = new CartModelManager();
 const localStrategy = local.Strategy;
 
 export const initAuthStrategies = () => {
@@ -17,17 +19,17 @@ export const initAuthStrategies = () => {
                 const user = await umm.findOneByEmail(username);
 
                 if (!user) {
-                    return done(null, " ", { message: 'No se encontro el usuario' });
+                    return done(null, false, { message: 'No se encontro el usuario' });
                 }
 
                 if (user && await checkPassword(password, user.password)) {
-                    return done(null, { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, id: user._id }, { message: 'Autenticacíon existosa' });
+                    return done(null, user, { message: 'Autenticacíon existosa' });
                 } else {
 
-                    return done(null, " ", { message: 'Contraseña incorrecta' });
+                    return done(null,false, { message: 'Contraseña incorrecta' });
                 }
             } catch (err) {
-                return done(null, " ", { message: err.message });
+                return done(err,false, { message: err.message });
             }
 
         }));
@@ -44,10 +46,10 @@ export const initAuthStrategies = () => {
                     }
                     return done(null, user, { message: 'Usuario registado' });
                 } else {
-                    return done(null, " ", { message: 'El email ya esta registrado' });
+                    return done(null, false, { message: 'El email ya esta registrado' });
                 }
             } catch (err) {
-                return done(null, " ", { message: err.message });
+                return done(err, false, { message: err.message });
             }
 
         }));
@@ -63,7 +65,7 @@ export const initAuthStrategies = () => {
                 const email = profile._json?.email || null;
 
                 if (email) {
-                
+
                     const foundUser = await umm.findOneByEmail(email);
 
                     if (!foundUser) {
@@ -71,11 +73,16 @@ export const initAuthStrategies = () => {
                             firstName: profile._json.name.split(' ')[0],
                             lastName: profile._json.name.split(' ')[1],
                             email: email,
-                            password: 'none'
+                            password: 'none',
+                            age:0,
                         }
-
-                        const process = await umm.createUser(user)
-                        return done(null, process);
+                        const newUser = await umm.createUser(user);
+                        // creamos el cart
+                        const cart = await cmm.createCart(newUser._id);
+                        // actulizamos campo cart_id de user 
+                        const updateUser = await umm.updateUser(user._id, cart._id);
+                        
+                        return done(null, updateUser);
                     } else {
                         return done(null, foundUser);
                     }
@@ -95,4 +102,20 @@ export const initAuthStrategies = () => {
     passport.deserializeUser((user, done) => {
         done(null, user);
     });
+}
+
+export const passportCall = (stategy) => {
+    return (req, res, next) => {
+        passport.authenticate(stategy, function (err, user, info) {
+            if (err) {
+                return next(err);
+            };
+            if(!user){
+                return res.status(401).send({ status: false, message: info.message , data: {} })
+            }
+            req.authInfo={message:info.message};
+            req.user = user;
+            next();
+        })(req, res, next)
+    }
 }

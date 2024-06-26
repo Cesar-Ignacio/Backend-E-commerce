@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { uploader } from "../uploader.js";
 import { handleCreateProduct, handleDeleteProductRequest, handleEditProductRequest, handleGetProductByIdRequest, handleGetProductsRequest } from "../controllers/products.controller.js";
+import { handlePolice } from "../middleware/handlePolice.js";
 
 const routes = Router();
 
@@ -17,6 +18,6 @@ routes.post("/", uploader.single("thumbnail"),handleCreateProduct );
 routes.put("/:pid",handleEditProductRequest)
 
 /**Elimina un producto */
-routes.delete("/:pid",handleDeleteProductRequest)
+routes.delete("/:pid",handlePolice(["ADMIN"]),handleDeleteProductRequest)
 
 export default routes;

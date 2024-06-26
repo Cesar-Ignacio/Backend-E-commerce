@@ -24,7 +24,7 @@ export const handleGetCartById = async (req, res) => {
 
 export const handleCreateCart = async (req, res) => {
     try {
-
+        
         const idUser = req.params.uid;
         //const data= await cm.addCart();
         // validamos el id user

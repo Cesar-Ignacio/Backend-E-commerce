@@ -13,9 +13,8 @@ export class UsersModelManager {
             if (existeUser) {
                 throw new Error("El email ya esta registrado")
             }
-            const newUser = new modelUser(data);
-            const user = await newUser.save();
-            return user;
+            const user=await modelUser.create(data);
+            return user.toObject();
         } catch (error) {
             console.error("Error al crear usuario", error)
             throw error;
@@ -24,8 +23,22 @@ export class UsersModelManager {
 
     async findOneByEmail(email) {
         try {
-            const user = await modelUser.findOne({ email: email })
+            const user = await modelUser.findOne({ email: email }).lean();
             return user;
+        } catch (error) {
+            console.error("Error al buscar usuario", error)
+            throw error;
+        }
+    }
+
+    async updateUser(uid, cid) {
+        try {
+            const user = await modelUser.findByIdAndUpdate(uid, { $set: { cart_id: cid } }, { new: true }).lean();
+            if (!user) {
+                throw new Error("Usuario no encontrado");
+            }
+            return user
+
         } catch (error) {
             console.error("Error al buscar usuario", error)
             throw error;
