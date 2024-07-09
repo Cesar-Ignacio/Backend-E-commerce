@@ -1,17 +1,18 @@
 import express from 'express'
+import { engine } from 'express-handlebars';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+
 import { config } from './config.js';
 import cartRoutes from './routes/cart.routes.js'
 import productoRoutes from './routes/producto.routes.js'
 import viewsRoutes from './routes/views.routes.js';
-import { engine } from 'express-handlebars';
 import { initSocketServer } from './sockets.js';
-import mongoose from 'mongoose';
 import messagesRoutes from './routes/message.routes.js';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import routesSession from './routes/session.routes.js';
 import routesUser from './routes/user.routes.js';
-import passport from 'passport';
+import MongoSingleton from './db/mongo.singleton.js';
 
 const app = express();
 
@@ -53,7 +54,7 @@ app.use(viewsRoutes);
 
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, async () => {
-  await mongoose.connect(config.MONGODB_URI);
+  MongoSingleton.getInstance();
   console.log(`Servidor activo en PORT:${config.PORT}`)
 })
 

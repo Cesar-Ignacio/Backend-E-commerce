@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { uploader } from "../uploader.js";
 import { handleCreateProduct, handleDeleteProductRequest, handleEditProductRequest, handleGetProductByIdRequest, handleGetProductsRequest } from "../controllers/products.controller.js";
-import { handlePolice } from "../middleware/handlePolice.js";
+import { handlePolice } from "../middleware/handlePolice.middleware.js";
 
 const routes = Router();
 

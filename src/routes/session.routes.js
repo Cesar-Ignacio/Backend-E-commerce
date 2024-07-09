@@ -1,16 +1,15 @@
 import { Router } from "express";
 import passport from "passport";
 import { handleLoginPassportLocal, handleLogout } from "../controllers/sessions.controller.js";
-import { validateLoginWithJoi } from "../middleware/validacionCampos.js";
 import { initAuthStrategies, passportCall } from "../auth/passport.strategies.js";
-
+import { validateRequest } from "../middleware/validateRequest.middleware.js";
+import { loginSchema } from "../schema/auth.schema.js";
 
 const routesSession = Router();
 
-
 initAuthStrategies();
 
-routesSession.post('/login', validateLoginWithJoi, passportCall('login'), handleLoginPassportLocal)
+routesSession.post('/login', validateRequest(loginSchema), passportCall('login'), handleLoginPassportLocal)
 
 routesSession.get('/current', (req, res) => {
     try {

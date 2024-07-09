@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { modelMessage } from "../dao/models/messages.model.js";
 import { handleCreateMessage, handleGetMessages } from "../controllers/messages.controller.js";
 
 const routes = Router();

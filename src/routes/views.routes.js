@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister } from "../controllers/views.controller.js";
-import { handlePolice } from "../middleware/handlePolice.js";
+import { handlePolice } from "../middleware/handlePolice.middleware.js";
 
 const routes = Router();
 
