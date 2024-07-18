@@ -1,4 +1,4 @@
-import { UsersModelManager } from "../dao/users.mdb.js";
+import { UsersModelManager } from "../dao/mongo/users.mdb.js";
 import { checkPassword } from "../utils/bcrypt.js";
 
 const umm = new UsersModelManager();

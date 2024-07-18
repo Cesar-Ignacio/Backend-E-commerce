@@ -1,6 +1,6 @@
 
-import { ProductsModelManager } from "../dao/products.mdb.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
+import { ProductsModelManager } from "../dao/mongo/products.mdb.js";
+import { CartModelManager } from "../dao/mongo/carts.mdb.js";
 
 const pmm = new ProductsModelManager();
 const cmm = new CartModelManager();

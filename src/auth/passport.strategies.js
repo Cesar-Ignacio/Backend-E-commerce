@@ -1,10 +1,10 @@
 import passport from "passport";
 import local from 'passport-local';
 import GitHubStrategy from 'passport-github2'
-import { UsersModelManager } from "../dao/users.mdb.js";
+import { UsersModelManager } from "../dao/mongo/users.mdb.js";
 import { checkPassword, hashPassword } from "../utils/bcrypt.js";
 import { config } from "../config.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
+import { CartModelManager } from "../dao/mongo/carts.mdb.js";
 
 
 const umm = new UsersModelManager();

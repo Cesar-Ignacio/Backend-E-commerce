@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
-import { ProductsModelManager } from "./dao/products.mdb.js";
-import { MessagesManager } from "./dao/messages.mdb.js";
+import { ProductsModelManager } from "./dao/mongo/products.mdb.js";
+import { MessagesManager } from "./dao/mongo/messages.mdb.js";
 
 const pmm=new ProductsModelManager();
 const mm=new MessagesManager();

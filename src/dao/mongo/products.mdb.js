@@ -1,4 +1,4 @@
-import { modelProduct } from "./models/products.model.js";
+import { modelProduct } from "../models/products.model.js";
 
 export class ProductsModelManager {
     constructor() { }

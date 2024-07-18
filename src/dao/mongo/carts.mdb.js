@@ -1,5 +1,5 @@
-import { modelCart } from "./models/carts.model.js";
-import { modelProduct } from "./models/products.model.js";
+import { modelCart } from "../models/carts.model.js";
+import { modelProduct } from "../models/products.model.js";
 
 export class CartModelManager {
     constructor() {

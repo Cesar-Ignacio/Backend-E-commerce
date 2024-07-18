@@ -1,5 +1,5 @@
-import { UsersModelManager } from "../dao/users.mdb.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
+import { UsersModelManager } from "../dao/mongo/users.mdb.js";
+import { CartModelManager } from "../dao/mongo/carts.mdb.js";
 import { hashPassword } from "../utils/bcrypt.js";
 
 const umm = new UsersModelManager();

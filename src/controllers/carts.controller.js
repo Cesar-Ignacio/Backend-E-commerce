@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import { CartManager } from "../dao/cartManager.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
-import { modelCart } from "../dao/models/carts.model.js";
+import { CartManager } from "../dao/memory/cartManager.js";
+import { CartModelManager } from "../dao/mongo/carts.mdb.js";
+import { cartServicie } from "../services/index.service.js";
+
 
 const cm = new CartManager();
 const cmm = new CartModelManager();
@@ -14,7 +15,8 @@ export const handleGetCartById = async (req, res) => {
             throw new Error('ID inválido');
         }
         //fileSystem const data = await cm.getProductCart(parseInt(idCart));
-        const data = await cmm.getCartById(idCart);
+        //const data = await cmm.getCartById(idCart);
+       const data = await cartServicie.getByIdI(idCart);
         res.status(200).send(data);
 
     } catch (error) {

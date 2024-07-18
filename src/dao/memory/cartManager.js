@@ -1,6 +1,6 @@
 
 import { promises } from "fs"
-import { config } from "../config.js";
+import { config } from "../../config.js";
 class Cart {
     constructor(id) {
         this.id = id;

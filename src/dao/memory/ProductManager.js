@@ -1,5 +1,5 @@
 import fs, { promises } from 'fs';
-import { config } from '../config.js';
+import { config } from '../../config.js';
 class Product {
     constructor(id, title, description, price, thumbnail, code, stock, categoria) {
         this.title = title;

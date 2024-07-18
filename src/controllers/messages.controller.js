@@ -1,4 +1,4 @@
-import { MessagesManager } from "../dao/messages.mdb.js";
+import { MessagesManager } from "../dao/mongo/messages.mdb.js";
 
 const mm = new MessagesManager();
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { ProductManager } from "../dao/ProductManager.js";
-import { ProductsModelManager } from "../dao/products.mdb.js";
+import { ProductManager } from "../dao/memory/ProductManager.js";
+import { ProductsModelManager } from "../dao/mongo/products.mdb.js";
 
 
 const pm = new ProductManager();
