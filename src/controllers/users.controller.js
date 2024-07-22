@@ -1,9 +1,9 @@
-import { UsersModelManager } from "../dao/mongo/users.mdb.js";
-import { CartModelManager } from "../dao/mongo/carts.mdb.js";
+import { UsersDao } from "../dao/mongo/users.mdb.dao.js";
+import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
 import { hashPassword } from "../utils/bcrypt.js";
 
-const umm = new UsersModelManager();
-const cmm = new CartModelManager();
+const umm = new UsersDao();
+const cmm = new CartDao();
 
 export const handleCreateUser = async (req, res) => {
     try {
@@ -26,7 +26,7 @@ export const handleCreateUserPassport = async (req, res) => {
        
         const user = await umm.createUser(req.user);
         // creamos el cart
-        const cart = await cmm.createCart(user._id);
+        const cart = await cmm.create(user._id);
         // actulizamos campo cart_id de user 
         const updateUser = await umm.updateUser(user._id, cart._id);
         req.session.user = updateUser;

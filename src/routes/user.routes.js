@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { handleCreateUserPassport } from "../controllers/users.controller.js";
-import { modelUser } from "../dao/models/users.model.js";
+import { modelUser } from "../models/users.model.js";
 import { initAuthStrategies, passportCall } from "../auth/passport.strategies.js";
 import { validateRequest } from "../middleware/validateRequest.middleware.js";
 import { registerSchema } from "../schema/register.schema.js";

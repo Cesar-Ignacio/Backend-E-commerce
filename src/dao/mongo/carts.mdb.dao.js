@@ -1,15 +1,15 @@
-import { modelCart } from "../models/carts.model.js";
-import { modelProduct } from "../models/products.model.js";
+import { modelCart } from "../../models/carts.model.js";
+import { modelProduct } from "../../models/products.model.js";
 
-export class CartModelManager {
+export class CartDao {
     constructor() {
 
     }
-    async getCartById(idCart) {
+    async getById(idCart) {
         try {
             const cart = await modelCart.findById(idCart).populate({ path: 'products._id', model: modelProduct }).lean();
             if (!cart) {
-                throw new Error("No se encontro el carrito");
+                throw new Error("Carrito no encontrado");
             }
             return cart
         } catch (error) {
@@ -18,7 +18,7 @@ export class CartModelManager {
         }
     }
 
-    async createCart(idUser) {
+    async create(idUser) {
         try {
             const cart = new modelCart({ '_user_id': idUser, "products": [] })
             const newCart = await cart.save();
@@ -30,10 +30,10 @@ export class CartModelManager {
         }
     }
 
-    async addProductCart({ cid, pid }) {
+    async add(cartId, productId) {
         try {
 
-            const updatedCart = await modelCart.findByIdAndUpdate(cid, { $push: { products: { _id: pid } } }, { new: true, useFindAndModify: false })
+            const updatedCart = await modelCart.findByIdAndUpdate(cartId, { $push: { products: { _id: productId } } }, { new: true, useFindAndModify: false })
 
             if (!updatedCart) {
                 throw new Error('Carrito no encontrado');
@@ -47,9 +47,9 @@ export class CartModelManager {
         }
     }
 
-    async deleteProductCart({ cid, pid }) {
+    async delete(cartId, productId) {
         try {
-            const cart = await modelCart.findOneAndUpdate({ _id: cid }, { $pull: { products: { _id: pid } } }, { new: true })
+            const cart = await modelCart.findOneAndUpdate({ _id: cartId }, { $pull: { products: { _id: productId } } }, { new: true })
             if (!cart) {
                 throw new Error('Carrito no encontrado');
             }
@@ -59,18 +59,24 @@ export class CartModelManager {
         }
     }
 
-    async updateProductQuantity({ cid, pid }, { quantity }) {
+    async update(cartId, productId, quantity) {
         try {
-            const cart = await modelCart.findOneAndUpdate({ _id: cid, "products._id": pid }, { $set: { "products.$.quantity": quantity } }, { new: true });
+            const cart = await modelCart.findOneAndUpdate({ _id: cartId, "products._id": productId }, { $set: { "products.$.quantity": quantity } }, { new: true });
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
             return cart;
         } catch (error) {
             throw error;
         }
     }
 
-    async deleteAllProductsCart({ cid }) {
+    async delete(cartId) {
         try {
-            const cart = await modelCart.findByIdAndUpdate(cid, { $set: { products: [] } }, { new: true });
+            const cart = await modelCart.findByIdAndUpdate(cartId, { $set: { products: [] } }, { new: true });
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
             return cart
         } catch (error) {
             throw error

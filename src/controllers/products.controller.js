@@ -1,80 +1,89 @@
-import mongoose from "mongoose";
-import { ProductManager } from "../dao/memory/ProductManager.js";
-import { ProductsModelManager } from "../dao/mongo/products.mdb.js";
+
+import { productService } from "../services/index.js";
+import sendResponse from "../utils/sendResponse.js";
 
 
-const pm = new ProductManager();
-const pmm = new ProductsModelManager();
-
-export const handleCreateProduct = async (req, res) => {
+const handleCreateProduct = async (req, res) => {
 
     try {
         const socketServer = req.app.get("socketServer");
         const thumbnail = req.file?.originalname ?? "default.png";
-        const datos = {
+        const productData = {
             ...req.body,
-            thumbnail: thumbnail || "default.png"
+            thumbnail
         }
-        if (!datos.price || !datos.category) {
-            return res.status(400).send({ message: "Faltan datos obligatorios: precio y categoría." });
-        }
-        const product = await pmm.createProduct(datos);
-        res.status(201).send({
-            message: "Producto creado exitosamente.",
-            product: product
-        })
-        socketServer.emit("getProducts", await pmm.getAll());
-    } catch (error) {
-        res.status(500).send({ message: error.message });
+        const data = await productService.createProduct(productData);
+        sendResponse(res, 201, true, "Producto creado exitosamente.", data);
+        socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
+    } catch ({ message }) {
+        console.error('Error al crear producto', message);
+        const errorData = {
+            error: error.message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 
 }
 
-export const handleDeleteProductRequest = async (req, res) => {
+const handleDeleteProductRequest = async (req, res) => {
     try {
         const socketServer = req.app.get("socketServer")
-        const productId = req.params.pid;
-        // fileSystem  const productData = await pm.deleteProduct(parseInt(productId));
-        const data = await pmm.deleteProduct(productId);
-        res.status(200).send(data);
-        socketServer.emit("getProducts", await pmm.getAll())
+        const { productId } = req.params;
+        const data = await productService.deleteProduct(productId);
+        //res.status(200).send(data);
+        sendResponse(res, 200, true, "Producto eliminado");
+        socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
+    } catch ({ message }) {
+        console.error('Error al crear producto', message);
+        const errorData = {
+            error: error.message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
 
-    } catch (error) {
-        res.status(500).send({ message: error.message });
     }
 }
 
-export const handleEditProductRequest = async (req, res) => {
+const handleEditProductRequest = async (req, res) => {
     try {
-        const productId = req.params.pid
-        const campos = req.body;
-        //fileSystem const productData = await pm.updateProduct(parseInt(productId), campos);
-        if (!mongoose.Types.ObjectId.isValid(productId)) {
-            throw new Error('ID inválido');
-        }
-        const updatedProduct = await pmm.updateProduct(productId, campos)
-        res.status(200).send(updatedProduct);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
+        const { productId } = req.params;
+        const productData = req.body;
+        const data = await productService.updateProduct(productId, productData);
+        sendResponse(res, 200, true, "Producto actulizado", data)
+    } catch ({ message }) {
+        console.error('Error al crear producto', message);
+        const errorData = {
+            error: error.message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 }
 
-export const handleGetProductByIdRequest = async (req, res) => {
+const handleGetProductByIdRequest = async (req, res) => {
     try {
-        const productId = req.params.pid;
-        // fileSystem const productData = await pm.getProductById(parseInt(productId));
-        const productDataM = await pmm.getProductById(productId)
-        res.status(200).send(productDataM);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
+        const { productId } = req.params;
+        const data = await productService.getProductById(productId);
+        sendResponse(res, 200, true, 'Producto recuperado', data);
+    } catch ({ message }) {
+        console.error('Error al recuperar producto', message);
+        const errorData = {
+            error: error.message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 }
 
-export const handleGetProductsRequest = async (req, res) => {
+const handleGetProductsRequest = async (req, res) => {
     try {
-        let data = await pmm.getPaginatedProducts(req.query);
-        res.status(200).send(data);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
+        const { limit, page, query, sort } = req.validatedQuery;
+        let data = await productService.getPaginatedProducts(limit, page, query, sort);
+        sendResponse(res, 200, true, 'Datos recuperados', data);
+    } catch ({ message }) {
+        console.error('Error recuperar productos', message);
+        const errorData = {
+            error: error.message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 }
+
+export default {handleCreateProduct,handleDeleteProductRequest,handleEditProductRequest,handleGetProductByIdRequest,handleGetProductsRequest}

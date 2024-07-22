@@ -1,7 +1,7 @@
-import { UsersModelManager } from "../dao/mongo/users.mdb.js";
+import { UsersDao } from "../dao/mongo/users.mdb.dao.js";
 import { checkPassword } from "../utils/bcrypt.js";
 
-const umm = new UsersModelManager();
+const umm = new UsersDao();
 
 export const handleLogin = async (req, res) => {
     try {
@@ -30,7 +30,6 @@ export const handleLoginPassportLocal = async (req, res) => {
         res.status(500).send({ status: false, message });
     }
 }
-
 
 export const handleLogout = (req, res) => {
     try {

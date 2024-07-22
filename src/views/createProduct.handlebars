@@ -46,12 +46,16 @@
             </div>
             <button type="submit" class="btnSend">Send</button>
         </form>
+        <div>
+            <p id="mensajeError"></p>
+        </div>
     </div>
 </div>
 
 <script>
     const form = document.querySelector("#form");
-    form.addEventListener("submit", async(e) => {
+    const pMensajeError=document.querySelector('#mensajeError');
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const inputTitle = document.querySelector('#title');
         const inputDescription = document.querySelector('#description');
@@ -68,15 +72,16 @@
         formData.append('code', inputCode.value);
         formData.append('stock', inputStock.value);
         formData.append('category', inputCategory.value);
-        const response=await fetch('/api/products', {
+        const response = await fetch('/api/products', {
             method: 'POST',
             body: formData
         })
-        if(response.ok){
-            alert("Se creo el producto")
+        const responseData = await response.json();
+        if (responseData.status) {
+            pMensajeError.innerText=`${responseData.message}`
         }
-        else{
-            alert("Hubo un error complemente nuevamento los datos")
+        else {
+            pMensajeError.innerText=`${responseData.message}`
         }
 
     })
