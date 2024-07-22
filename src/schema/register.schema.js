@@ -22,6 +22,7 @@ export const registerSchema = Joi.object({
         'any.required': 'El campo email es obligatorio'
     }),
     password: Joi.string().required().messages({
-        'any.required': 'El campo contraseña es obligatorio'
+        'string.empty': 'El password no puede estar vacío',
+        'any.required': 'El campo contraseña es obligatorio',
     })
 });

@@ -7,13 +7,13 @@ export class UsersDao {
         return await modelUser.find().lean();
     }
 
-    async createUser(data) {
+    async create(userData) {
         try {
-            const existeUser = await modelUser.findOne({ email: data.email });
+            const existeUser = await modelUser.findOne({ email: userData.email });
             if (existeUser) {
                 throw new Error("El email ya esta registrado")
             }
-            const user=await modelUser.create(data);
+            const user = await modelUser.create(userData);
             return user.toObject();
         } catch (error) {
             console.error("Error al crear usuario", error)
@@ -21,7 +21,7 @@ export class UsersDao {
         }
     }
 
-    async findOneByEmail(email) {
+    async getByEmail(email) {
         try {
             const user = await modelUser.findOne({ email: email }).lean();
             return user;
@@ -31,14 +31,13 @@ export class UsersDao {
         }
     }
 
-    async updateUser(uid, cid) {
+    async update(userId, userData) {
         try {
-            const user = await modelUser.findByIdAndUpdate(uid, { $set: { cart_id: cid } }, { new: true }).lean();
+            const user = await modelUser.findByIdAndUpdate(userId, userData, { new: true }).lean();
             if (!user) {
                 throw new Error("Usuario no encontrado");
             }
             return user
-
         } catch (error) {
             console.error("Error al buscar usuario", error)
             throw error;

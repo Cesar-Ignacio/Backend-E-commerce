@@ -19,13 +19,13 @@ export const renderViewChat = (req, res) => {
 }
 
 export const renderViewProductDetails = async (req, res) => {
-    const { id } = req.params;
-    const datas = await productService.getProductById(id);
+    const { productId } = req.params;
+    const datas = await productService.getProductById(productId);
     res.status(200).render('productDetails', datas);
 }
 
 export const renderViewCarts = async (req, res) => {
-    const user = req.user;
+    const user = req.session.user;
     const { products } = await cartService.getCartById(user.cart_id);
     const productOfCart = products.map(({ _id, quantity }) => ({ ..._id, quantity }));
     res.status(200).render('carts', { products: productOfCart, user: user });

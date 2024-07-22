@@ -9,9 +9,9 @@ routes.get("/", handlePolice(["USER", "PRIMIUM", "ADMIN"]), renderViewHoma)
 
 routes.get("/createProduct", handlePolice(["ADMIN"]),renderViewCreateProduct);
 
-routes.get("/chat", handlePolice(["PUBLIC"]), renderViewChat);
+routes.get("/chat", handlePolice(["USER","PRIMIUM",]), renderViewChat);
 
-routes.get("/productDetails/:id",handlePolice(["USER", "PRIMIUM", "ADMIN"]),renderViewProductDetails);
+routes.get("/productDetails/:productId",handlePolice(["USER", "PRIMIUM", "ADMIN"]),renderViewProductDetails);
 
 routes.get("/carts", handlePolice(["USER", "PRIMIUM", "ADMIN"]), renderViewCarts);
 

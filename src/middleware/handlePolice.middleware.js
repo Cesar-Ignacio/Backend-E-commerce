@@ -1,3 +1,5 @@
+import sendResponse from "../utils/sendResponse.js";
+
 export const handlePolice = (policies) => {
     return (req, res, next) => {
         if (policies.includes("PUBLIC")) return next();
@@ -16,9 +18,9 @@ export const handlePolice = (policies) => {
             } else if (user.role.toUpperCase() === 'PREMIUM') {
                 message = 'Access Denied: Premium role does not have the required permissions.';
             } else {
-                errorMessage = 'Access Denied: Your role does not have the required permissions.';
+                message = 'Access Denied: Your role does not have the required permissions.';
             }
-            return res.status(403).json({ status: false, message });
+            return sendResponse(res,403,false,message)
         }
 
         // Agregar el usuario a la solicitud y continuar
