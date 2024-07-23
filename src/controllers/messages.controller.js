@@ -11,7 +11,7 @@ import sendResponse from "../utils/sendResponse.js";
     } catch ({ message }) {
         console.error("Error al recuperar mensajes", message)
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -28,7 +28,7 @@ const handleCreateMessage = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al crear mensaje', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }

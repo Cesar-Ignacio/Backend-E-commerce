@@ -7,11 +7,15 @@ import { handlePolice } from "../middleware/handlePolice.middleware.js";
 
 const routes = Router();
 
+
 /**Devuelve un carrito  */
 routes.get("/:cartId", validateObjectIds, cartController.handleGetCartById)
 
 /**Crea un nuevo carrito vacio */
 routes.post("/:userId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleCreateCart)
+
+/**Finalizar comprar */
+routes.post("/:cartId/purchase", validateObjectIds, cartController.handleCompletePurchase)
 
 /**Agregamos un producto en un carrito */
 routes.post("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleAddProductCartById)
@@ -23,6 +27,8 @@ routes.delete("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), 
 routes.put("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, validateRequest(cartSchema), cartController.handleUpdateProductQuantity);
 
 /**Eliminar todos los productos de un carrito */
-routes.delete("/:cartId",handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleDeleteAllProductsCart);
+routes.delete("/:cartId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleDeleteAllProductsCart);
+
+
 
 export default routes;

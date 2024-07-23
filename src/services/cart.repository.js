@@ -24,6 +24,6 @@ export class CartRepository {
     }
 
     async deleteAllProductsCart(cartId) {
-        return await this.dao.delete(cartId);
+        return await this.dao.deleteAll(cartId);
     }
 }

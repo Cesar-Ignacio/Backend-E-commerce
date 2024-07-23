@@ -10,7 +10,7 @@ const hadleCurrent = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al iniciar sesion', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -28,7 +28,7 @@ const handleLoginPassportLocal = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al iniciar sesion', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -48,7 +48,7 @@ const handleLogout = (req, res) => {
     } catch ({ message }) {
         console.error('Error al cerrar sesion', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }

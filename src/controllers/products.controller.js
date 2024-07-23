@@ -18,7 +18,7 @@ const handleCreateProduct = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al crear producto', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -36,7 +36,7 @@ const handleDeleteProductRequest = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al crear producto', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
 
@@ -52,7 +52,7 @@ const handleEditProductRequest = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al crear producto', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -66,7 +66,7 @@ const handleGetProductByIdRequest = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al recuperar producto', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
@@ -80,7 +80,7 @@ const handleGetProductsRequest = async (req, res) => {
     } catch ({ message }) {
         console.error('Error recuperar productos', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }

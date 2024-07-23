@@ -7,8 +7,9 @@ export class UserRepository {
     }
 
     async findOneByEmail(email) {
-        const user = await this.daoUser.getByEmail(email);
-        return new UserDTO(user);
+        //const user = await this.daoUser.getByEmail(email);
+        return await this.daoUser.getByEmail(email);
+        //return new UserDTO(user);
     }
 
     async createUser(user) {

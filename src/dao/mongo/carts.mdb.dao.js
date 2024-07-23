@@ -8,9 +8,6 @@ export class CartDao {
     async getById(idCart) {
         try {
             const cart = await modelCart.findById(idCart).populate({ path: 'products._id', model: modelProduct }).lean();
-            if (!cart) {
-                throw new Error("Carrito no encontrado");
-            }
             return cart
         } catch (error) {
             console.error('Error al obtener el carrito:', error.message);
@@ -71,7 +68,7 @@ export class CartDao {
         }
     }
 
-    async delete(cartId) {
+    async deleteAll(cartId) {
         try {
             const cart = await modelCart.findByIdAndUpdate(cartId, { $set: { products: [] } }, { new: true });
             if (!cart) {

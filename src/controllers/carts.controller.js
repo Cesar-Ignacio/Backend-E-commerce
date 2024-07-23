@@ -1,5 +1,6 @@
-import { cartService } from "../services/index.js";
+import { cartService, productService, ticketService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
+import { v4 as uuidv4 } from "uuid";
 
 const handleGetCartById = async (req, res) => {
     try {
@@ -68,5 +69,46 @@ const handleDeleteAllProductsCart = async (req, res) => {
     }
 }
 
-export default { handleGetCartById, handleCreateCart, handleAddProductCartById, handleDeleteProductCartById, handleUpdateProductQuantity, handleDeleteAllProductsCart }
+const handleCompletePurchase = async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        const cart = await cartService.getCartById(cartId);
+        if (!cart) {
+            return sendResponse(res, 404, false, 'Carrito no encontrado');
+        }
+        const ticket = {
+            code: uuidv4(),
+            amount: 0,
+            purchaser: "aquino@gmail.com" //El mail lo obtendremos de la req.session.user
+        };
+        const zeroStockProductIds = [];
+        const { products } = cart;
+        for (const product of products) {
+            if (product.quantity <= product._id.stock) {
+                ticket.amount += product.quantity * product._id.price;
+                await cartService.deleteProductFromCartById(cartId, product._id._id);
+                const productData = { stock: product._id.stock - product.quantity };
+                await productService.updateProduct(product._id._id, productData);
+            }
+            else { zeroStockProductIds.push(product._id._id) }
+
+        }
+        
+        if (!ticket.amount) // Evaluará si ticket.amount es distinto de 0
+        {
+            sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock",zeroStockProductIds);
+        }
+        const data = await ticketService.createTicket(ticket);
+        sendResponse(res, 201, true, "Compra completada con éxito", data);
+
+    } catch ({ message }) {
+        console.error('Error al completar la compra', message);
+        const errorData = {
+            error: message,
+        };
+        sendResponse(res, 500, false, 'Error al completar la compra', errorData);
+    }
+};
+
+export default { handleCompletePurchase, handleGetCartById, handleCreateCart, handleAddProductCartById, handleDeleteProductCartById, handleUpdateProductQuantity, handleDeleteAllProductsCart }
 

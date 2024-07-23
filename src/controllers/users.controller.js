@@ -15,7 +15,7 @@ const handleCreateUserPassport = async (req, res) => {
     } catch ({ message }) {
         console.error('Error al crear Usuario', message);
         const errorData = {
-            error: error.message,
+            error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
