@@ -1,5 +1,5 @@
 
-const sendResponse = (res, code, status, message, data={}) => {
+const sendResponse = (res, code, status, message, data = {}) => {
     res.status(code).send({
         status,
         message,

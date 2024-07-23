@@ -1,7 +1,7 @@
 
 import { ProductsDao } from "../dao/mongo/products.mdb.dao.js";
 import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
-import { cartService, productService } from "../services/index.js";
+import { cartService, productService, ticketService } from "../services/index.js";
 
 const pmm = new ProductsDao();
 const cmm = new CartDao();
@@ -37,4 +37,10 @@ export const renderViewLogin = async (req, res) => {
 
 export const renderViewRegister = async (req, res) => {
     res.status(200).render('register');
+}
+
+export const renderViewTickets = async (req, res) => {
+    const { ticketId } = req.params;
+    const ticket=await ticketService.getTicketById(ticketId);
+    res.status(200).render('tickets',ticket);
 }

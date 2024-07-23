@@ -14,4 +14,14 @@ export class TicketsDao {
         }
     }
 
+    async getById(ticketId) {
+        try {
+            const ticket = await modelTicket.findById(ticketId).lean();
+            return ticket;
+        } catch (error) {
+            console.error("Error buscar ticket:", error)
+            throw error;
+        }
+    }
+
 }

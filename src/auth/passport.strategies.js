@@ -40,7 +40,6 @@ export const initAuthStrategies = () => {
         async (req, username, password, done) => {
             try {
                 const foundUser = await userService.findOneByEmail(username);
-
                 if (!foundUser) {
                     const user = {
                         ...req.body,

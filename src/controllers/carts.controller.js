@@ -79,7 +79,7 @@ const handleCompletePurchase = async (req, res) => {
         const ticket = {
             code: uuidv4(),
             amount: 0,
-            purchaser: "aquino@gmail.com" //El mail lo obtendremos de la req.session.user
+            purchaser: req.session.user.email
         };
         const zeroStockProductIds = [];
         const { products } = cart;
@@ -93,16 +93,16 @@ const handleCompletePurchase = async (req, res) => {
             else { zeroStockProductIds.push(product._id._id) }
 
         }
-        
+
         if (!ticket.amount) // Evaluará si ticket.amount es distinto de 0
         {
-            sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock",zeroStockProductIds);
+            return sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock", zeroStockProductIds);
         }
         const data = await ticketService.createTicket(ticket);
         sendResponse(res, 201, true, "Compra completada con éxito", data);
 
     } catch ({ message }) {
-        console.error('Error al completar la compra', message);
+        console.log('Error al completar la compra', message);
         const errorData = {
             error: message,
         };

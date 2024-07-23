@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
     code: { type: String, required: true, unique: true },
     amount: { type: Number, required: true },
     purchaser: { type: String, required: true },
-},{ timestamps: true })
+    purchase_datetime: { type: Date, default: Date.now() }
+})
 
 export const modelTicket = mongoose.model(collection, schema);
