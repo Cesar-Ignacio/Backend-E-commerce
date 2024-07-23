@@ -1,3 +1,14 @@
+<style>
+    .btnEnabled {
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .btnDisabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+</style>
 <div>
     <div style="border-bottom:solid 2px yellow ;">
         <p>Bienvenido {{user.firstName}}</p>
@@ -13,7 +24,7 @@
         <p>Total Pages: <span id="totPag"></span></p>
     </div>
     <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;" id="catalogo">
-    {{!-- List Products --}}
+        {{!-- List Products --}}
     </div>
     <div style="display: flex; gap: 1rem; margin: 1rem 0;">
         <button id="btnPrev">Previous</button>
@@ -34,7 +45,10 @@
     const btnNext = document.querySelector("#btnNext")
     const btnPrev = document.querySelector("#btnPrev")
     const btnLogout = document.querySelector("#btnlogout")
-    const cartId =document.querySelector('#cartId').value;
+    const cartId = document.querySelector('#cartId').value;
+    let next = true;
+    let previou = true;
+
     socketClient.on("getProducts", data => {
         renderizarProductos(data)
     })
@@ -84,42 +98,48 @@
         catalogo.appendChild(cardProducto);
     }
 
-    const renderizarProductos = ({ docs, limit, totalDocs, page, totalPages, nextPage, prevPage }) => {
-        spanLimit.innerText = limit;
-        spanCantPro.innerText = totalDocs;
-        spanPage.innerText = page;
-        spantotPag.innerText = totalPages;
-        btnNext.value = nextPage;
-        btnPrev.value = prevPage;
+    const renderizarProductos = (data) => {
+        spanLimit.innerText = data.limit;
+        spanCantPro.innerText = data.totalDocs;
+        spanPage.innerText = data.page;
+        spantotPag.innerText = data.totalPages;
+        btnNext.value = data.nextPage;
+        btnPrev.value = data.prevPage;
+        previou = data.hasPrevPage;
+        next = data.hasNextPage;
         catalogo.innerHTML = " ";
-        docs.forEach(pro => {
+        data.docs.forEach(pro => {
             cardProduct(pro);
         })
     }
 
     btnNext.addEventListener('click', async ({ target: { value } }) => {
-        const res = await fetch(`/api/products?page=${value}`);
-        const data = await res.json();
-        renderizarProductos(data)
-    })
+        if (next) {
+            const res = await fetch(`/api/products?page=${value}`);
+            const dataResponse = await res.json();
+            renderizarProductos(dataResponse.data)
+        }
+    });
 
     btnPrev.addEventListener('click', async ({ target: { value } }) => {
-        const res = await fetch(`/api/products?page=${value}`);
-        const data = await res.json();
-        renderizarProductos(data)
-    })
+        if (previou) {
+            const res = await fetch(`/api/products?page=${value}`);
+            const dataResponse = await res.json();
+            renderizarProductos(dataResponse.data)
+        }
+    });
 
     btnLogout.addEventListener('click', async () => {
-        const res = await fetch('/api/sessions/logout', {
+        const response = await fetch('/api/sessions/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        const {message}=await res.json();
+        const responseData = await response.json();
 
-        if(message?.ok){
-            window.location.href=message.url
+        if (responseData.status) {
+            window.location.href = responseData.data.url;
         }
 
     })

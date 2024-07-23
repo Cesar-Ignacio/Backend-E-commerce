@@ -44,6 +44,7 @@
 
     socket.on('messages', messages => {
         containerMessages.innerHTML = " ";
+        console.log(messages)
         messages.forEach(mes => {
             containerMessages.innerHTML += `<div style="background-color:rgb(221, 202, 202);padding: 0.5em;">
                         <strong>${mes.email}</strong>

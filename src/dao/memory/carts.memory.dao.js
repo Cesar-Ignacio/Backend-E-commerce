@@ -1,6 +1,6 @@
 
 import { promises } from "fs"
-import { config } from "../config.js";
+import { config } from "../../config.js";
 class Cart {
     constructor(id) {
         this.id = id;
@@ -11,7 +11,7 @@ class Cart {
     }
 }
  
-export class CartManager {
+export class CartDao {
     constructor() {
         this._PATH = `${config.DIRNAME}/data/carrito.json`;
         this.carts = [];
@@ -54,7 +54,7 @@ export class CartManager {
         return data.find(cart=>cart.id===id)
     }
 
-    async getProductCart(id){
+    async getById(id){
         await this.startData();
         return this.carts.find(cart=>cart.id===id);
     }

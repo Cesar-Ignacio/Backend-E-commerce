@@ -1,90 +1,114 @@
-import mongoose from "mongoose";
-import { CartManager } from "../dao/cartManager.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
-import { modelCart } from "../dao/models/carts.model.js";
+import { cartService, productService, ticketService } from "../services/index.js";
+import sendResponse from "../utils/sendResponse.js";
+import { v4 as uuidv4 } from "uuid";
 
-const cm = new CartManager();
-const cmm = new CartModelManager();
-
-export const handleGetCartById = async (req, res) => {
+const handleGetCartById = async (req, res) => {
     try {
-        const idCart = req.params.cid;
-
-        if (!mongoose.Types.ObjectId.isValid(idCart)) {
-            throw new Error('ID inválido');
-        }
-        //fileSystem const data = await cm.getProductCart(parseInt(idCart));
-        const data = await cmm.getCartById(idCart);
-        res.status(200).send(data);
-
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-}
-
-export const handleCreateCart = async (req, res) => {
-    try {
-        
-        const idUser = req.params.uid;
-        //const data= await cm.addCart();
-        // validamos el id user
-        if (!mongoose.Types.ObjectId.isValid(idUser)) {
-            return res.status(400).send({ message: 'ID de usuario inválido' });
-        }
-        const newCart = await cmm.createCart(idUser);
-        res.status(201).send(newCart);
-    } catch (error) {
-        console.error('Error al crear el carrito:', error);
-        res.status(500).send({ message: error.message });
-    }
-}
-
-export const handleAddProductCartById = async (req, res) => {
-    try {
-        // fileSystem  const data=await cm.addProductCart(parseInt(req.params.cid), parseInt(req.params.pid))
-        validateObjectIds(req.params)
-        const updatedCart = await cmm.addProductCart(req.params)
-        res.status(200).send(updatedCart);
-    } catch (error) {
-        res.status(500).send({ message: error.message })
-    }
-}
-
-export const handleDeleteProductCartById = async (req, res) => {
-    try {
-        validateObjectIds(req.params)
-        const data = await cmm.deleteProductCart(req.params);
-        res.status(200).send(data);
+        const { cartId } = req.params;
+        const data = await cartService.getCartById(cartId);
+        sendResponse(res, 200, true, "Carrito recuperado", data)
     } catch ({ message }) {
-        res.status(500).send({ message: message });
+        console.error('Error al obtener carrito:', message);
+        sendResponse(res, 500, false, message)
     }
 }
 
-export const handleUpdateProductQuantity = async (req, res) => {
+const handleCreateCart = async (req, res) => {
     try {
-        const data = await cmm.updateProductQuantity(req.params, req.body)
-        res.status(200).send(data);
+        const { userId } = req.params;
+        const data = await cartService.createCart(userId);
+        sendResponse(res, 201, true, "Carrito creado", data)
     } catch ({ message }) {
-        res.status(500).send({ message: message });
+        console.error('Error al crear el carrito:', message);
+        sendResponse(res, 500, false, message)
     }
 }
 
-export const handleDeleteAllProductsCart = async (req, res) => {
+const handleAddProductCartById = async (req, res) => {
     try {
-        const data = await cmm.deleteAllProductsCart(req.params)
-        res.status(200).send(data);
+        const { cartId, productId } = req.params;
+        const data = await cartService.addProductCart(cartId, productId);
+        sendResponse(res, 201, true, "Producto agregado a carrito", data)
     } catch ({ message }) {
-        res.status(500).send({ message: message });
+        console.error('Error al agregar productos en un carrito:', message);
+        sendResponse(res, 500, false, message)
     }
 }
 
-const validateObjectIds = ({ cid, pid }) => {
-    const ids = [cid, pid];
-    ids.forEach(id => {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new Error(`ID inválido: ${id}`);
+const handleDeleteProductCartById = async (req, res) => {
+    try {
+        const { cartId, productId } = req.params;
+        const data = await cartService.deleteProductFromCartById(cartId, productId);
+        sendResponse(res, 200, true, "Producto eliminado de carrito", data)
+    } catch ({ message }) {
+        console.error('Error al eliminar producto de carrito:', message);
+        sendResponse(res, 500, false, message)
+    }
+}
+
+const handleUpdateProductQuantity = async (req, res) => {
+    try {
+        const { cartId, productId } = req.params;
+        const { quantity } = req.body;
+        const data = await cartService.updateProductQuantity(cartId, productId, quantity);
+        sendResponse(res, 200, true, "Cantidad actulizada", data)
+    } catch ({ message }) {
+        console.error('Error al actualizar cantidad de producto:', message);
+        sendResponse(res, 500, false, message)
+    }
+}
+
+const handleDeleteAllProductsCart = async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        const data = await cartService.deleteAllProductsCart(cartId);
+        sendResponse(res, 200, true, "Carrito vaciado", data)
+    } catch ({ message }) {
+        console.error('Error al vacia carrito:', message);
+        sendResponse(res, 500, false, message);
+    }
+}
+
+const handleCompletePurchase = async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        const cart = await cartService.getCartById(cartId);
+        if (!cart) {
+            return sendResponse(res, 404, false, 'Carrito no encontrado');
         }
-    });
+        const ticket = {
+            code: uuidv4(),
+            amount: 0,
+            purchaser: req.session.user.email
+        };
+        const zeroStockProductIds = [];
+        const { products } = cart;
+        for (const product of products) {
+            if (product.quantity <= product._id.stock) {
+                ticket.amount += product.quantity * product._id.price;
+                await cartService.deleteProductFromCartById(cartId, product._id._id);
+                const productData = { stock: product._id.stock - product.quantity };
+                await productService.updateProduct(product._id._id, productData);
+            }
+            else { zeroStockProductIds.push(product._id._id) }
+
+        }
+
+        if (!ticket.amount) // Evaluará si ticket.amount es distinto de 0
+        {
+            return sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock", zeroStockProductIds);
+        }
+        const data = await ticketService.createTicket(ticket);
+        sendResponse(res, 201, true, "Compra completada con éxito", data);
+
+    } catch ({ message }) {
+        console.log('Error al completar la compra', message);
+        const errorData = {
+            error: message,
+        };
+        sendResponse(res, 500, false, 'Error al completar la compra', errorData);
+    }
 };
 
+export default { handleCompletePurchase, handleGetCartById, handleCreateCart, handleAddProductCartById, handleDeleteProductCartById, handleUpdateProductQuantity, handleDeleteAllProductsCart }
 

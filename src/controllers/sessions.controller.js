@@ -1,49 +1,57 @@
-import { UsersModelManager } from "../dao/users.mdb.js";
-import { checkPassword } from "../utils/bcrypt.js";
+import sendResponse from "../utils/sendResponse.js";
 
-const umm = new UsersModelManager();
 
-export const handleLogin = async (req, res) => {
+const hadleCurrent = async (req, res) => {
     try {
-        const { email, password } = req.body
-        const user = await umm.findOneByEmail(email);
-        if (await checkPassword(password, user.password)) {
-            req.session.user = { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, id: user._id };
-            res.status(200).send({ status: true, message: 'Autenticación exitosa', data: { url: '/' } })
+        if (!req.session.user) {
+            res.redirect('/login');
         }
-        else {
-            res.status(401).send({ status: false, message: 'Password incorrecto', data: {} })
-        }
-
+        sendResponse(res,200,true,"session",{user:req.session.user})
     } catch ({ message }) {
-        res.status(500).send({ status: false, message });
+        console.error('Error al iniciar sesion', message);
+        const errorData = {
+            error: message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
+
 }
 
-export const handleLoginPassportLocal = async (req, res) => {
+const handleLoginPassportLocal = async (req, res) => {
     try {
         const { message } = req.authInfo;
         req.session.user = req.user;
-        res.status(200).send({ status: true, message, data: { url: '/' } });
-
+        const data = {
+            url: '/'
+        }
+        sendResponse(res, 200, true, message, data)
     } catch ({ message }) {
-        res.status(500).send({ status: false, message });
+        console.error('Error al iniciar sesion', message);
+        const errorData = {
+            error: message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 }
 
-
-export const handleLogout = (req, res) => {
+const handleLogout = (req, res) => {
     try {
         req.session.destroy(err => {
             if (err) {
-                res.status(400).send({ message: "Hubo un error" })
+                sendResponse(res, 400, false, err.message)
             }
             else {
-                res.status(200).send({ message: { ok: true, url: '/login' } })
+                sendResponse(res, 200, true, "Sesion cerrada", { url: '/login' })
             }
         })
 
     } catch ({ message }) {
-        res.status(500).send({ message: message });
+        console.error('Error al cerrar sesion', message);
+        const errorData = {
+            error: message,
+        };
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);
     }
 }
+
+export default { handleLoginPassportLocal, handleLogout, hadleCurrent }

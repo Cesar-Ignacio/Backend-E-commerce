@@ -1,6 +1,6 @@
-import { modelMessage } from "./models/messages.model.js";
+import { modelMessage } from "../../models/messages.model.js";
 
-export class MessagesManager {
+export class MessagesDao {
     constructor() { }
 
     async getAll() {
@@ -11,10 +11,9 @@ export class MessagesManager {
         }
     }
 
-    async createMessage(datos) {
+    async create(email,message) {
         try {
-            const message = new modelMessage(datos);
-            const newMessage = await message.save();
+            const newMessage = await modelMessage.create({email,message});
             return newMessage;
         } catch (error) {
             throw error;

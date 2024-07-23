@@ -1,26 +1,34 @@
 import { Router } from "express";
-import { CartManager } from "../dao/cartManager.js";
-import { handleAddProductCartById, handleCreateCart, handleDeleteAllProductsCart, handleDeleteProductCartById, handleGetCartById, handleUpdateProductQuantity } from "../controllers/carts.controller.js";
+import cartController from "../controllers/carts.controller.js";
+import validateObjectIds from "../middleware/validateId.middleware.js";
+import { validateRequest } from "../middleware/validateRequest.middleware.js";
+import { cartSchema } from "../schema/cart.schema.js";
+import { handlePolice } from "../middleware/handlePolice.middleware.js";
 
 const routes = Router();
 
-const cm = new CartManager;
 
 /**Devuelve un carrito  */
-routes.get("/:cid", handleGetCartById)
+routes.get("/:cartId", validateObjectIds, cartController.handleGetCartById)
 
 /**Crea un nuevo carrito vacio */
-routes.post("/:uid", handleCreateCart)
+routes.post("/:userId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleCreateCart)
+
+/**Finalizar comprar */
+routes.post("/:cartId/purchase", validateObjectIds, cartController.handleCompletePurchase)
 
 /**Agregamos un producto en un carrito */
-routes.post("/:cid/product/:pid", handleAddProductCartById)
+routes.post("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleAddProductCartById)
 
 /**Eliminar producto de carrito */
-routes.delete("/:cid/product/:pid",handleDeleteProductCartById)
+routes.delete("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleDeleteProductCartById)
 
 /**Actualizar cantidad de producto de un carrito */
-routes.put("/:cid/products/:pid",handleUpdateProductQuantity);
+routes.put("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, validateRequest(cartSchema), cartController.handleUpdateProductQuantity);
 
 /**Eliminar todos los productos de un carrito */
-routes.delete("/:cid",handleDeleteAllProductsCart);
+routes.delete("/:cartId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleDeleteAllProductsCart);
+
+
+
 export default routes;

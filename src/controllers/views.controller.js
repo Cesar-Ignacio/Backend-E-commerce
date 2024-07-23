@@ -1,9 +1,10 @@
 
-import { ProductsModelManager } from "../dao/products.mdb.js";
-import { CartModelManager } from "../dao/carts.mdb.js";
+import { ProductsDao } from "../dao/mongo/products.mdb.dao.js";
+import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
+import { cartService, productService, ticketService } from "../services/index.js";
 
-const pmm = new ProductsModelManager();
-const cmm = new CartModelManager();
+const pmm = new ProductsDao();
+const cmm = new CartDao();
 
 export const renderViewHoma = async (req, res) => {
     res.status(200).render("products", { user: req.user })
@@ -18,14 +19,14 @@ export const renderViewChat = (req, res) => {
 }
 
 export const renderViewProductDetails = async (req, res) => {
-    const { id } = req.params;
-    const datas = await pmm.getProductById(id);
+    const { productId } = req.params;
+    const datas = await productService.getProductById(productId);
     res.status(200).render('productDetails', datas);
 }
 
 export const renderViewCarts = async (req, res) => {
-    const user = req.user;
-    const { products } = await cmm.getCartById(user.cart_id);
+    const user = req.session.user;
+    const { products } = await cartService.getCartById(user.cart_id);
     const productOfCart = products.map(({ _id, quantity }) => ({ ..._id, quantity }));
     res.status(200).render('carts', { products: productOfCart, user: user });
 }
@@ -36,4 +37,10 @@ export const renderViewLogin = async (req, res) => {
 
 export const renderViewRegister = async (req, res) => {
     res.status(200).render('register');
+}
+
+export const renderViewTickets = async (req, res) => {
+    const { ticketId } = req.params;
+    const ticket=await ticketService.getTicketById(ticketId);
+    res.status(200).render('tickets',ticket);
 }
