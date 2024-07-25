@@ -13,6 +13,8 @@ import messagesRoutes from './routes/message.routes.js';
 import routesSession from './routes/session.routes.js';
 import routesUser from './routes/user.routes.js';
 import MongoSingleton from './db/mongo.singleton.js';
+import routesMocking from './routes/mocking.routes.js';
+import errorHandle from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -49,9 +51,10 @@ app.use("/api/products", productoRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/sessions", routesSession);
 app.use("/api/users", routesUser)
+app.use("/mockingproducts",routesMocking)
 app.use(viewsRoutes);
 
-
+app.use(errorHandle)
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, async () => {
   MongoSingleton.getInstance();

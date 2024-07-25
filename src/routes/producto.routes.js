@@ -27,4 +27,5 @@ routes.put("/:productId", validateObjectIds, validateRequest(productSchema), pro
 /**Elimina un producto */
 routes.delete("/:productId", handlePolice(["ADMIN"]), validateObjectIds, productController.handleDeleteProductRequest)
 
+
 export default routes;

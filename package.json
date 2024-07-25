@@ -30,6 +30,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "dotenv": "^16.4.5"
   }
 }
