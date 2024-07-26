@@ -54,7 +54,9 @@ app.use("/api/users", routesUser)
 app.use("/mockingproducts",routesMocking)
 app.use(viewsRoutes);
 
+/**Middleware de manejo de errores */
 app.use(errorHandle)
+
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, async () => {
   MongoSingleton.getInstance();

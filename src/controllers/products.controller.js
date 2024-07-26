@@ -1,9 +1,11 @@
 
+import CustomError from "../error/customError.error.js";
+import errorsDictionary from "../error/errorDictionary.error.js";
 import { productService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
 
 
-const handleCreateProduct = async (req, res) => {
+const handleCreateProduct = async (req, res, next) => {
 
     try {
         const socketServer = req.app.get("socketServer");
@@ -15,12 +17,11 @@ const handleCreateProduct = async (req, res) => {
         const data = await productService.createProduct(productData);
         sendResponse(res, 201, true, "Producto creado exitosamente.", data);
         socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
-    } catch ({ message }) {
-        console.error('Error al crear producto', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+    } catch (error) {
+        console.error('Error al crear producto', error.message);
+        error.method = "handleCreateProduct";
+        error.action = "Creating Product";
+        next(new CustomError(errorsDictionary.INTERNAL_ERROR, error));
     }
 
 }
@@ -39,7 +40,6 @@ const handleDeleteProductRequest = async (req, res) => {
             error: message,
         };
         sendResponse(res, 500, false, 'Error en el servidor', errorData);
-
     }
 }
 
@@ -86,4 +86,4 @@ const handleGetProductsRequest = async (req, res) => {
     }
 }
 
-export default {handleCreateProduct,handleDeleteProductRequest,handleEditProductRequest,handleGetProductByIdRequest,handleGetProductsRequest}
+export default { handleCreateProduct, handleDeleteProductRequest, handleEditProductRequest, handleGetProductByIdRequest, handleGetProductsRequest }
