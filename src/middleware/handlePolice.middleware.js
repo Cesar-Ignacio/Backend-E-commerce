@@ -12,7 +12,6 @@ export const handlePolice = (policies) => {
         // Verificar si el rol del usuario está permitido
         if (!policies.includes(user.role.toUpperCase())) {
             let message = '';
-
             if (user.role.toUpperCase() === 'USER') {
                 message = 'Access Denied: User role does not have the required permissions.';
             } else if (user.role.toUpperCase() === 'PREMIUM') {

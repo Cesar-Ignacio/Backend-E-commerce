@@ -15,6 +15,7 @@ const clOptions = commandLine.opts();
 export const config = {
     PORT: process.env.PORT || clOptions.port || 5050,
     DIRNAME: url.fileURLToPath(new URL('.', import.meta.url)),
+    MODE: process.env.NODE_ENV || clOptions.mode || "development",
     MONGODB_URI: process.env.MONGODB_URI,
     SECRET: process.env.SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,

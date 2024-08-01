@@ -15,12 +15,14 @@ import routesUser from './routes/user.routes.js';
 import MongoSingleton from './db/mongo.singleton.js';
 import routesMocking from './routes/mocking.routes.js';
 import errorHandle from './middleware/errorHandler.js';
+import addLogger from './middleware/logger.middleware.js';
 
 const app = express();
 
 /**Middleware de aplicacion */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(addLogger);
 
 /**Configuracion para handlebars */
 app.engine('handlebars', engine());
@@ -34,7 +36,7 @@ app.use(`/static`, express.static(`${config.STATIC_DIR}`))
 app.use(session({
   store: MongoStore.create({
     mongoUrl: config.MONGODB_URI,
-    ttl: 60*20 
+    ttl: 60 * 20
   }),
   secret: config.SECRET,
   resave: true,
@@ -46,12 +48,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /**Routes */
+app.get("/loggerTest", (req, res) => {
+  res.status(200).send("<h2>Logger Test</h2>")
+  req.logger.debug("Nivel debug");
+  req.logger.http("Nivel http");
+  req.logger.info("Nivel Info");
+  req.logger.warning("Nivel Warning");
+  req.logger.error("Nivel Warning");
+  req.logger.fatal("Nivel Error");
+})
 app.use("/api/carts", cartRoutes);
 app.use("/api/products", productoRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/sessions", routesSession);
 app.use("/api/users", routesUser)
-app.use("/mockingproducts",routesMocking)
+app.use("/mockingproducts", routesMocking)
 app.use(viewsRoutes);
 
 /**Middleware de manejo de errores */
