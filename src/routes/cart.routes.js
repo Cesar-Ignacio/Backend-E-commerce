@@ -9,6 +9,7 @@ const routes = Router();
 
 
 /**Devuelve un carrito  */
+
 routes.get("/:cartId", validateObjectIds, cartController.handleGetCartById)
 
 /**Crea un nuevo carrito vacio */
@@ -28,7 +29,6 @@ routes.put("/:cartId/product/:productId", handlePolice(["USER", "PRIMIUM"]), val
 
 /**Eliminar todos los productos de un carrito */
 routes.delete("/:cartId", handlePolice(["USER", "PRIMIUM"]), validateObjectIds, cartController.handleDeleteAllProductsCart);
-
 
 
 export default routes;

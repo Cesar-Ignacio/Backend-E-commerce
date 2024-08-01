@@ -54,7 +54,7 @@
 
 <script>
     const form = document.querySelector("#form");
-    const pMensajeError=document.querySelector('#mensajeError');
+    const pMensajeError = document.querySelector('#mensajeError');
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const inputTitle = document.querySelector('#title');
@@ -77,12 +77,13 @@
             body: formData
         })
         const responseData = await response.json();
-        if (responseData.status) {
-            pMensajeError.innerText=`${responseData.message}`
+        const { status, message, data } = responseData;
+        if (status) {
+            pMensajeError.innerText = `${message}`
         }
         else {
             console.log(responseData);
-            pMensajeError.innerText=`${responseData.message}`
+            pMensajeError.innerText = `${data.errorDescription.message}`
         }
 
     })
