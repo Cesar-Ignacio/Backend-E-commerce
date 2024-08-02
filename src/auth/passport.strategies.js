@@ -28,7 +28,7 @@ export const initAuthStrategies = () => {
                     return done(null, user, { message: 'Autenticacíon existosa' });
                 } else {
 
-                    return done(null, false, { message: 'Contraseña incorrecta' });
+                    return done(null, false, { message: 'Contraseña incorrecta', email: user.email });
                 }
             } catch (err) {
                 return done(err, false, { message: err.message });
@@ -77,7 +77,7 @@ export const initAuthStrategies = () => {
                             password: 'none',
                             age: 0,
                         }
-                        
+
                         const newUser = await userService.createUser(user);
                         return done(null, newUser);
                     } else {
@@ -108,7 +108,8 @@ export const passportCall = (stategy) => {
                 return next(err);
             };
             if (!user) {
-                return sendResponse(res,401,false,info.message);
+                req.logger.warning(`${req.method} ${req.url} ${info.message} ${info.email || ''} ${req.ip}`);
+                return sendResponse(res, 401, false, info.message);
             }
             req.authInfo = { message: info.message };
             req.user = user;

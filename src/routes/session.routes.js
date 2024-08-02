@@ -5,6 +5,9 @@ import { initAuthStrategies, passportCall } from "../auth/passport.strategies.js
 import { validateRequest } from "../middleware/validateRequest.middleware.js";
 import { loginSchema } from "../schema/auth.schema.js";
 import { handlePolice } from "../middleware/handlePolice.middleware.js";
+import sendResponse from "../utils/sendResponse.js";
+import CustomError from "../error/customError.error.js";
+import errorsDictionary from "../error/errorDictionary.error.js";
 
 const routesSession = Router();
 
@@ -19,16 +22,30 @@ routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user']
 
 routesSession.get('/ghlogincallback', passportCall('ghlogin'), async (req, res) => {
     try {
-
         // req.user es inyectado AUTOMATICAMENTE por Passport al parsear el done()
         req.session.user = req.user;
         req.session.save(err => {
-            if (err) return res.status(500).send({ origin: config.SERVER, payload: null, error: err.message });
 
+            if (err) {
+                const errordData = {
+                    method: req.method,
+                    action: "Auntenticacion GitHub",
+                    url: req.url,
+                    message: err.message
+                }
+               return next(new CustomError(errorsDictionary.INTERNAL_ERROR, errordData));
+            }
+            req.logger.info(`${req.method} ${req.url} inicio de sesion ${req.user.email}`)
             res.redirect('/');
         });
-    } catch (err) {
-        res.status(500).send({ origin: config.SERVER, payload: null, error: err.message });
+    } catch (error) {
+        console.error('Error de autenticación GitHub', error.message);
+        error.method = req.method
+        error.action = "Auntenticacion GitHub";
+        error.url = req.url;
+        next(new CustomError(errorsDictionary.INTERNAL_ERROR, error));
+        //new CustomError(errorsDictionary.INTERNAL_ERROR,)
+        //res.status(500).send({ origin: config.SERVER, payload: null, error: err.message });
     }
 });
 

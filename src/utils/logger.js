@@ -33,11 +33,10 @@ const devLogger = winston.createLogger({
                 winston.format.colorize({ colors: customLevels.colors }),
                 winston.format.timestamp(),
                 winston.format.printf(({ timestamp, level, message }) => {
-                    return `${timestamp} [${level}]: ${message}`;
+                    return `${new Date().toLocaleString()} [${level}]: ${message}`;
                 })
             )
         })
-
     ]
 })
 

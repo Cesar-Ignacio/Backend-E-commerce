@@ -14,7 +14,7 @@ import routesSession from './routes/session.routes.js';
 import routesUser from './routes/user.routes.js';
 import MongoSingleton from './db/mongo.singleton.js';
 import routesMocking from './routes/mocking.routes.js';
-import errorHandle from './middleware/errorHandler.js';
+import errorHandle from './middleware/errorHandler.middleware.js';
 import addLogger from './middleware/logger.middleware.js';
 
 const app = express();
