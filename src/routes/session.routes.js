@@ -25,7 +25,6 @@ routesSession.get('/ghlogincallback', passportCall('ghlogin'), async (req, res) 
         // req.user es inyectado AUTOMATICAMENTE por Passport al parsear el done()
         req.session.user = req.user;
         req.session.save(err => {
-
             if (err) {
                 const errordData = {
                     method: req.method,
@@ -33,19 +32,17 @@ routesSession.get('/ghlogincallback', passportCall('ghlogin'), async (req, res) 
                     url: req.url,
                     message: err.message
                 }
-               return next(new CustomError(errorsDictionary.INTERNAL_ERROR, errordData));
+                return next(new CustomError(errorsDictionary.INTERNAL_ERROR, errordData));
             }
-            req.logger.info(`${req.method} ${req.url} inicio de sesion ${req.user.email}`)
+            req.logger.info(`inicio de sesion ${req.session.user.email}`)
             res.redirect('/');
         });
     } catch (error) {
-        console.error('Error de autenticación GitHub', error.message);
+        req.logger.warning(`inicio de session ${error.message}` )
         error.method = req.method
         error.action = "Auntenticacion GitHub";
         error.url = req.url;
         next(new CustomError(errorsDictionary.INTERNAL_ERROR, error));
-        //new CustomError(errorsDictionary.INTERNAL_ERROR,)
-        //res.status(500).send({ origin: config.SERVER, payload: null, error: err.message });
     }
 });
 

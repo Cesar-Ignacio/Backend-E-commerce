@@ -18,10 +18,10 @@ const handleCreateProduct = async (req, res, next) => {
         sendResponse(res, 201, true, "Producto creado exitosamente.", data);
         socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
     } catch (error) {
-        console.error('Error al crear producto', error.message);
+        req.logger.info(`${error.message}`);
         error.method = "handleCreateProduct";
         error.action = "Creating Product";
-        next(new CustomError(errorsDictionary.INTERNAL_ERROR, error));
+        next(new CustomError(errorsDictionary.RECORD_CREATION_ERROR, error));
     }
 
 }

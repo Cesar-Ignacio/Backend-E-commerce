@@ -108,7 +108,7 @@ export const passportCall = (stategy) => {
                 return next(err);
             };
             if (!user) {
-                req.logger.warning(`${req.method} ${req.url} ${info.message} ${info.email || ''} ${req.ip}`);
+                req.logger.warning(`${info.message} ${info.email || ''} ${req.ip}`);
                 return sendResponse(res, 401, false, info.message);
             }
             req.authInfo = { message: info.message };

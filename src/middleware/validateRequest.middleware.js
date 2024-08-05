@@ -10,7 +10,7 @@ export const validateRequest = schema => {
                 action: "Validaciòn de campos",
                 message: error.details[0].message
             }
-            req.logger.info(`${req.method} ${req.url} ${errorData.message}`);
+            req.logger.info(`${errorData.message}`);
             throw new CustomError(errorsDictionary.FEW_PARAMETERS, errorData);
         }
         next();

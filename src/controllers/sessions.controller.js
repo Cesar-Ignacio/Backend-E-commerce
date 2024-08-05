@@ -25,7 +25,7 @@ const handleLoginPassportLocal = async (req, res) => {
             url: '/'
         }
         sendResponse(res, 200, true, message, data);
-        req.logger.info(`${req.method} ${req.url} inicio de sesion ${req.user.email}`)
+        req.logger.info(`inicio de sesion ${req.user.email}`)
     } catch ({ message }) {
         console.error('Error al iniciar sesion', message);
         const errorData = {
@@ -37,6 +37,7 @@ const handleLoginPassportLocal = async (req, res) => {
 
 const handleLogout = (req, res) => {
     try {
+        req.logger.info(`logout ${req.session.user.email}`)
         req.session.destroy(err => {
             if (err) {
                 sendResponse(res, 400, false, err.message)

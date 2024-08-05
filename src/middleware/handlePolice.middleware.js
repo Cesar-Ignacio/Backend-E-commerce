@@ -7,7 +7,10 @@ export const handlePolice = (policies) => {
         const user = req.session.user;
 
         // Redirigir si no hay usuario en la sesión
-        if (!user) return res.redirect('/login');
+        if (!user) {
+            req.logger.warning(`Unauthenticated user attempted to access a restricted page`)
+            return res.redirect('/login');
+        }
 
         // Verificar si el rol del usuario está permitido
         if (!policies.includes(user.role.toUpperCase())) {
@@ -19,7 +22,8 @@ export const handlePolice = (policies) => {
             } else {
                 message = 'Access Denied: Your role does not have the required permissions.';
             }
-            return sendResponse(res,403,false,message)
+            req.logger.warning(`${user.email} ${message}`)
+            return sendResponse(res, 403, false, message)
         }
 
         // Agregar el usuario a la solicitud y continuar
