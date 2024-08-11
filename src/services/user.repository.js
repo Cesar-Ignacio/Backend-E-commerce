@@ -7,12 +7,16 @@ export class UserRepository {
     }
 
     async findOneByEmail(email) {
-        const user= await this.daoUser.getByEmail(email);
-        if(!user)
-        {
+        const user = await this.daoUser.getByEmail(email);
+        if (!user) {
             return user
         }
         return new UserDTO(user);
+    }
+
+    async findOneById(userId) {
+        const user = await this.daoUser.getById(userId);
+        return user;
     }
 
     async createUser(user) {
@@ -21,4 +25,16 @@ export class UserRepository {
         const updateUser = await this.daoUser.update(createUser._id, { cart_id: createCart._id });
         return new UserDTO(updateUser);
     }
+
+    async UserRoleChange(user) {
+        const roles = {
+            "PREMIUM": "USER",
+            "USER": "PREMIUM"
+        };
+        const newRole = roles[user.role.toUpperCase()]
+        const updateUser = await this.daoUser.update(user._id, { role: newRole })
+        return new UserDTO(updateUser);
+    }
+
+
 }

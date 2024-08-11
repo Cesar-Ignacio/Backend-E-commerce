@@ -1,9 +1,7 @@
 class CustomError extends Error {
-    constructor(errorData, { method = "unknown method", action = "unknown action", message = " " }) {
+    constructor(errorData, { message = " " }) {
         super(message);
         this.errorData = errorData;
-        this.method = method;
-        this.action = action;
     }
 }
 

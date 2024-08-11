@@ -15,7 +15,7 @@ initAuthStrategies();
 
 routesSession.post('/login', validateRequest(loginSchema), passportCall('login'), sessionController.handleLoginPassportLocal)
 
-routesSession.get('/current', handlePolice(["USER", "PRIMIUM", "ADMIN"]), sessionController.hadleCurrent)
+routesSession.get('/current', handlePolice(["USER", "PREMIUM", "ADMIN"]), sessionController.hadleCurrent)
 
 routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user'] }), async (req, res) => {
 });
@@ -46,6 +46,6 @@ routesSession.get('/ghlogincallback', passportCall('ghlogin'), async (req, res) 
     }
 });
 
-routesSession.post("/logout", handlePolice(["USER", "PRIMIUM", "ADMIN"]), sessionController.handleLogout)
+routesSession.post("/logout", handlePolice(["USER", "PREMIUM", "ADMIN"]), sessionController.handleLogout)
 
 export default routesSession;
