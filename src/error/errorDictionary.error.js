@@ -6,6 +6,7 @@ const errorsDictionary = {
     INVALID_PARAMETER: { code: 4, status: 400, message: 'El parámetro ingresado no es válido' },
     INVALID_TYPE_ERROR: { code: 5, status: 400, message: 'No corresponde el tipo de dato' },
     CANNOT_ADD_OWN_PRODUCT: { code: 12, status: 400, message: 'No puede agregar su propio producto a su carrito' },
+    USER_NOT_FOUND: { code: 13, status: 404, message: 'No se encontró el usuario solicitado' },
     ID_NOT_FOUND: { code: 6, status: 400, message: 'No existe registro con ese ID' },
     AUTHORIZATION_ERROR: { code: 11, status: 403, message: 'No tiene permiso para acceder a este recurso' },
     PAGE_NOT_FOUND: { code: 7, status: 404, message: 'No se encuentra la página solicitada' },

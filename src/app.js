@@ -3,19 +3,22 @@ import { engine } from 'express-handlebars';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
+
 
 import { config } from './config.js';
-import cartRoutes from './routes/cart.routes.js'
-import productoRoutes from './routes/producto.routes.js'
-import viewsRoutes from './routes/views.routes.js';
 import { initSocketServer } from './sockets.js';
-import messagesRoutes from './routes/message.routes.js';
-import routesSession from './routes/session.routes.js';
-import routesUser from './routes/user.routes.js';
-import MongoSingleton from './db/mongo.singleton.js';
-import routesMocking from './routes/mocking.routes.js';
 import errorHandle from './middleware/errorHandler.middleware.js';
 import addLogger from './middleware/logger.middleware.js';
+import MongoSingleton from './db/mongo.singleton.js';
+import productoRoutes from './routes/producto.routes.js'
+import messagesRoutes from './routes/message.routes.js';
+import routesSession from './routes/session.routes.js';
+import cartRoutes from './routes/cart.routes.js'
+import viewsRoutes from './routes/views.routes.js';
+import routesUser from './routes/user.routes.js';
+import routesEmail from './routes/email.routes.js';
+import routesMocking from './routes/mocking.routes.js';
 
 const app = express();
 
@@ -23,6 +26,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(addLogger);
+app.use(cookieParser(config.SECRET));
 
 /**Configuracion para handlebars */
 app.engine('handlebars', engine());
@@ -63,6 +67,7 @@ app.use("/api/messages", messagesRoutes);
 app.use("/api/sessions", routesSession);
 app.use("/api/users", routesUser)
 app.use("/mockingproducts", routesMocking)
+app.use("/api/emails",routesEmail)
 app.use(viewsRoutes);
 
 /**Middleware de manejo de errores */

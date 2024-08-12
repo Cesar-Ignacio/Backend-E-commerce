@@ -2,6 +2,7 @@
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
 import { userService } from "../services/index.js";
+import { hashPassword } from "../utils/bcrypt.js";
 import sendResponse from "../utils/sendResponse.js";
 
 const handleCreateUserPassport = async (req, res) => {
@@ -23,6 +24,19 @@ const handleCreateUserPassport = async (req, res) => {
     }
 }
 
+const hadlePasswordReset = async (req, res, next) => {
+    try {
+        const { password } = req.body;
+        const { _id } = req.user;
+        const newHasPassword = await hashPassword(password);
+        const updateUser = await userService.changeUserPassword(_id, newHasPassword);
+        req.logger.info(`${updateUser.email} cambio su contraseña exitosamente`)
+        sendResponse(res, 200, true, "Nueva contraseña creada", { url:"/login" });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const handleUserRoleChange = async (req, res, next) => {
     try {
         const { userId } = req.params;
@@ -40,4 +54,4 @@ const handleUserRoleChange = async (req, res, next) => {
     }
 }
 
-export default { handleCreateUserPassport, handleUserRoleChange }
+export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset }

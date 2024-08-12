@@ -36,5 +36,9 @@ export class UserRepository {
         return new UserDTO(updateUser);
     }
 
+    async changeUserPassword(userId,password){
+        const updateUser = await this.daoUser.update(userId,{password})
+        return new UserDTO(updateUser);
+    }
 
 }
