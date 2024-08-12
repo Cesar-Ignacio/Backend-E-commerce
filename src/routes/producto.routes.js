@@ -22,10 +22,10 @@ routes.get("/:productId", validateObjectIds, productController.handleGetProductB
 routes.post("/", validateImageUpload, validateRequest(productSchema), productController.handleCreateProduct);
 
 /**Edita un producto */
-routes.put("/:productId", validateObjectIds, validateRequest(productSchema), productController.handleEditProductRequest)
+routes.put("/:productId", handlePolice(["ADMIN", "PREMIUM"]), validateObjectIds, validateRequest(productSchema), productController.handleEditProductRequest)
 
 /**Elimina un producto */
-routes.delete("/:productId", handlePolice(["ADMIN"]), validateObjectIds, productController.handleDeleteProductRequest)
+routes.delete("/:productId", handlePolice(["ADMIN", "PREMIUM"]), validateObjectIds, productController.handleDeleteProductRequest)
 
 
 export default routes;

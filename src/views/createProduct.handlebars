@@ -78,14 +78,13 @@
         })
         const responseData = await response.json();
         const { status, message, data } = responseData;
-        console.log(responseData)
-        /*if (status) {
+        if (status) {
             pMensajeError.innerText = `${message}`
         }
         else {
-            console.log(responseData);
+            //console.log(responseData);
             pMensajeError.innerText = `${data.errorDescription.message}`
-        }*/
+        }
 
     })
 </script>

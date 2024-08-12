@@ -7,7 +7,7 @@ const routes = Router();
 
 routes.get("/", handlePolice(["USER", "PREMIUM", "ADMIN"]), renderViewHoma)
 
-routes.get("/createProduct", handlePolice(["ADMIN"]), renderViewCreateProduct);
+routes.get("/createProduct", handlePolice(["ADMIN","PREMIUM"]), renderViewCreateProduct);
 
 routes.get("/chat", handlePolice(["USER", "PREMIUM",]), renderViewChat);
 

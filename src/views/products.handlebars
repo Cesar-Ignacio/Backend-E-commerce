@@ -49,7 +49,7 @@
     const btnPremium = document.querySelector("#btnPremium");
     const btnLogout = document.querySelector("#btnlogout");
     const cartId = document.querySelector('#cartId').value;
-    const userId= document.querySelector('#userId').value;
+    const userId = document.querySelector('#userId').value;
     let next = true;
     let previou = true;
 
@@ -85,16 +85,21 @@
         const btnAddCart = document.createElement("button");
         btnAddCart.innerText = "Add Cart "
         btnAddCart.addEventListener('click', async () => {
-            const data = await fetch(`/api/carts/${cartId}/product/${pro._id}`, { method: 'POST' })
-            if (data.ok) { alert("Se agrego el producto al carrito") }
+            const response = await fetch(`/api/carts/${cartId}/product/${pro._id}`, {
+                method: 'POST'
+            })
+            const { message } = await response.json();
+            alert(`${message}`)
         })
 
         const btnEliminar = document.createElement("button");
         btnEliminar.innerText = "Delete";
         btnEliminar.addEventListener("click", async () => {
-            await fetch(`/api/products/${pro._id}`, {
+            const response = await fetch(`/api/products/${pro._id}`, {
                 method: "DELETE"
             })
+            const { message } = await response.json();
+            alert(`${message}`)
         })
 
         cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
@@ -158,7 +163,7 @@
         const responseData = await response.json();
 
         console.log(responseData);
- 
+
     });
 
 

@@ -69,9 +69,9 @@ app.use(viewsRoutes);
 app.use(errorHandle)
 
 /**Inicio de servidor */
-const httpServer = app.listen(config.PORT, async () => {
+const httpServer = app.listen(config.PORT, async (req) => {
   MongoSingleton.getInstance();
-  console.log(`Servidor activo en PORT:${config.PORT}`)
+  console.log(`Servidor activo en PORT:${config.PORT} PID:${process.pid}`)
 })
 
 /**Inicio socket */
