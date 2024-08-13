@@ -1,24 +1,28 @@
 import { Router } from "express";
-import { renderViewTickets, renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister } from "../controllers/views.controller.js";
+import { renderViewTickets, renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister, renderViewPasswordReset, renderViewNewPasswordEmail } from "../controllers/views.controller.js";
 import { handlePolice } from "../middleware/handlePolice.middleware.js";
+import { verifyToken } from "../middleware/verifyToken.middleware.js";
 
 const routes = Router();
 
+routes.get("/", handlePolice(["USER", "PREMIUM", "ADMIN"]), renderViewHoma)
 
-routes.get("/", handlePolice(["USER", "PRIMIUM", "ADMIN"]), renderViewHoma)
+routes.get("/createProduct", handlePolice(["ADMIN", "PREMIUM"]), renderViewCreateProduct);
 
-routes.get("/createProduct", handlePolice(["ADMIN"]), renderViewCreateProduct);
+routes.get("/chat", handlePolice(["USER", "PREMIUM",]), renderViewChat);
 
-routes.get("/chat", handlePolice(["USER", "PRIMIUM",]), renderViewChat);
+routes.get("/productDetails/:productId", handlePolice(["USER", "PREMIUM", "ADMIN"]), renderViewProductDetails);
 
-routes.get("/productDetails/:productId", handlePolice(["USER", "PRIMIUM", "ADMIN"]), renderViewProductDetails);
-
-routes.get("/carts", handlePolice(["USER", "PRIMIUM"]), renderViewCarts);
+routes.get("/carts", handlePolice(["USER", "PREMIUM"]), renderViewCarts);
 
 routes.get("/login", handlePolice(["PUBLIC"]), renderViewLogin);
 
 routes.get("/register", handlePolice(["PUBLIC"]), renderViewRegister);
 
-routes.get("/ticket/:ticketId", handlePolice(["USER", "PRIMIUM"]), renderViewTickets);
+routes.get("/passwordReset", handlePolice(["PUBLIC"]), renderViewPasswordReset);
+
+routes.get("/newPasswordEmailTemplate", verifyToken, renderViewNewPasswordEmail);
+
+routes.get("/ticket/:ticketId", handlePolice(["USER", "PREMIUM"]), renderViewTickets);
 
 export default routes;

@@ -1,3 +1,5 @@
+import CustomError from "../error/customError.error.js";
+import errorsDictionary from "../error/errorDictionary.error.js";
 import { cartService, productService, ticketService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
 import { v4 as uuidv4 } from "uuid";
@@ -24,14 +26,24 @@ const handleCreateCart = async (req, res) => {
     }
 }
 
-const handleAddProductCartById = async (req, res) => {
+const handleAddProductCartById = async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
+        const { email } = req.session.user;
+        const product = await productService.getProductById(productId);
+        if (product?.owner === email) {
+            req.logger.warning(`El usuario con correo ${email} intentó agregar su propio producto con ID ${productId} al carrito.`);
+            throw new CustomError(
+                errorsDictionary.CANNOT_ADD_OWN_PRODUCT,
+                {
+                    message: `El producto seleccionado con ID ${productId} le pertenece al usuario con correo ${email}.`
+                }
+            );
+        }
         const data = await cartService.addProductCart(cartId, productId);
         sendResponse(res, 201, true, "Producto agregado a carrito", data)
-    } catch ({ message }) {
-        console.error('Error al agregar productos en un carrito:', message);
-        sendResponse(res, 500, false, message)
+    } catch (error) {
+        next(error);
     }
 }
 

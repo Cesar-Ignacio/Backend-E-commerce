@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
     password: { type: String, required: true },
     age: { type: Number, required: true },
     cart_id: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
-    role: { type: String, enum: ['admin', 'primium', 'user'], default: 'user' }
+    role: { type: String, enum: ['ADMIN', 'PREMIUM', 'USER'], default: 'USER' }
 })
 
 export const modelUser = mongoose.model(collection, schema);

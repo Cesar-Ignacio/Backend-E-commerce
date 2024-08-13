@@ -21,6 +21,8 @@ export const config = {
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL,
+    GMAIL_APP_USER:process.env.GMAIL_APP_USER,
+    PASS_APP_GMAIL:process.env.PASS_APP_GMAIL,
     get UPLOAD_DIR() { return `${this.DIRNAME}/public/img` },
     get VIEWS_DIR() { return `${this.DIRNAME}/views` },
     get STATIC_DIR() { return `${this.DIRNAME}/public` }

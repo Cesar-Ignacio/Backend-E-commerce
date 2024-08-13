@@ -14,7 +14,9 @@
         <p>Bienvenido {{user.firstName}}</p>
         <p>{{user.role}}</p>
         <input type="hidden" id="cartId" value={{user.cart_id}}>
+        <input type="hidden" id="userId" value={{user._id}}>
         <button id="btnlogout">Log Out</button>
+        {{!-- <button id="btnPremium">Premium</button> --}}
     </div>
     <h1>Productos</h1>
     <div style="border: solid 1px black; display: flex; gap: 1rem; margin-bottom: 1rem;">
@@ -42,10 +44,12 @@
     const spanCantPro = document.querySelector("#cantPro");
     const spantotPag = document.querySelector("#totPag");
     const spanPage = document.querySelector("#page");
-    const btnNext = document.querySelector("#btnNext")
-    const btnPrev = document.querySelector("#btnPrev")
-    const btnLogout = document.querySelector("#btnlogout")
+    const btnNext = document.querySelector("#btnNext");
+    const btnPrev = document.querySelector("#btnPrev");
+    const btnPremium = document.querySelector("#btnPremium");
+    const btnLogout = document.querySelector("#btnlogout");
     const cartId = document.querySelector('#cartId').value;
+    const userId = document.querySelector('#userId').value;
     let next = true;
     let previou = true;
 
@@ -81,16 +85,21 @@
         const btnAddCart = document.createElement("button");
         btnAddCart.innerText = "Add Cart "
         btnAddCart.addEventListener('click', async () => {
-            const data = await fetch(`/api/carts/${cartId}/product/${pro._id}`, { method: 'POST' })
-            if (data.ok) { alert("Se agrego el producto al carrito") }
+            const response = await fetch(`/api/carts/${cartId}/product/${pro._id}`, {
+                method: 'POST'
+            })
+            const { message } = await response.json();
+            alert(`${message}`)
         })
 
         const btnEliminar = document.createElement("button");
         btnEliminar.innerText = "Delete";
         btnEliminar.addEventListener("click", async () => {
-            await fetch(`/api/products/${pro._id}`, {
+            const response = await fetch(`/api/products/${pro._id}`, {
                 method: "DELETE"
             })
+            const { message } = await response.json();
+            alert(`${message}`)
         })
 
         cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
@@ -142,6 +151,21 @@
             window.location.href = responseData.data.url;
         }
 
-    })
+    });
+
+    btnPremium.addEventListener("click", async () => {
+        const response = await fetch(`/api/users/premium/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const responseData = await response.json();
+
+        console.log(responseData);
+
+    });
+
+
 
 </script>

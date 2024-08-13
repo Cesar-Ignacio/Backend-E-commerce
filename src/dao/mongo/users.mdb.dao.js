@@ -21,6 +21,16 @@ export class UsersDao {
         }
     }
 
+    async getById(userId) {
+        try {
+            const user = await modelUser.findById(userId);
+            return user;
+        } catch (error) {
+            console.error("Error al crear usuario", error)
+            throw error;
+        }
+    }
+
     async getByEmail(email) {
         try {
             const user = await modelUser.findOne({ email: email }).lean();
