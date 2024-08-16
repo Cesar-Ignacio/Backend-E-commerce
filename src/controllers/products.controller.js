@@ -78,17 +78,13 @@ const handleGetProductByIdRequest = async (req, res) => {
     }
 }
 
-const handleGetProductsRequest = async (req, res) => {
+const handleGetProductsRequest = async (req, res, next) => {
     try {
         const { limit, page, query, sort } = req.validatedQuery;
         let data = await productService.getPaginatedProducts(limit, page, query, sort);
         sendResponse(res, 200, true, 'Datos recuperados', data);
-    } catch ({ message }) {
-        console.error('Error recuperar productos', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+    } catch (error) {
+        next(error);
     }
 }
 

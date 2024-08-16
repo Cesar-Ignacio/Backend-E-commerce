@@ -1,0 +1,190 @@
+openapi: 3.0.3
+info:
+  title: Documentación de la API de Ecommerce
+  description: Esta documentación abarca todos los endpoints disponibles en la API de Ecommerce, proporcionando detalles sobre su uso y funcionalidades.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+tags:
+- name: Products
+  description: Endpoints relacionados con productos
+paths:
+  /api/products:
+    get:
+      tags:
+      - Products
+      summary: Obtención de productos paginados
+      description: Este endpoint permite obtener una lista de productos de manera paginada con la posibilidad de filtrar y ordenar los resultados.
+      parameters:
+      - name: limit
+        in: query
+        description: Número de productos por página
+        required: false
+        schema:
+          type: integer
+          default: 10
+      - name: page
+        in: query
+        description: Número de página a recuperar
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: query
+        in: query
+        description: Filtro de búsqueda para los productos {'campo':valor}
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Criterio de ordenación por precio (1 ascendente o -1 descendente)
+        required: false
+        schema:
+          type: string
+          default: 1
+          enum: [1, -1]
+      responses:
+        '200':
+          description: Lista de productos recuperada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Datos recuperados"
+                  data:
+                    type: object
+                    properties:
+                      totalDocs:
+                        type: integer
+                        example: 100
+                      docs:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      limit:
+                        type: integer
+                        example: 10
+                      page:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 10
+        '400':
+          description: El parámetro ingresado no es válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El parámetro ingresado no es válido"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "\"page\" with value \"-11\" fails to match the required pattern: /^\\d+$/"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=-11&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:08:58.720Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=-11&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "data is not defined"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=1&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:06:33.357Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=1&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "66b95229a34b137f0185232a"
+        title:
+          type: string
+          example: "Producto de premium"
+        description:
+          type: string
+          example: "El mejor de todos"
+        price:
+          type: number
+          example: 5
+        code:
+          type: string
+          example: "22222"
+        stock:
+          type: integer
+          example: 3
+        category:
+          type: string
+          example: "qwerty"
+        thumbnail:
+          type: string
+          example: "default.png"
+        owner:
+          type: string
+          example: "example@gmail.com"
+        status:
+          type: boolean
+          example: true

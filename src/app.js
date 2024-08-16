@@ -4,6 +4,9 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express'
+import yaml from 'yamljs';
 
 
 import { config } from './config.js';
@@ -46,8 +49,8 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
-/**Configuracion para passport */
 
+/**Configuracion para passport */
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -67,8 +70,12 @@ app.use("/api/messages", messagesRoutes);
 app.use("/api/sessions", routesSession);
 app.use("/api/users", routesUser)
 app.use("/mockingproducts", routesMocking)
-app.use("/api/emails",routesEmail)
+app.use("/api/emails", routesEmail)
 app.use(viewsRoutes);
+
+/**Configuración de swagger */
+const specs = yaml.load('./src/docs/apiDocs.yaml');
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 /**Middleware de manejo de errores */
 app.use(errorHandle)
