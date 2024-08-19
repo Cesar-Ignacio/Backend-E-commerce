@@ -153,6 +153,112 @@ paths:
                   method:
                     type: string
                     example: "GET"
+    post:
+      tags:
+      - Products
+      summary: Creación de producto
+      description: Solo los usuarios autenticados con rol premium o admin pueden crear productos. Este endpoint requiere una sesión activa. La autenticación se gestiona en el servidor y se verifica en cada solicitud. La sesión no se almacena en cookies del lado del cliente.
+      security:
+      - sessionAuth: []
+      requestBody:
+        required: true
+        description: Creación de producto
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Producto creado exitosamente."
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          description: El parámetro ingresado no es válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El parámetro ingresado no es válido"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "\"page\" with value \"-11\" fails to match the required pattern: /^\\d+$/"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=-11&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:08:58.720Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=-11&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "data is not defined"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=1&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:06:33.357Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=1&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
 components:
   schemas:
     Product:
@@ -188,3 +294,28 @@ components:
         status:
           type: boolean
           example: true
+    CreateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Producto de premium"
+        description:
+          type: string
+          example: "El mejor de todos"
+        price:
+          type: number
+          example: 5
+        code:
+          type: string
+          example: "22222"
+        stock:
+          type: integer
+          example: 3
+        category:
+          type: string
+          example: "qwerty"
+        thumbnail:
+          type: string
+          format: binary
+

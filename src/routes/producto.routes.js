@@ -19,7 +19,7 @@ routes.get("/", validatePagination(paginationSchema), productController.handleGe
 routes.get("/:productId", validateObjectIds, productController.handleGetProductByIdRequest);
 
 /**Crea un nuevo producto */
-routes.post("/", validateImageUpload, validateRequest(productSchema), productController.handleCreateProduct);
+routes.post("/", handlePolice(["ADMIN", "PREMIUM"]), validateImageUpload, validateRequest(productSchema), productController.handleCreateProduct);
 
 /**Edita un producto */
 routes.put("/:productId", handlePolice(["ADMIN", "PREMIUM"]), validateObjectIds, validateRequest(productSchema), productController.handleEditProductRequest)

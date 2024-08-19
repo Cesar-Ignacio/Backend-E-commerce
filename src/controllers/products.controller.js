@@ -6,7 +6,6 @@ import sendResponse from "../utils/sendResponse.js";
 
 
 const handleCreateProduct = async (req, res, next) => {
-
     try {
         const socketServer = req.app.get("socketServer");
         const thumbnail = req.file?.originalname ?? "default.png";
@@ -18,16 +17,15 @@ const handleCreateProduct = async (req, res, next) => {
             thumbnail
         }
         const data = await productService.createProduct(productData);
-        req.logger.info(`Nuevo producto creado por ${email} role:${role}`)
         sendResponse(res, 201, true, "Producto creado exitosamente.", data);
         socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
+        req.logger.info(`Nuevo producto creado por ${email} role:${role}`)
     } catch (error) {
         req.logger.info(`${error.message}`);
         error.method = "handleCreateProduct";
         error.action = "Creating Product";
         next(new CustomError(errorsDictionary.RECORD_CREATION_ERROR, error));
     }
-
 }
 
 const handleDeleteProductRequest = async (req, res, next) => {
