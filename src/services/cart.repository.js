@@ -7,6 +7,11 @@ export class CartRepository {
         return await this.dao.getById(cartId);
     }
 
+    async getCartByUserId(userId)
+    {
+        return await this.dao.getByUserId(userId);
+    }
+
     async createCart(userId) {
         return await this.dao.create(userId);
     }
