@@ -16,5 +16,4 @@ routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset)
 
 routesUser.put('/premium/:userId', validateObjectIds, userController.handleUserRoleChange)
 
-
 export default routesUser;

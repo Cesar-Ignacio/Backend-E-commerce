@@ -1,0 +1,1496 @@
+openapi: 3.0.3
+info:
+  title: Documentación de la API de Ecommerce
+  description: Esta documentación abarca todos los endpoints disponibles en la API de Ecommerce, proporcionando detalles sobre su uso y funcionalidades.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+tags:
+- name: Products
+  description: Endpoints relacionados con productos
+- name: Cart
+  description: Endpoints relacionados con carrito
+paths:
+  /api/products:
+    get:
+      tags:
+      - Products
+      summary: Obtención de productos paginados
+      description: Este endpoint permite obtener una lista de productos de manera paginada con la posibilidad de filtrar y ordenar los resultados.
+      parameters:
+      - name: limit
+        in: query
+        description: Número de productos por página
+        required: false
+        schema:
+          type: integer
+          default: 10
+      - name: page
+        in: query
+        description: Número de página a recuperar
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: query
+        in: query
+        description: Filtro de búsqueda para los productos {'campo':valor}
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Criterio de ordenación por precio (1 ascendente o -1 descendente)
+        required: false
+        schema:
+          type: string
+          default: 1
+          enum: [1, -1]
+      responses:
+        '200':
+          description: Lista de productos recuperada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Datos recuperados"
+                  data:
+                    type: object
+                    properties:
+                      totalDocs:
+                        type: integer
+                        example: 100
+                      docs:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      limit:
+                        type: integer
+                        example: 10
+                      page:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 10
+        '400':
+          description: El parámetro ingresado no es válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El parámetro ingresado no es válido"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "\"page\" with value \"-11\" fails to match the required pattern: /^\\d+$/"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=-11&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:08:58.720Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=-11&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "data is not defined"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products?limit=10&page=1&sort=1"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-16T22:06:33.357Z"
+                  path:
+                    type: string
+                    example: "/api/products?limit=10&page=1&sort=1"
+                  method:
+                    type: string
+                    example: "GET"
+    post:
+      tags:
+      - Products
+      summary: Creación de producto
+      description: Solo los usuarios autenticados con rol premium o admin pueden crear productos. Este endpoint requiere una sesión activa. La autenticación se gestiona en el servidor y se verifica en cada solicitud. La sesión no se almacena en cookies del lado del cliente.
+      security:
+      - sessionAuth: []
+      requestBody:
+        required: true
+        description: Creación de producto
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Producto creado exitosamente."
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:24:20.224Z"
+                  path:
+                    type: string
+                    example: "/api/products"
+                  method:
+                    type: string
+                    example: "POST"
+        '403':
+          description: "No tiene permiso para acceder a este recurso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No tiene permiso para acceder a este recurso"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Access Denied: User role does not have the required permissions."
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/products"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products"
+                  method:
+                    type: string
+                    example: "POST"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "E11000 duplicate key error collection: ecommerce.products index: code_1 dup key: { code: \"22222\" }"
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/products"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:24:20.224Z"
+                  path:
+                    type: string
+                    example: "/api/products"
+                  method:
+                    type: string
+                    example: "POST"
+  /api/products/{productId}:
+    get:
+      tags:
+      - Products
+      summary: Obtención de un producto por su ID
+      description: Este endpoint permite a los usuarios autenticados (admin, premium, user) obtener los detalles de un producto específico utilizando su ID. Es necesario estar logeado para acceder a este recurso.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        description: El ID del producto que se desea obtener.
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      responses:
+        '200':
+          description: Producto obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "GET"
+        '400':
+          description: ID de producto inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No existe registro con ese ID"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '64b4d6f55c4eaf0012e45' in the 'productId' field."
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "GET"
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Producto no encontrado."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "El producto con ID 64b4d6f55c4eaf0012e4b765 no fue encontrado"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "GET"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Ocurrió un error al procesar la solicitud."
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "GET"
+    put:
+      tags:
+      - Products
+      summary: Editar un producto por su ID
+      description: Este endpoint permite a los usuarios autenticados Admin y Premium editar un producto específico utilizando su ID. Es necesario estar logeado para acceder a este recurso.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        description: El ID del producto que se desea editar.
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      requestBody:
+        description: Actualizacion de producto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+        required: true
+      responses:
+        '200':
+          description: Producto actulizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "GET"
+        '400':
+          description: ID de producto inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: ID de producto inválido
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '64b4d6f55c4eaf0012e45' in the 'productId' field."
+                          method:
+                            type: string
+                            example: "PUT"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "PUT"
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Producto no encontrado."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "El producto con ID 64b4d6f55c4eaf0012e4b765 no fue encontrado"
+                          method:
+                            type: string
+                            example: "PUT"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "PUT"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Ocurrió un error al procesar la solicitud."
+                          method:
+                            type: string
+                            example: "PUT"
+                          path:
+                            type: string
+                            example: "/api/products/66c3899e37976d1bee09140d"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/66c3899e37976d1bee09140d"
+                  method:
+                    type: string
+                    example: "PUT"
+    delete:
+      tags:
+      - Products
+      summary: Eliminar un producto por su ID
+      description: Este endpoint permite a los usuarios autenticados eliminar un producto específico utilizando su ID. Los usuarios con rol Admin pueden eliminar cualquier producto, mientras que los usuarios Premium solo pueden eliminar productos de su propiedad. Es necesario estar logeado para acceder a este recurso.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        description: El ID del producto que se desea eliminar.
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      responses:
+        '200':
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Producto eliminado correctamente."
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '400':
+          description: ID de producto inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El ID no contiene un formato válido de MongoDB"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '64b4d6f55c4eaf0012e4b7' in the 'productId' field."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/products/64b4d6f55c4eaf0012e4b7"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T20:58:20.413Z"
+                  path:
+                    type: string
+                    example: "/api/products/64b4d6f55c4eaf0012e4b7"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '403':
+          description: No tiene permiso para acceder a este recurso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No tiene permiso para acceder a este recurso
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: No cuentas con los permisos necesarios para eliminar este producto
+                          method:
+                            type: string
+                            example: DELETE
+                          path:
+                            type: string
+                            example: "/api/products/6655f2e1838f6059080ed4f8"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T21:06:16.156Z"
+                  path:
+                    type: string
+                    example: "/api/products/6655f2e1838f6059080ed4f8"
+                  method:
+                    type: string
+                    example: DELETE
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Producto no encontrado."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "El producto con ID 64b4d6f55c4eaf0012e4b765 no fue encontrado."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/products/64b4d6f55c4eaf0012e4b765"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Ocurrió un error al procesar la solicitud."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/products/64b4d6f55c4eaf0012e4b765"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T17:42:27.060Z"
+                  path:
+                    type: string
+                    example: "/api/products/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "DELETE"
+  /api/carts/{cartId}:
+    get:
+      tags:
+      - Cart
+      summary: Obtención de un carrito
+      description: Este endpoint permite obtener los detalles de un carrito específico utilizando su ID. El ID del carrito está asociado a un usuario premium o a un usuario común, pero no a un administrador. Solo el usuario correspondiente puede acceder a la información de su propio carrito.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        description: El ID del carrito que se desea obtener.
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      responses:
+        '200':
+          description: Carrito recuperado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Carrito recuperado
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "669ffeaf735ca66dc8d2bbcb"
+                      _user_id:
+                        type: string
+                        example: "669ffeaf735ca66dc8d2bbc9"
+                      products:
+                        type: array
+                        items:
+                          type: object
+                        example:
+                        - _id:
+                            _id: "6655f2e1838f6059080ed4f8"
+                            title: "auricular"
+                            description: "JBL"
+                            price: 78
+                            code: "111"
+                            stock: 99
+                            category: "Auriculares"
+                            thumbnail: "Auriculares_JBL_BT_710_Negro_min_9478241572.webp"
+                            status: true
+                            __v: 0
+                            quantity: 1
+                      __v:
+                        type: integer
+                        example: 0
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T21:39:33.214Z"
+                  path:
+                    type: string
+                    example: "/api/carts/669ffeaf735ca66dc8d2bbcb"
+                  method:
+                    type: string
+                    example: "GET"
+        '400':
+          description: El ID no contiene un formato válido de MongoDB
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: El ID no contiene un formato válido de MongoDB
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '669ffeaf735ca66dc82bbcb' in the 'cartId' field."
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/carts/669ffeaf735ca66dc82bbcb"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T21:51:28.955Z"
+                  path:
+                    type: string
+                    example: "/api/carts/669ffeaf735ca66dc82bbcb"
+                  method:
+                    type: string
+                    example: "GET"
+        '404':
+          description: No se encontró el carrito solicitado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No se encontró el carrito solicitado
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "No se encontró el carrito con ID 64b4d6f55c4eaf0012e4b765"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T21:56:57.877Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "GET"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Error en el servidor
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "data is not defined"
+                          method:
+                            type: string
+                            example: "GET"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T00:12:06.558Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "GET"
+    delete:
+      tags:
+      - Cart
+      summary: Eliminar todos los productos de un carrito
+      description: "Este endpoint permite eliminar todos los productos de un carrito específico, dejando el carrito vacío. Es útil cuando el usuario desea vaciar su carrito de compras de una sola vez. Solo los usuarios autenticados pueden realizar esta acción, y deben ser propietarios del carrito que intentan vaciar."
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        description: El ID del carrito 
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      responses:
+        '200':
+          description: Carrito vaciado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Carrito vaciado"
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "66b831c5da16170698d64bd7"
+                      _user_id:
+                        type: string
+                        example: "66b831c5da16170698d64bd5"
+                      products:
+                        type: array
+                        items:
+                          type: object
+                        example: []
+                      __v:
+                        type: integer
+                        example: 0
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T02:18:45.111Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b831c5da16170698d64bd7"
+                  method:
+                    type: string
+                    example: "DELETE"        
+        '400':
+          description: El ID proporcionado no es válido para MongoDB
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El ID no contiene un formato válido de MongoDB"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '64b4d6f55c4eaf0012e4b765ss' in the 'cartId' field."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765ss"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T02:20:38.354Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765ss"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '403':
+          description: No tiene permiso para acceder a este recurso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No tiene permiso para acceder a este recurso"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Access Denied: Your role does not have the required permissions."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T02:26:52.054Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '404':
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No se encontró el carrito solicitado"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "No se encontró el carrito con ID 64b4d6f55c4eaf0012e4b765"
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T02:13:20.638Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "carId is not defined"
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T02:29:54.093Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  method:
+                    type: string
+                    example: "DELETE"
+
+  /api/carts/{userId}:
+    post:
+      tags:
+      - Cart
+      summary: Crear carrito
+      description: Este endpoint permite crear un nuevo carrito para un usuario específico. Es necesario proporcionar un ID de usuario válido, que puede ser de un usuario Premium o común, para asociar el carrito creado a dicho usuario. Los usuarios con rol Admin no pueden crear carritos para ellos mismos.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        description: El ID del usario.
+        schema:
+          type: string
+          example: "64b4d6f55c4eaf0012e4b765"
+      responses:
+        '200':
+          description: "El carrito ya existe."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "El carrito ya existe."
+                  data:
+                    type: object
+                    properties: {}
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T01:36:14.501Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b831c5da16170698d64bd5"
+                  method:
+                    type: string
+                    example: "POST"
+        '201':
+          description: "Carrito creado exitosamente."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Carrito creado exitosamente."
+                  data:
+                    type: object
+                    properties:
+                      _user_id:
+                        type: string
+                        example: "66b94ec5175e310fc19f1ea6"
+                      products:
+                        type: array
+                        items:
+                          type: object
+                        example: []
+                      _id:
+                        type: string
+                        example: "66c3f4436c920f91d0bf8a4a"
+                      __v:
+                        type: integer
+                        example: 0
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T01:41:24.051Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b94ec5175e310fc19f1ea6"
+                  method:
+                    type: string
+                    example: "POST"
+        '400':
+          description: El ID no contiene un formato válido de MongoDB
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: El ID no contiene un formato válido de MongoDB
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '669ffeaf735ca66dc82bbcb' in the 'userId' field."
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-19T21:51:28.955Z"
+                  path:
+                    type: string
+                    example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  method:
+                    type: string
+                    example: "POST"
+        '403':
+          description: Acceso denegado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No tiene permiso para acceder a este recurso
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: Access Denied: Your role does not have the required permissions.
+                          method:
+                            type: string
+                            example: POST
+                          path:
+                            type: string
+                            example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T01:21:44.653Z"
+                  path:
+                    type: string
+                    example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  method:
+                    type: string
+                    example: POST
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No se encontró el usuario solicitado
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: El ID de usuario 64b4d6f55c4eaf0012e4b765 no corresponde a ningún usuario registrado.
+                          method:
+                            type: string
+                            example: POST
+                          path:
+                            type: string
+                            example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T01:12:44.648Z"
+                  path:
+                    type: string
+                    example: /api/carts/64b4d6f55c4eaf0012e4b765
+                  method:
+                    type: string
+                    example: POST
+        '500':
+          description: "Error en el servidor"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "userd is not defined"
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/carts/66b94ec5175e310fc19f1ea6"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-20T01:45:00.503Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b94ec5175e310fc19f1ea6"
+                  method:
+                    type: string
+                    example: "POST"
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "66b95229a34b137f0185232a"
+        title:
+          type: string
+          example: "Producto de premium"
+        description:
+          type: string
+          example: "El mejor de todos"
+        price:
+          type: number
+          example: 5
+        code:
+          type: string
+          example: "22222"
+        stock:
+          type: integer
+          example: 3
+        category:
+          type: string
+          example: "qwerty"
+        thumbnail:
+          type: string
+          example: "default.png"
+        owner:
+          type: string
+          example: "example@gmail.com"
+        status:
+          type: boolean
+          example: true
+    CreateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Producto de premium"
+        description:
+          type: string
+          example: "El mejor de todos"
+        price:
+          type: number
+          example: 5
+        code:
+          type: string
+          example: "22222"
+        stock:
+          type: integer
+          example: 3
+        category:
+          type: string
+          example: "qwerty"
+        thumbnail:
+          type: string
+          format: binary
+    UpdateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Nuevo Producto de Lujo"
+          description: "El nombre del producto que será actualizado."
+        description:
+          type: string
+          example: "Un producto de lujo con características mejoradas."
+          description: "Una descripción detallada del producto."
+        price:
+          type: number
+          example: 99.99
+          description: "El precio actualizado del producto."
+        code:
+          type: string
+          example: "LUX12345"
+          description: "El código único del producto."
+        stock:
+          type: integer
+          example: 10
+          description: "La cantidad de unidades disponibles en stock."
+        category:
+          type: string
+          example: "Electrónica"
+          description: "La categoría a la que pertenece el producto."

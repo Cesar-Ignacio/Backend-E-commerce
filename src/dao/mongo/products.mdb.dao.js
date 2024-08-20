@@ -8,7 +8,6 @@ export class ProductsDao {
             const product = await modelProduct.create(datos);
             return product;
         } catch (error) {
-            console.error("Error al crear el producto:", error);
             throw error;
         }
     }
@@ -16,16 +15,9 @@ export class ProductsDao {
     async update(productId, productData) {
         try {
             const updatedProduct = await modelProduct.findByIdAndUpdate(productId, productData, { new: true, runValidators: true });
-
-            // Verificar que si se actulizo el producto
-            if (!updatedProduct) {
-                throw new Error(`El producto con ID ${idProduct} no fue encontrado o no pudo ser actulizado`);
-            }
-
             return updatedProduct;
 
         } catch (error) {
-            console.error("Error al actualizar el producto:", error)
             throw error;
         }
     }
@@ -60,12 +52,8 @@ export class ProductsDao {
     async getById(productId) {
         try {
             const product = await modelProduct.findById(productId);
-            if (!product) {
-                throw new Error(`El producto con ID ${productId} no fue encontrado`);
-            }
             return product;
         } catch (error) {
-            console.error("Product not found:", error)
             throw error;
         }
     }

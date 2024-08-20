@@ -15,6 +15,16 @@ export class CartDao {
         }
     }
 
+    async getByUserId(idUser)
+    {
+        try {
+            const cart= await modelCart.findOne({ _user_id: idUser }).lean();
+            return cart;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async create(idUser) {
         try {
             const cart = new modelCart({ '_user_id': idUser, "products": [] })
@@ -71,9 +81,6 @@ export class CartDao {
     async deleteAll(cartId) {
         try {
             const cart = await modelCart.findByIdAndUpdate(cartId, { $set: { products: [] } }, { new: true });
-            if (!cart) {
-                throw new Error('Carrito no encontrado');
-            }
             return cart
         } catch (error) {
             throw error

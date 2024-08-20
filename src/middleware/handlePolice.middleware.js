@@ -1,3 +1,5 @@
+import CustomError from "../error/customError.error.js";
+import errorsDictionary from "../error/errorDictionary.error.js";
 import sendResponse from "../utils/sendResponse.js";
 
 export const handlePolice = (policies) => {
@@ -23,7 +25,7 @@ export const handlePolice = (policies) => {
                 message = 'Access Denied: Your role does not have the required permissions.';
             }
             req.logger.warning(`${user.email} ${message}`)
-            return sendResponse(res, 403, false, message)
+            throw new CustomError(errorsDictionary.AUTHORIZATION_ERROR,{message})
         }
 
         // Agregar el usuario a la solicitud y continuar

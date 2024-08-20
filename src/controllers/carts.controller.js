@@ -1,28 +1,42 @@
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
-import { cartService, productService, ticketService } from "../services/index.js";
+import { cartService, productService, ticketService, userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
 import { v4 as uuidv4 } from "uuid";
 
-const handleGetCartById = async (req, res) => {
+const handleGetCartById = async (req, res, next) => {
     try {
         const { cartId } = req.params;
         const data = await cartService.getCartById(cartId);
+        if (!data) {
+            req.logger.warning(`No se encontro el carrito con ID ${cartId}`);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message: `No se encontro el carrito con ID ${cartId}` });
+        }
         sendResponse(res, 200, true, "Carrito recuperado", data)
-    } catch ({ message }) {
-        console.error('Error al obtener carrito:', message);
-        sendResponse(res, 500, false, message)
+    } catch (error) {
+        req.logger.warning(`Error al obtener carrito ${error.message}`);
+        next(error);
     }
 }
 
-const handleCreateCart = async (req, res) => {
+const handleCreateCart = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const data = await cartService.createCart(userId);
-        sendResponse(res, 201, true, "Carrito creado", data)
-    } catch ({ message }) {
-        console.error('Error al crear el carrito:', message);
-        sendResponse(res, 500, false, message)
+        const foundUser = await userService.findOneById(userd);
+        if (!foundUser) {
+            req.logger.warning(`El ID de usuario ${userId} no corresponde a ningún usuario existente.`);
+            throw new CustomError(errorsDictionary.USER_NOT_FOUND, { message: `El ID de usuario ${userId} no corresponde a ningún usuario registrado.` });
+        }
+        const foundCart = await cartService.getCartByUserId(userId);
+        if (foundCart) {
+            req.logger.warning(`El usuario con ID ${userId} ya tiene un carrito asociado.`);
+            return sendResponse(res, 200, true, "El carrito ya existe.");
+        }
+        const newCart = await cartService.createCart(userId);
+        sendResponse(res, 201, true, "Carrito creado exitosamente.", newCart);
+    } catch (error) {
+        req.logger.warning(`Error al crear el carrito ${error.message}`);
+        next(error);
     }
 }
 
@@ -70,14 +84,18 @@ const handleUpdateProductQuantity = async (req, res) => {
     }
 }
 
-const handleDeleteAllProductsCart = async (req, res) => {
+const handleDeleteAllProductsCart = async (req, res, next) => {
     try {
         const { cartId } = req.params;
-        const data = await cartService.deleteAllProductsCart(cartId);
+        const data = await cartService.deleteAllProductsCart(carId);
+        if (!data) {
+            req.logger.warning(`No se encontro el carrito con ID ${cartId}`);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message: `No se encontro el carrito con ID ${cartId}` });
+        }
         sendResponse(res, 200, true, "Carrito vaciado", data)
-    } catch ({ message }) {
-        console.error('Error al vacia carrito:', message);
-        sendResponse(res, 500, false, message);
+    } catch (error) {
+        req.logger.warning(`Error al vacia carrito ${error.message}`);
+        next(error);
     }
 }
 

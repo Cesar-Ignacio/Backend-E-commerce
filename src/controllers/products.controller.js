@@ -6,7 +6,6 @@ import sendResponse from "../utils/sendResponse.js";
 
 
 const handleCreateProduct = async (req, res, next) => {
-
     try {
         const socketServer = req.app.get("socketServer");
         const thumbnail = req.file?.originalname ?? "default.png";
@@ -18,16 +17,13 @@ const handleCreateProduct = async (req, res, next) => {
             thumbnail
         }
         const data = await productService.createProduct(productData);
-        req.logger.info(`Nuevo producto creado por ${email} role:${role}`)
         sendResponse(res, 201, true, "Producto creado exitosamente.", data);
         socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
+        req.logger.info(`Nuevo producto creado por ${email} role:${role}`)
     } catch (error) {
-        req.logger.info(`${error.message}`);
-        error.method = "handleCreateProduct";
-        error.action = "Creating Product";
-        next(new CustomError(errorsDictionary.RECORD_CREATION_ERROR, error));
+        req.logger.warning(`El usuario ${req.session.user.email} no pudo crear el producto, ${error.message}`);
+        next(new CustomError(errorsDictionary.RECORD_CREATION_ERROR, { message: `${error.message}` }));
     }
-
 }
 
 const handleDeleteProductRequest = async (req, res, next) => {
@@ -45,50 +41,54 @@ const handleDeleteProductRequest = async (req, res, next) => {
         sendResponse(res, 200, true, "Producto eliminado");
         socketServer.emit("getProducts", await productService.getPaginatedProducts(3, 1, '{}', 1));/**mejorar*/
     } catch (error) {
+        req.logger.warning(`Error al eliminar producto ${error.message}`)
         next(error);
     }
 }
 
-const handleEditProductRequest = async (req, res) => {
+const handleEditProductRequest = async (req, res, next) => {
     try {
         const { productId } = req.params;
         const productData = req.body;
         const data = await productService.updateProduct(productId, productData);
+        if (!data) {
+            req.logger.warning(`El producto con ID ${productId} no fue encontrado o no pudo ser actulizado`)
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message: `El producto con ID ${productId} no fue encontrado o no pudo ser actulizado` })
+        }
         sendResponse(res, 200, true, "Producto actulizado", data)
-    } catch ({ message }) {
-        console.error('Error al crear producto', message);
+    } catch (error) {
+        req.logger.warning(`Error al crear producto ${error.message}`);
+        next(error);
+        /*console.error('Error al crear producto', message);
         const errorData = {
             error: message,
         };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+        sendResponse(res, 500, false, 'Error en el servidor', errorData);*/
     }
 }
 
-const handleGetProductByIdRequest = async (req, res) => {
+const handleGetProductByIdRequest = async (req, res, next) => {
     try {
         const { productId } = req.params;
         const data = await productService.getProductById(productId);
+        if (!data) {
+            req.logger.warning(`El producto con ID ${productId} no fue encontrado`);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message: `El producto con ID ${productId} no fue encontrado` })
+        }
         sendResponse(res, 200, true, 'Producto recuperado', data);
-    } catch ({ message }) {
-        console.error('Error al recuperar producto', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+    } catch (error) {
+        req.logger.warning(`${error.message}`);
+        next(error);
     }
 }
 
-const handleGetProductsRequest = async (req, res) => {
+const handleGetProductsRequest = async (req, res, next) => {
     try {
         const { limit, page, query, sort } = req.validatedQuery;
         let data = await productService.getPaginatedProducts(limit, page, query, sort);
         sendResponse(res, 200, true, 'Datos recuperados', data);
-    } catch ({ message }) {
-        console.error('Error recuperar productos', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+    } catch (error) {
+        next(error);
     }
 }
 
