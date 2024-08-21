@@ -99,12 +99,20 @@ const handleDeleteAllProductsCart = async (req, res, next) => {
     }
 }
 
-const handleCompletePurchase = async (req, res) => {
+const handleCompletePurchase = async (req, res, next) => {
     try {
         const { cartId } = req.params;
         const cart = await cartService.getCartById(cartId);
         if (!cart) {
-            return sendResponse(res, 404, false, 'Carrito no encontrado');
+            const message = `No se encontro el cart con ID ${cartId}`
+            req.logger.warning(message)
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message })
+            // return sendResponse(res, 404, false, 'Carrito no encontrado');
+        }
+        if (!cart.products.length) {
+            const message = `El carrito con ID ${cartId} se encuentra sin productos`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.EMPTY_CART,{message})
         }
         const ticket = {
             code: uuidv4(),
@@ -131,12 +139,14 @@ const handleCompletePurchase = async (req, res) => {
         const data = await ticketService.createTicket(ticket);
         sendResponse(res, 201, true, "Compra completada con éxito", data);
 
-    } catch ({ message }) {
-        console.log('Error al completar la compra', message);
+    } catch (error) {
+        req.logger.warning(`Error al completar la compra ${error.message}`);
+        next(error);
+        /*console.log('Error al completar la compra', message);
         const errorData = {
             error: message,
         };
-        sendResponse(res, 500, false, 'Error al completar la compra', errorData);
+        sendResponse(res, 500, false, 'Error al completar la compra', errorData);*/
     }
 };
 

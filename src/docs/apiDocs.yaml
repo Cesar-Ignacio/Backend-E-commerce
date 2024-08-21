@@ -1407,7 +1407,187 @@ paths:
                   method:
                     type: string
                     example: "POST"
-
+  /api/carts/{cartId}/purchase:
+    post:
+      tags:
+      - Cart
+      summary: Finalizar la compra de un carrito
+      description: Este endpoint permite completar la compra de un carrito específico y generar un ticket de compra asociado. Es necesario proporcionar un ID de carrito válido en la solicitud. Cabe destacar que este recurso está restringido; solo los usuarios con roles de Usuario o Premium pueden acceder y finalizar compras, mientras que los usuarios con rol Admin no tienen permiso para utilizar este endpoint.
+      security:
+      - sessionAuth: []
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        description: El ID del Carrito
+        schema:
+          type: string
+          example: 64b4d6f55c4eaf0012e4b765
+      responses:
+        '201':
+          description: Compra completada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Compra completada con éxito"
+                  data:
+                    $ref: '#/components/schemas/Ticket'
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-21T14:09:38.106Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b831c5da16170698d64bd7/purchase"
+                  method:
+                    type: string
+                    example: "POST"
+        '204':
+          description: Carrito se encuentra sin productos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El carrito con ID 66b831c5da16170698d64bd7 se encuentra sin productos"
+                  data:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-21T14:16:31.841Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66b831c5da16170698d64bd7/purchase"
+                  method:
+                    type: string
+                    example: "POST"
+        '400':
+          description: El ID no contiene un formato válido de MongoDB
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El ID no contiene un formato válido de MongoDB"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '64b4d6f55c4eaf0012e4b765dd' in the 'cartId' field."
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765dd/purchase"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-21T14:27:42.043Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765dd/purchase"
+                  method:
+                    type: string
+                    example: "POST"
+        '404':
+          description: No se encontró el carrito solicitado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No se encontró el carrito solicitado"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "No se encontró el cart con ID 64b4d6f55c4eaf0012e4b765"
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/carts/64b4d6f55c4eaf0012e4b765/purchase"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-21T13:59:17.211Z"
+                  path:
+                    type: string
+                    example: "/api/carts/64b4d6f55c4eaf0012e4b765/purchase"
+                  method:
+                    type: string
+                    example: "POST"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "cartId is not defined"
+                          method:
+                            type: string
+                            example: "POST"
+                          path:
+                            type: string
+                            example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-21T14:32:10.123Z"
+                  path:
+                    type: string
+                    example: "/api/carts/66c3febc7f7b23dd210d4c88"
+                  method:
+                    type: string
+                    example: "POST"
 components:
   schemas:
     Product:
@@ -1494,3 +1674,22 @@ components:
           type: string
           example: "Electrónica"
           description: "La categoría a la que pertenece el producto."
+    Ticket:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "66c5f5221c363b8572d59aaa"
+        code:
+          type: string
+          example: "fac9cd19-dc70-4c95-9e3c-80c2ee822c52"
+        amount:
+          type: integer
+          example: 167
+        purchaser:
+          type: string
+          example: "aquinocesarignacio@gmail.com"
+        purchase_datetime:
+          type: string
+          format: date-time
+          example: "2024-08-21T14:02:34.834Z"
