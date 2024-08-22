@@ -20,7 +20,8 @@ const errorsDictionary = {
     PRODUCT_NOT_FOUND: { code: 14, status: 404, message: 'No se encontró el producto solicitado' },
     CART_NOT_FOUND: { code: 15, status: 404, message: 'No se encontró el carrito solicitado' },
     CANNOT_ADD_OWN_PRODUCT: { code: 12, status: 400, message: 'No puede agregar su propio producto a su carrito' },
-
+    RESOURCE_ALREADY_EXISTS: { code: 17, status: 409, message: 'El recurso ya existe' },
+    
     // Errores de enrutamiento y página
     ROUTING_ERROR: { code: 1, status: 404, message: 'No se encuentra el endpoint solicitado' },
     PAGE_NOT_FOUND: { code: 7, status: 404, message: 'No se encuentra la página solicitada' },

@@ -1,5 +1,6 @@
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
+import { modelCart } from "../models/carts.model.js";
 import { cartService, productService, ticketService, userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
 import { v4 as uuidv4 } from "uuid";
@@ -45,14 +46,29 @@ const handleAddProductCartById = async (req, res, next) => {
         const { cartId, productId } = req.params;
         const { email } = req.session.user;
         const product = await productService.getProductById(productId);
+        let message;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExists = await productService.getProductById(productId);
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExists) {
+            message = `El producto con ID ${productId} no se encontro`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         if (product?.owner === email) {
-            req.logger.warning(`El usuario con correo ${email} intentó agregar su propio producto con ID ${productId} al carrito.`);
-            throw new CustomError(
-                errorsDictionary.CANNOT_ADD_OWN_PRODUCT,
-                {
-                    message: `El producto seleccionado con ID ${productId} le pertenece al usuario con correo ${email}.`
-                }
-            );
+            message = `El usuario con correo ${email} intentó agregar su propio producto con ID ${productId} al carrito.`
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CANNOT_ADD_OWN_PRODUCT, { message });
+        }
+        const isProductInCart = await cartService.checkProductExistsInCart(cartId, productId);
+        if (isProductInCart) {
+            message = `El producto con ID ${productId} ya existe en el carrito `
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.RESOURCE_ALREADY_EXISTS, { message })
         }
         const data = await cartService.addProductCart(cartId, productId);
         sendResponse(res, 201, true, "Producto agregado a carrito", data)
@@ -107,12 +123,11 @@ const handleCompletePurchase = async (req, res, next) => {
             const message = `No se encontro el cart con ID ${cartId}`
             req.logger.warning(message)
             throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message })
-            // return sendResponse(res, 404, false, 'Carrito no encontrado');
         }
         if (!cart.products.length) {
             const message = `El carrito con ID ${cartId} se encuentra sin productos`;
             req.logger.warning(message);
-            throw new CustomError(errorsDictionary.EMPTY_CART,{message})
+            throw new CustomError(errorsDictionary.EMPTY_CART, { message })
         }
         const ticket = {
             code: uuidv4(),
@@ -142,11 +157,7 @@ const handleCompletePurchase = async (req, res, next) => {
     } catch (error) {
         req.logger.warning(`Error al completar la compra ${error.message}`);
         next(error);
-        /*console.log('Error al completar la compra', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error al completar la compra', errorData);*/
+
     }
 };
 
