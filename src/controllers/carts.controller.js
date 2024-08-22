@@ -1,6 +1,5 @@
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
-import { modelCart } from "../models/carts.model.js";
 import { cartService, productService, ticketService, userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
 import { v4 as uuidv4 } from "uuid";
@@ -77,14 +76,27 @@ const handleAddProductCartById = async (req, res, next) => {
     }
 }
 
-const handleDeleteProductCartById = async (req, res) => {
+const handleDeleteProductCartById = async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
+        let message;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExistsCart = await cartService.checkProductExistsInCart(cartId, productId);
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExistsCart) {
+            message = `El producto con ID ${productId} no existe en el carrito`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         const data = await cartService.deleteProductFromCartById(cartId, productId);
         sendResponse(res, 200, true, "Producto eliminado de carrito", data)
-    } catch ({ message }) {
-        console.error('Error al eliminar producto de carrito:', message);
-        sendResponse(res, 500, false, message)
+        req.logger.info(`El usuario ${req.user.email} elimino el producto con ID ${productId} de su carrito`);
+    } catch (error) {
+        next(error)
     }
 }
 

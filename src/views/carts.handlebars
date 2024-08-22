@@ -1,4 +1,3 @@
-
 <div>
     <h1>Cart</h1>
     <p>ID Cart:{{user.cart_id}}</p>
@@ -14,41 +13,26 @@
                 <th style="border: 1px solid #ddd; padding: 8px;">$</th>
                 <th style="border: 1px solid #ddd; padding: 8px;">Stock</th>
                 <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">-</th>
             </tr>
         </thead>
         <tbody>
             {{#each products}}
             <tr>
+                <input type="hidden" value="{{_id}}">
                 <td style="border: 1px solid #ddd; padding: 8px;"><img src="/static/img/{{thumbnail}}" alt=""
                         style="width: 5rem;"></td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{title}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{price}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{stock}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{quantity}}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;"><button class="btnDeleteProduct">Eliminar</button>
+                </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
-    
+
 </div>
 
-<script>
-    const btnEndBuy = document.querySelector("#btnEndBuy");
-
-    btnEndBuy.addEventListener("click", async (e) => {
-        const cartId = document.querySelector("#cartId").value;
-        const response = await fetch(`/api/carts/${cartId}/purchase`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-        const responseData = await response.json()
-        if (responseData.status) {
-            window.location.href = `/ticket/${responseData.data._id}`;
-        }
-        else {
-            alert(responseData.message);
-        }
-    })
-</script>
+<script src="/static/js/cart/cart.js"></script>

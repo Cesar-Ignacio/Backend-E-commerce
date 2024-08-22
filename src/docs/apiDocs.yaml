@@ -1789,6 +1789,188 @@ paths:
                   method:
                     type: string
                     example: "POST"
+    delete:
+      tags:
+      - Cart
+      summary: Eliminar producto de un carrito
+      description: Este endpoint permite eliminar un producto de un carrito de comprar específicp. Para hacerlo, es necesario enviar un ID válido del carrito y del producto.  Solo los usuarios con roles de Usuario o Premium están autorizados para utilizar este recurso, lo que les permite eliminar un productos de un carrito. Los usuarios con rol Admin no tienen acceso a este endpoint.
+      security: 
+      - sessionAuth: []
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        description: EL ID del carrito
+        schema:
+          type: string
+          example: 64b4d6f55c4eaf0012e4b765
+      - name:  productId
+        in: path
+        required: true
+        description: El ID del producto
+        schema:
+          type: string
+          example: 64b4d6f55c4eaf0012e4b765
+      responses:
+        '200':
+          description: Producto eliminado de carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto eliminado de carrito
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 66b831c5da16170698d64bd7
+                      _user_id:
+                        type: string
+                        example: 66b831c5da16170698d64bd5
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: 664e9a37763144e6f5951fa5
+                            quantity:
+                              type: integer
+                              example: 1
+                      __v:
+                        type: integer
+                        example: 0
+                  timestamp:
+                    type: string
+                    example: 2024-08-22T21:06:14.881Z
+                  path:
+                    type: string
+                    example: /api/carts/66b831c5da16170698d64bd7/product/6655f2e1838f6059080ed4f8
+                  method:
+                    type: string
+                    example: DELETE
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No se encontró el recurso solicitado"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "No se encontró el recurso con ID {resourceId}"
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/{resource}/{resourceId}/related/{relatedId}"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-22T20:59:39.383Z"
+                  path:
+                    type: string
+                    example: "/api/{resource}/{resourceId}/related/{relatedId}"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '400':
+          description: Parámetro inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "El ID no contiene un formato válido de MongoDB"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "Invalid ID: '{invalidId}' in the '{fieldName}' field."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/{resource}/{invalidId}/related/{relatedId}"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-22T21:02:46.520Z"
+                  path:
+                    type: string
+                    example: "/api/{resource}/{invalidId}/related/{relatedId}"
+                  method:
+                    type: string
+                    example: "DELETE"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Error en el servidor"
+                  data:
+                    type: object
+                    properties:
+                      errorDescription:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "An unexpected error occurred while processing the request."
+                          method:
+                            type: string
+                            example: "DELETE"
+                          path:
+                            type: string
+                            example: "/api/{resource}/{resourceId}/related/{relatedId}"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-08-22T21:12:56.728Z"
+                  path:
+                    type: string
+                    example: "/api/{resource}/{resourceId}/related/{relatedId}"
+                  method:
+                    type: string
+                    example: "DELETE"
 
 components:
   schemas:
