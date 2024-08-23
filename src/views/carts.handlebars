@@ -1,3 +1,36 @@
+<style>
+    .purchase-summary {
+        border: 1px solid #ddd;
+        padding: 16px;
+        margin: 1rem 0;
+        background-color: #f9f9f9;
+        width: 100%;
+        max-width: 300px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .purchase-summary strong {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .purchase-summary .total {
+        margin-top: 16px;
+    }
+
+    .purchase-summary .total strong {
+        font-size: 20px;
+        color: #333;
+    }
+
+    .purchase-summary #total {
+        font-size: 24px;
+        color: #e91e63;
+    }
+</style>
 <div>
     <h1>Cart</h1>
     <p>ID Cart:{{user.cart_id}}</p>
@@ -5,6 +38,12 @@
     <hr>
     <h2>Producto</h2>
     <button style="padding: 0.5em 2em;" id="btnEndBuy">Finalizar compra</button>
+    <div class="purchase-summary" id="prueba">
+        <strong>Resumen de compra</strong>
+        <div class="total">
+            <strong>Total: $<span id="total"></span></strong>
+        </div>
+    </div>
     <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr style="background-color: #f2f2f2;">
@@ -23,9 +62,16 @@
                 <td style="border: 1px solid #ddd; padding: 8px;"><img src="/static/img/{{thumbnail}}" alt=""
                         style="width: 5rem;"></td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{title}}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{price}}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;" class="price">{{price}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{stock}}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{quantity}}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                    <button class="btnDecrement"
+                        style="padding: 5px 10px; border: none; background-color: #f0f0f0; cursor: pointer;">-</button>
+                    <input type="text" name="" id="" value="{{quantity}}" readonly
+                        style="width: 40px; text-align: center; margin: 0 5px; border: 1px solid #ddd; padding: 5px;">
+                    <button class="btnIncrement"
+                        style="padding: 5px 10px; border: none; background-color: #f0f0f0; cursor: pointer;">+</button>
+                </td>
                 <td style="border: 1px solid #ddd; padding: 8px;"><button class="btnDeleteProduct">Eliminar</button>
                 </td>
             </tr>

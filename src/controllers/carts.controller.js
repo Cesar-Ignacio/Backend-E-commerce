@@ -100,15 +100,27 @@ const handleDeleteProductCartById = async (req, res, next) => {
     }
 }
 
-const handleUpdateProductQuantity = async (req, res) => {
+const handleUpdateProductQuantity = async (req, res,next) => {
     try {
         const { cartId, productId } = req.params;
         const { quantity } = req.body;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExistsCart = await cartService.checkProductExistsInCart(cartId, productId);
+        let message;
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExistsCart) {
+            message = `El producto con ID ${productId} no existe en el carrito`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         const data = await cartService.updateProductQuantity(cartId, productId, quantity);
         sendResponse(res, 200, true, "Cantidad actulizada", data)
-    } catch ({ message }) {
-        console.error('Error al actualizar cantidad de producto:', message);
-        sendResponse(res, 500, false, message)
+    } catch (error) {
+        next(error);
     }
 }
 
