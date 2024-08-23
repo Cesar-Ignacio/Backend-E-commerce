@@ -16,7 +16,7 @@ routes.get("/:cartId", validateObjectIds, cartController.handleGetCartById)
 routes.post("/:userId", handlePolice(["USER", "PREMIUM"]), validateObjectIds, cartController.handleCreateCart)
 
 /**Finalizar comprar */
-routes.post("/:cartId/purchase", validateObjectIds, cartController.handleCompletePurchase)
+routes.post("/:cartId/purchase", handlePolice(["USER", "PREMIUM"]), validateObjectIds, cartController.handleCompletePurchase)
 
 /**Agregamos un producto en un carrito */
 routes.post("/:cartId/product/:productId", handlePolice(["USER", "PREMIUM"]), validateObjectIds, cartController.handleAddProductCartById)

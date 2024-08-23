@@ -86,4 +86,15 @@ export class CartDao {
             throw error
         }
     }
+
+    async getByCartIdAndProductId(cartId,productId)
+    {
+        try {
+            const cart = await modelCart.findOne({ _id: cartId, "products._id": productId }).lean();
+            return cart;
+        } catch (error) {
+            throw error
+        }
+    }
+
 }

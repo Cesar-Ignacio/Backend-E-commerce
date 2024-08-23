@@ -45,14 +45,29 @@ const handleAddProductCartById = async (req, res, next) => {
         const { cartId, productId } = req.params;
         const { email } = req.session.user;
         const product = await productService.getProductById(productId);
+        let message;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExists = await productService.getProductById(productId);
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExists) {
+            message = `El producto con ID ${productId} no se encontro`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         if (product?.owner === email) {
-            req.logger.warning(`El usuario con correo ${email} intentó agregar su propio producto con ID ${productId} al carrito.`);
-            throw new CustomError(
-                errorsDictionary.CANNOT_ADD_OWN_PRODUCT,
-                {
-                    message: `El producto seleccionado con ID ${productId} le pertenece al usuario con correo ${email}.`
-                }
-            );
+            message = `El usuario con correo ${email} intentó agregar su propio producto con ID ${productId} al carrito.`
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CANNOT_ADD_OWN_PRODUCT, { message });
+        }
+        const isProductInCart = await cartService.checkProductExistsInCart(cartId, productId);
+        if (isProductInCart) {
+            message = `El producto con ID ${productId} ya existe en el carrito `
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.RESOURCE_ALREADY_EXISTS, { message })
         }
         const data = await cartService.addProductCart(cartId, productId);
         sendResponse(res, 201, true, "Producto agregado a carrito", data)
@@ -61,26 +76,51 @@ const handleAddProductCartById = async (req, res, next) => {
     }
 }
 
-const handleDeleteProductCartById = async (req, res) => {
+const handleDeleteProductCartById = async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
+        let message;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExistsCart = await cartService.checkProductExistsInCart(cartId, productId);
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExistsCart) {
+            message = `El producto con ID ${productId} no existe en el carrito`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         const data = await cartService.deleteProductFromCartById(cartId, productId);
         sendResponse(res, 200, true, "Producto eliminado de carrito", data)
-    } catch ({ message }) {
-        console.error('Error al eliminar producto de carrito:', message);
-        sendResponse(res, 500, false, message)
+        req.logger.info(`El usuario ${req.user.email} elimino el producto con ID ${productId} de su carrito`);
+    } catch (error) {
+        next(error)
     }
 }
 
-const handleUpdateProductQuantity = async (req, res) => {
+const handleUpdateProductQuantity = async (req, res,next) => {
     try {
         const { cartId, productId } = req.params;
         const { quantity } = req.body;
+        const cartExists = await cartService.getCartById(cartId);
+        const productExistsCart = await cartService.checkProductExistsInCart(cartId, productId);
+        let message;
+        if (!cartExists) {
+            message = `No se encontro el carrito con ID ${cartId}`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message });
+        }
+        if (!productExistsCart) {
+            message = `El producto con ID ${productId} no existe en el carrito`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.PRODUCT_NOT_FOUND, { message })
+        }
         const data = await cartService.updateProductQuantity(cartId, productId, quantity);
         sendResponse(res, 200, true, "Cantidad actulizada", data)
-    } catch ({ message }) {
-        console.error('Error al actualizar cantidad de producto:', message);
-        sendResponse(res, 500, false, message)
+    } catch (error) {
+        next(error);
     }
 }
 
@@ -99,12 +139,19 @@ const handleDeleteAllProductsCart = async (req, res, next) => {
     }
 }
 
-const handleCompletePurchase = async (req, res) => {
+const handleCompletePurchase = async (req, res, next) => {
     try {
         const { cartId } = req.params;
         const cart = await cartService.getCartById(cartId);
         if (!cart) {
-            return sendResponse(res, 404, false, 'Carrito no encontrado');
+            const message = `No se encontro el cart con ID ${cartId}`
+            req.logger.warning(message)
+            throw new CustomError(errorsDictionary.CART_NOT_FOUND, { message })
+        }
+        if (!cart.products.length) {
+            const message = `El carrito con ID ${cartId} se encuentra sin productos`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.EMPTY_CART, { message })
         }
         const ticket = {
             code: uuidv4(),
@@ -131,12 +178,10 @@ const handleCompletePurchase = async (req, res) => {
         const data = await ticketService.createTicket(ticket);
         sendResponse(res, 201, true, "Compra completada con éxito", data);
 
-    } catch ({ message }) {
-        console.log('Error al completar la compra', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error al completar la compra', errorData);
+    } catch (error) {
+        req.logger.warning(`Error al completar la compra ${error.message}`);
+        next(error);
+
     }
 };
 
