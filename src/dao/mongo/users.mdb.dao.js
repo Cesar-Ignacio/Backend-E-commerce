@@ -9,14 +9,14 @@ export class UsersDao {
 
     async create(userData) {
         try {
-            const existeUser = await modelUser.findOne({ email: userData.email });
+            /*const existeUser = await modelUser.findOne({ email: userData.email });
             if (existeUser) {
                 throw new Error("El email ya esta registrado")
-            }
+            }*/
             const user = await modelUser.create(userData);
             return user.toObject();
         } catch (error) {
-            console.error("Error al crear usuario", error)
+            // console.error("Error al crear usuario", error)
             throw error;
         }
     }
@@ -50,6 +50,14 @@ export class UsersDao {
             return user
         } catch (error) {
             console.error("Error al buscar usuario", error)
+            throw error;
+        }
+    }
+
+    async delete(userId) {
+        try {
+            return await modelUser.findByIdAndDelete(userId);
+        } catch (error) {
             throw error;
         }
     }

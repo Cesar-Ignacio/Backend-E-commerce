@@ -5,8 +5,9 @@ import { userService } from "../services/index.js";
 import { hashPassword } from "../utils/bcrypt.js";
 import sendResponse from "../utils/sendResponse.js";
 
-const handleCreateUserPassport = async (req, res) => {
+const handleCreateUserPassport = async (req, res, next) => {
     try {
+
         const { message } = req.authInfo;
         const data = await userService.createUser(req.user);
         req.session.user = data;
@@ -15,12 +16,10 @@ const handleCreateUserPassport = async (req, res) => {
             url: '/'
         }
         sendResponse(res, 201, true, message, userData)
-    } catch ({ message }) {
-        console.error('Error al crear Usuario', message);
-        const errorData = {
-            error: message,
-        };
-        sendResponse(res, 500, false, 'Error en el servidor', errorData);
+        req.logger.info(`Se creo un nuevo usuario con email ${data.email}`)
+    } catch (error) {
+        req.logger.warning(`Error al crear usuario ${error.message}`);
+        next(error);
     }
 }
 
@@ -31,7 +30,7 @@ const hadlePasswordReset = async (req, res, next) => {
         const newHasPassword = await hashPassword(password);
         const updateUser = await userService.changeUserPassword(_id, newHasPassword);
         req.logger.info(`${updateUser.email} cambio su contraseña exitosamente`)
-        sendResponse(res, 200, true, "Nueva contraseña creada", { url:"/login" });
+        sendResponse(res, 200, true, "Nueva contraseña creada", { url: "/login" });
     } catch (error) {
         next(error);
     }

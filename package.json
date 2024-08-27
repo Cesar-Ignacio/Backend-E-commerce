@@ -38,6 +38,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "dotenv": "^16.4.5"
+    "chai": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "mocha": "^10.7.3",
+    "supertest": "^7.0.0"
   }
 }
