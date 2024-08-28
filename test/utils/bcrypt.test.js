@@ -1,8 +1,6 @@
 import Assert from 'assert'
-import mongoose from 'mongoose'
-import { UsersDao } from '../src/dao/mongo/users.mdb.dao.js';
-import MongoSingleton from '../src/db/mongo.singleton.js'
-import { checkPassword, hashPassword } from '../src/utils/bcrypt.js';
+import MongoSingleton from '../../src/db/mongo.singleton.js'
+import { checkPassword, hashPassword } from '../../src/utils/bcrypt.js';
 
 MongoSingleton.getInstance();
 

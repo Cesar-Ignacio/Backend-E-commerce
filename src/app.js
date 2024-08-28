@@ -79,6 +79,7 @@ app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 /**Middleware de manejo de errores */
 app.use(errorHandle)
 
+
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, async (req) => {
   MongoSingleton.getInstance();
@@ -88,6 +89,9 @@ const httpServer = app.listen(config.PORT, async (req) => {
 /**Inicio socket */
 const socketServer = initSocketServer(httpServer);
 app.set('socketServer', socketServer);
+
+
+export default app;
 
 
 

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import MongoSingleton from "../src/db/mongo.singleton.js";
-import { UsersDao } from "../src/dao/mongo/users.mdb.dao.js";
+import MongoSingleton from "../../src/db/mongo.singleton.js";
+import { UsersDao } from "../../src/dao/mongo/users.mdb.dao.js";
 
 
 const userData = {
