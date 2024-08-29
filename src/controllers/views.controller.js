@@ -46,7 +46,7 @@ export const renderViewTickets = async (req, res) => {
 }
 
 export const renderViewPasswordReset = async (req, res) => {
-    res.status(200).render('PasswordReset');
+    res.status(200).render('passwordReset');
 }
 
 export const renderViewNewPasswordEmail=async(req,res)=>{
