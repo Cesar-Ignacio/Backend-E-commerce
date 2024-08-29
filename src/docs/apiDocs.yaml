@@ -4,7 +4,10 @@ info:
   description: Esta documentación abarca todos los endpoints disponibles en la API de Ecommerce, proporcionando detalles sobre su uso y funcionalidades.
   version: 1.0.0
 servers:
-- url: http://localhost:8080
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://backend-e-commerce-y9ud.onrender.com
+    description: Production server
 tags:
 - name: Products
   description: Endpoints relacionados con productos

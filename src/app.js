@@ -73,7 +73,7 @@ app.use("/api/emails", routesEmail)
 app.use(viewsRoutes);
 
 /**Configuración de swagger */
-const specs = yaml.load('./src/docs/apiDocs.yaml');
+const specs = yaml.load(`${config.DOC_API_DIR}`);
 app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 /**Middleware de manejo de errores */
