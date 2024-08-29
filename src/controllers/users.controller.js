@@ -7,7 +7,6 @@ import sendResponse from "../utils/sendResponse.js";
 
 const handleCreateUserPassport = async (req, res, next) => {
     try {
-
         const { message } = req.authInfo;
         const data = await userService.createUser(req.user);
         req.session.user = data;

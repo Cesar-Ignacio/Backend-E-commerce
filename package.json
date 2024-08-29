@@ -7,7 +7,11 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "node --watch src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:utils:bcrypt": "npx mocha test/utils/bcrypt.test.js",
+    "test:routes:product": "npx mocha test/routes/product.test.js",
+    "test:dao:user": "npx mocha test/dao/userDao.test.js"
+    
   },
   "author": "",
   "license": "ISC",

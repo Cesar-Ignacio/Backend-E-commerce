@@ -73,11 +73,12 @@ app.use("/api/emails", routesEmail)
 app.use(viewsRoutes);
 
 /**Configuración de swagger */
-const specs = yaml.load('./src/docs/apiDocs.yaml');
+const specs = yaml.load(`${config.DOC_API_DIR}`);
 app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 /**Middleware de manejo de errores */
 app.use(errorHandle)
+
 
 /**Inicio de servidor */
 const httpServer = app.listen(config.PORT, async (req) => {
@@ -88,6 +89,9 @@ const httpServer = app.listen(config.PORT, async (req) => {
 /**Inicio socket */
 const socketServer = initSocketServer(httpServer);
 app.set('socketServer', socketServer);
+
+
+export default app;
 
 
 
