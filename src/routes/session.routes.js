@@ -1,4 +1,4 @@
-import { Router } from "express";
+import e, { Router } from "express";
 import passport from "passport";
 import sessionController from "../controllers/sessions.controller.js";
 import { initAuthStrategies, passportCall } from "../auth/passport.strategies.js";
@@ -8,6 +8,7 @@ import { handlePolice } from "../middleware/handlePolice.middleware.js";
 import sendResponse from "../utils/sendResponse.js";
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
+import { userService } from "../services/index.js";
 
 const routesSession = Router();
 
@@ -20,31 +21,7 @@ routesSession.get('/current', handlePolice(["USER", "PREMIUM", "ADMIN"]), sessio
 routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user'] }), async (req, res) => {
 });
 
-routesSession.get('/ghlogincallback', passportCall('ghlogin'), async (req, res) => {
-    try {
-        // req.user es inyectado AUTOMATICAMENTE por Passport al parsear el done()
-        req.session.user = req.user;
-        req.session.save(err => {
-            if (err) {
-                const errordData = {
-                    method: req.method,
-                    action: "Auntenticacion GitHub",
-                    url: req.url,
-                    message: err.message
-                }
-                return next(new CustomError(errorsDictionary.INTERNAL_ERROR, errordData));
-            }
-            req.logger.info(`inicio de sesion ${req.session.user.email}`)
-            res.redirect('/');
-        });
-    } catch (error) {
-        req.logger.warning(`inicio de session ${error.message}` )
-        error.method = req.method
-        error.action = "Auntenticacion GitHub";
-        error.url = req.url;
-        next(new CustomError(errorsDictionary.INTERNAL_ERROR, error));
-    }
-});
+routesSession.get('/ghlogincallback', passportCall('ghlogin'), sessionController.handleLoginPassportGitHub)
 
 routesSession.post("/logout", handlePolice(["USER", "PREMIUM", "ADMIN"]), sessionController.handleLogout)
 
