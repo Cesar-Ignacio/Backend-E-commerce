@@ -51,7 +51,7 @@ export class ProductsDao {
 
     async getById(productId) {
         try {
-            const product = await modelProduct.findById(productId);
+            const product = await modelProduct.findById(productId).lean();
             return product;
         } catch (error) {
             throw error;

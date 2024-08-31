@@ -18,8 +18,7 @@ routesSession.post('/login', validateRequest(loginSchema), passportCall('login')
 
 routesSession.get('/current', handlePolice(["USER", "PREMIUM", "ADMIN"]), sessionController.hadleCurrent)
 
-routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user'] }), async (req, res) => {
-});
+routesSession.get('/ghlogin', passport.authenticate('ghlogin', { scope: ['user'] }), async (req, res) => {});
 
 routesSession.get('/ghlogincallback', passportCall('ghlogin'), sessionController.handleLoginPassportGitHub)
 

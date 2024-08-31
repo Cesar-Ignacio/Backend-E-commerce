@@ -52,4 +52,13 @@ const handleUserRoleChange = async (req, res, next) => {
     }
 }
 
-export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset }
+const handleDocumentUpload = async (req, res, next) => {
+    try {
+        console.log(req.files);
+        sendResponse(res, 200, "Hola quieres subir un archivo")
+    } catch (error) {
+        next(error);
+    }
+}
+
+export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload }

@@ -20,8 +20,12 @@ export const renderViewChat = (req, res) => {
 
 export const renderViewProductDetails = async (req, res) => {
     const { productId } = req.params;
-    const datas = await productService.getProductById(productId);
-    res.status(200).render('productDetails', datas);
+    const product = await productService.getProductById(productId);
+    const data={
+        ...product,
+        cart_id:req.session.user.cart_id
+    }  
+    res.status(200).render('productDetails', data);
 }
 
 export const renderViewCarts = async (req, res) => {
@@ -49,6 +53,6 @@ export const renderViewPasswordReset = async (req, res) => {
     res.status(200).render('passwordReset');
 }
 
-export const renderViewNewPasswordEmail=async(req,res)=>{
+export const renderViewNewPasswordEmail = async (req, res) => {
     res.status(200).render('newPasswordEmailTemplate');
 }
