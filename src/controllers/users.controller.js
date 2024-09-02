@@ -54,8 +54,16 @@ const handleUserRoleChange = async (req, res, next) => {
 
 const handleDocumentUpload = async (req, res, next) => {
     try {
-        console.log(req.files);
-        sendResponse(res, 200, "Hola quieres subir un archivo")
+        const { userId } = req.params;
+        const documents = req.files.map(({ originalname, path }) => {
+            return {
+                name: originalname,
+                reference: path
+            }
+        })
+        const updatedUser= await userService.addDocumentToUserDocumentsField(userId,documents)
+        req.logger.info(`El usuario con el correo x ha cargado documentos para solicitar la actualización a Premium.`);
+        sendResponse(res, 200, "Hola quieres subir un archivo", updatedUser)
     } catch (error) {
         next(error);
     }

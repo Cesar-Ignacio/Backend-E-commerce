@@ -46,4 +46,10 @@ export class UserRepository {
         return new UserDTO(updateUser);
     }
 
+    async addDocumentToUserDocumentsField(userId,documents)
+    {
+        const updatedUser= await this.daoUser.addDocument(userId,documents)
+        return new UserDTO(updatedUser)
+    }
+
 }

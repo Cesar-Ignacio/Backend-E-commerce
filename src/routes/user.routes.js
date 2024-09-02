@@ -6,7 +6,7 @@ import { registerSchema } from "../schema/register.schema.js";
 import validateObjectIds from "../middleware/validateId.middleware.js";
 import { verifyToken } from "../middleware/verifyToken.middleware.js";
 import { handlePolice } from "../middleware/handlePolice.middleware.js";
-import { validateImageUpload } from "../middleware/validateImageUpload.middleware.js";
+import { validateFileUpload } from "../middleware/validateImageUpload.middleware.js";
 import uploader from "../utils/uploader.js";
 
 const routesUser = Router();
@@ -19,6 +19,6 @@ routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset)
 
 routesUser.put('/premium/:userId', handlePolice(["ADMIN"]), validateObjectIds, userController.handleUserRoleChange);
 
-routesUser.post('/:userId/documents', validateImageUpload(uploader.document, 'array', 'document'), userController.handleDocumentUpload)
+routesUser.post('/:userId/documents', validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
 
 export default routesUser;

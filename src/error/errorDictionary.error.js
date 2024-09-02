@@ -27,7 +27,13 @@ const errorsDictionary = {
     PAGE_NOT_FOUND: { code: 7, status: 404, message: 'No se encuentra la página solicitada' },
 
     // Respuesta exitosa pero sin contenido
-    EMPTY_CART: { code: 16, status: 204, message: 'El carrito está vacío' }
+    EMPTY_CART: { code: 16, status: 204, message: 'El carrito está vacío' },
+
+    // Errores de Multer
+    MULTER_FILE_TOO_LARGE: { code: 18, status: 400, message: 'El archivo es demasiado grande' },
+    MULTER_TOO_MANY_FILES: { code: 19, status: 400, message: 'Se han subido demasiados archivos' },
+    MULTER_INVALID_FILE_TYPE: { code: 20, status: 400, message: 'Tipo de archivo no permitido' },
+    MULTER_LIMIT_UNEXPECTED_FILE: { code: 21, status: 400, message: 'Se recibió un archivo inesperado' }
 };
 
 

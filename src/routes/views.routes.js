@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { response, Router } from "express";
 import { renderViewTickets, renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister, renderViewPasswordReset, renderViewNewPasswordEmail } from "../controllers/views.controller.js";
 import { handlePolice } from "../middleware/handlePolice.middleware.js";
 import { verifyToken } from "../middleware/verifyToken.middleware.js";
@@ -24,5 +24,9 @@ routes.get("/passwordReset", handlePolice(["PUBLIC"]), renderViewPasswordReset);
 routes.get("/newPasswordEmailTemplate", verifyToken, renderViewNewPasswordEmail);
 
 routes.get("/ticket/:ticketId", handlePolice(["USER", "PREMIUM"]), renderViewTickets);
+
+routes.get("/premiumDocsUpload",(req,res)=>{
+    res.render('premiumDocsUpload')
+})
 
 export default routes;
