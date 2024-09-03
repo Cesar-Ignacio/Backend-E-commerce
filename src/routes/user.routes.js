@@ -19,6 +19,6 @@ routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset)
 
 routesUser.put('/premium/:userId', handlePolice(["ADMIN"]), validateObjectIds, userController.handleUserRoleChange);
 
-routesUser.post('/:userId/documents', validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
+routesUser.post('/:userId/documents',handlePolice(["USER","PREMIUM"]), validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
 
 export default routesUser;

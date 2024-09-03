@@ -25,6 +25,6 @@ routes.get("/newPasswordEmailTemplate", verifyToken, renderViewNewPasswordEmail)
 
 routes.get("/ticket/:ticketId", handlePolice(["USER", "PREMIUM"]), renderViewTickets);
 
-routes.get("/premiumDocsUpload", renderViewPremiumDocsUpload)
+routes.get("/premiumDocsUpload", handlePolice(["USER", "PREMIUM"]), renderViewPremiumDocsUpload)
 
 export default routes;

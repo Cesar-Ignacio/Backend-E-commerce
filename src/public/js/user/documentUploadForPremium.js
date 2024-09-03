@@ -22,6 +22,8 @@ window.onload = () => {
     console.log("Hola mundo")
 }
 
-/**Cambiar el rol del user a premium si carga los 3 docs correctamente
- * Hablitar las policas, solos los usuarios comunes o premium pueden acceder a este recurso
+/**
+ * Validar que sean tres docs
+ * Si ya cuenta con los tres documentos no podra cargar mas
+ * El usuario premium podra dejar de ser premium.
 */

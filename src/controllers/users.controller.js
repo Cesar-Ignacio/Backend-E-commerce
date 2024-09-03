@@ -55,15 +55,27 @@ const handleUserRoleChange = async (req, res, next) => {
 const handleDocumentUpload = async (req, res, next) => {
     try {
         const { userId } = req.params;
+        const foundUser = await userService.findOneById(userId);
+        if (!foundUser) {
+            req.logger.warning(`ID de usuario no encontrado: ${userId}`);
+            throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
+        }
+        if (!req.files || req.files.length === 0) {
+            req.logger.warning(`No se enviaron documentos para el usuario: ${userId}`);
+            throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message: "No se enviaron documentos" });
+        }
         const documents = req.files.map(({ originalname, path }) => {
             return {
                 name: originalname,
                 reference: path
             }
         })
-        const updatedUser = await userService.addDocumentToUserDocumentsField(userId, documents)
-        sendResponse(res, 200, true, "Ahora es usuario Premium", updatedUser)
-        req.logger.info(`El usuario con el correo ${req.session.user.email} ha cargado documentos para solicitar la actualización a Premium.`);
+        await userService.addDocumentToUserDocumentsField(userId, documents)
+        const userWithNewRole = await userService.UserRoleChange(foundUser);
+        req.session.user.role = userWithNewRole.role;
+        sendResponse(res, 200, true, "Ahora es usuario Premium", userWithNewRole)
+        req.logger.info(`El usuario con el correo ${foundUser.email} ha cargado documentos para solicitar la actualización a Premium.`);
+        req.logger.info(`Usuario ${foundUser.email} cambió de rol ${foundUser.role} a ${userWithNewRole.role} `)
     } catch (error) {
         next(error);
     }
