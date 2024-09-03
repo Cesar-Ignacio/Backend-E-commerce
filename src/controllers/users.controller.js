@@ -61,9 +61,9 @@ const handleDocumentUpload = async (req, res, next) => {
                 reference: path
             }
         })
-        const updatedUser= await userService.addDocumentToUserDocumentsField(userId,documents)
-        req.logger.info(`El usuario con el correo x ha cargado documentos para solicitar la actualización a Premium.`);
-        sendResponse(res, 200, "Hola quieres subir un archivo", updatedUser)
+        const updatedUser = await userService.addDocumentToUserDocumentsField(userId, documents)
+        sendResponse(res, 200, true, "Ahora es usuario Premium", updatedUser)
+        req.logger.info(`El usuario con el correo ${req.session.user.email} ha cargado documentos para solicitar la actualización a Premium.`);
     } catch (error) {
         next(error);
     }

@@ -1,12 +1,27 @@
-const uploadForm=document.querySelector("#uploadForm");
+const uploadForm = document.querySelector("#uploadForm");
+const documents = document.querySelector('#documents');
+const userId = document.querySelector('#userId').value;
 
-
-uploadForm.addEventListener('submit',(e)=>{
+uploadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log("Quieres enviar documentos");
-    /**Hacar toda la lógica para enviar los docs al  endpoint y proceder a guardar los docs y pasar a premium a user */
+    const formData = new FormData();
+    for (const file of documents.files) {
+        formData.append('documents', file);
+    }
+
+    const response = await fetch(`api/users/${userId}/documents`, {
+        method: 'POST',
+        body: formData
+    })
+
+    const responseData = await response.json();
+    alert(responseData.message);
 })
 
-window.onload=()=>{
+window.onload = () => {
     console.log("Hola mundo")
 }
+
+/**Cambiar el rol del user a premium si carga los 3 docs correctamente
+ * Hablitar las policas, solos los usuarios comunes o premium pueden acceder a este recurso
+*/
