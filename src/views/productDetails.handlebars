@@ -1,8 +1,9 @@
 <div>
     <h1>Product Details</h1>
-    <div  style="border: 1px solid #ccc; padding: 20px; max-width: 400px; margin: auto;">
-        <img src="/static/img/{{thumbnail}}" alt="{{title}}" style="max-width: 100%;">
+    <div style="border: 1px solid #ccc; padding: 20px; max-width: 400px; margin: auto;">
+        <img src="/static/upload/products/{{thumbnail}}" alt="{{title}}" style="max-width: 100%;">
         <input type="hidden" value={{_id}} id="idProduct">
+        <input type="hidden" value={{cart_id}} id="idCart">
         <h1 style="font-size: 24px; margin: 0 0 10px;">{{title}}</h1>
         <p style="margin: 5px 0;"><strong>Description:</strong> {{description}}</p>
         <p style="margin: 5px 0;"><strong>Price:</strong> ${{price}}</p>
@@ -14,18 +15,20 @@
         {{else}}
         <p style="margin: 5px 0;"><strong>Status:</strong> Out of stock</p>
         {{/if}}
-        <button id="buyButton" 
-            style="display: block; width: 100%; padding: 10px; background-color: #28a745; color: white; text-align: center; text-decoration: none; border-radius: 5px; margin-top: 10px;">Buy
-            Now</button>
+        <button id="buyButton"
+            style="display: block; width: 100%; padding: 10px; background-color: #28a745; color: white; text-align: center; text-decoration: none; border-radius: 5px; margin-top: 10px;">Add
+            Cart</button>
     </div>
 </div>
 
 <script>
     const btnAddCart = document.querySelector('#buyButton');
-    const idProduct=document.querySelector('#idProduct').value;
-    btnAddCart.addEventListener('click', async () => { 
-        const data = await fetch(`/api/carts/664e6f34e850e3ab7e2b8ba5/product/${idProduct}`, { method: 'POST' })
-        if (data.ok) { alert("Se agrego el producto al carrito") }
+    const idProduct = document.querySelector('#idProduct').value;
+    const idCart = document.querySelector('#idCart').value;
+    btnAddCart.addEventListener('click', async () => {
+        const response = await fetch(`/api/carts/${idCart}/product/${idProduct}`, { method: 'POST' })
+        const { message } = await response.json();
+        alert(`${message}`)
     })
 
 

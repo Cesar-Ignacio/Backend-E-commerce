@@ -43,7 +43,13 @@ const handleUserRoleChange = async (req, res, next) => {
             req.logger.warning(`ID de usuario no encontrado: ${userId}`);
             throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
         }
+        if (!foundUser.hasDocuments) {
+            const message = `El usuario ${req.session.user.email} no puede ser promovido a Premium sin haber proporcionado la documentación necesaria.`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message });
+        }
         const userWithNewRole = await userService.UserRoleChange(foundUser)
+        req.session.user.role = userWithNewRole.role
         sendResponse(res, 200, true, "Cambio de rol exitoso", { userWithNewRole })
         req.logger.info(`Usuario ${foundUser.email} cambio de rol ${foundUser.role}->${userWithNewRole.role} `)
     }
@@ -52,4 +58,32 @@ const handleUserRoleChange = async (req, res, next) => {
     }
 }
 
-export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset }
+const handleDocumentUpload = async (req, res, next) => {
+    try {
+
+        const { userId } = req.params;
+        const foundUser = await userService.findOneById(userId);
+        if (!foundUser) {
+            req.logger.warning(`ID de usuario no encontrado: ${userId}`);
+            throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
+        }
+        if (!req.files || req.files.length === 0) {
+            req.logger.warning(`No se enviaron documentos para el usuario: ${userId}`);
+            throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message: "No se enviaron documentos" });
+        }
+        const documents = req.files.map(({ originalname, path }) => {
+            return {
+                name: originalname,
+                reference: path
+            }
+        })
+        const updatedUser = await userService.addDocumentToUserDocumentsField(userId, documents)
+        req.session.user.hasDocuments = updatedUser.hasDocuments
+        sendResponse(res, 200, true, "Los documentos fueron cargados con éxito", updatedUser)
+        req.logger.info(`El usuario con el correo ${foundUser.email} ha cargado documentos para solicitar la actualización a Premium.`);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload }

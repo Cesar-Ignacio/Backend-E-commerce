@@ -51,9 +51,20 @@ export class UsersDao {
 
     async delete(userId) {
         try {
-            return await modelUser.findByIdAndDelete(userId);
+            return await modelUser.findByIdAndDelete(userId).lean();
         } catch (error) {
             throw error;
+        }
+    }
+
+    async addDocument(userId, documents) {
+        try {
+            let updatedUser = await modelUser.findByIdAndUpdate(userId, { $set: { documents: documents } }, { new: true, useFindAndModify: false }).lean();
+            const hasDocuments = updatedUser.documents && updatedUser.documents.length > 0;
+            updatedUser = await modelUser.findByIdAndUpdate(userId, { hasDocuments: hasDocuments }, { new: true, useFindAndModify: false });
+            return updatedUser;
+        } catch (error) {
+            throw error
         }
     }
 

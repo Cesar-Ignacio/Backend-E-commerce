@@ -1,5 +1,5 @@
 import express from 'express'
-import { engine } from 'express-handlebars';
+import exphbs from 'express-handlebars';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -31,7 +31,14 @@ app.use(addLogger);
 app.use(cookieParser(config.SECRET));
 
 /**Configuracion para handlebars */
-app.engine('handlebars', engine());
+const hbs = exphbs.create({
+  helpers: {
+      eq: function (a, b) {
+          return a === b;
+      }
+  }
+});
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', `${config.VIEWS_DIR}`);
 

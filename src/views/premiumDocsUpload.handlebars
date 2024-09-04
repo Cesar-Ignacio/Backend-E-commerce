@@ -1,0 +1,66 @@
+<style>
+    .container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    input[type="file"] {
+        display: block;
+        width: 100%;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+
+<div class="container">
+    <h1>Solicitar Actualización a Premium</h1>
+    <p>Por favor, carga hasta tres documentos necesarios para completar tu solicitud de actualización a Premium.</p>
+    <input type="hidden" name="" id="userId" value="{{_id}}">
+    <input type="hidden" name="" id="hasDocuments" value="{{hasDocuments}}">
+    <form id="uploadForm" action="/upload-documents" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="documents">Cargar Documentos:</label>
+            <input type="file" id="documents" name="documents" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf"
+                multiple required>
+            <small>Selecciona hasta 3 archivos.</small>
+        </div>
+
+        <button type="submit">Enviar Documentos</button>
+    </form>
+</div>
+
+<script src="/static/js/user/documentUploadForPremium.js"></script>

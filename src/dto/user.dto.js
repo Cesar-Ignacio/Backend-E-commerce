@@ -7,6 +7,7 @@ class UserDTO {
         this.cart_id = user.cart_id;
         this.password=user.password;
         this.role = user.role.toUpperCase();
+        this.hasDocuments=user.hasDocuments;
     }
 }
 

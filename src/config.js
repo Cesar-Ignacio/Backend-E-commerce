@@ -24,7 +24,7 @@ export const config = {
     GMAIL_APP_USER:process.env.GMAIL_APP_USER,
     PASS_APP_GMAIL:process.env.PASS_APP_GMAIL,
     get DOC_API_DIR(){return `${this.DIRNAME}/docs/apiDocs.yaml`},
-    get UPLOAD_DIR() { return `${this.DIRNAME}/public/img` },
+    get UPLOAD_DIR() { return `${this.DIRNAME}/public/upload` },
     get VIEWS_DIR() { return `${this.DIRNAME}/views` },
     get STATIC_DIR() { return `${this.DIRNAME}/public` }
 }

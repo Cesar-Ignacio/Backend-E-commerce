@@ -36,9 +36,20 @@ export class UserRepository {
         return new UserDTO(updateUser);
     }
 
-    async changeUserPassword(userId,password){
-        const updateUser = await this.daoUser.update(userId,{password})
+    async changeUserPassword(userId, password) {
+        const updateUser = await this.daoUser.update(userId, { password })
         return new UserDTO(updateUser);
+    }
+
+    async updateLastConnection(userId) {
+        const updateUser = await this.daoUser.update(userId, { last_connection: Date.now() })
+        return new UserDTO(updateUser);
+    }
+
+    async addDocumentToUserDocumentsField(userId,documents)
+    {
+        const updatedUser= await this.daoUser.addDocument(userId,documents)
+        return new UserDTO(updatedUser)
     }
 
 }
