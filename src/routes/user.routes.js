@@ -13,22 +13,12 @@ const routesUser = Router();
 
 initAuthStrategies();
 
-function validateFileCount(req, res, next) {
-    const files = req.files; // Asegúrate de que en el formulario usas enctype="multipart/form-data"
-
-    console.log(files)
-    /*if (!files || Object.keys(files).length !== 3) {
-        return res.status(400).json({ error: 'Debes subir exactamente 3 documentos.' });
-    }*/
-    next();
-}
-
 routesUser.post('/createUser', validateRequest(registerSchema), passportCall('register'), userController.handleCreateUserPassport);
 
 routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset);
 
 routesUser.put('/premium/:userId', handlePolice(["USER", "PREMIUM"]), validateObjectIds, userController.handleUserRoleChange);
 
-routesUser.post('/:userId/documents', handlePolice(["USER", "PREMIUM"]), validateObjectIds, validateFileCount, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
+routesUser.post('/:userId/documents', handlePolice(["USER", "PREMIUM"]), validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
 
 export default routesUser;

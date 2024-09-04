@@ -27,6 +27,6 @@ routes.get("/ticket/:ticketId", handlePolice(["USER", "PREMIUM"]), renderViewTic
 
 routes.get("/premiumDocsUpload", handlePolice(["USER", "PREMIUM"]), renderViewPremiumDocsUpload)
 
-routes.get("/premium", renderViewPremium);
+routes.get("/premium", handlePolice(["USER", "PREMIUM"]), renderViewPremium);
 
 export default routes;

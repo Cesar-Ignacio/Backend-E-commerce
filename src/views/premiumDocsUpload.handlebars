@@ -50,6 +50,7 @@
     <h1>Solicitar Actualización a Premium</h1>
     <p>Por favor, carga hasta tres documentos necesarios para completar tu solicitud de actualización a Premium.</p>
     <input type="hidden" name="" id="userId" value="{{_id}}">
+    <input type="hidden" name="" id="hasDocuments" value="{{hasDocuments}}">
     <form id="uploadForm" action="/upload-documents" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="documents">Cargar Documentos:</label>

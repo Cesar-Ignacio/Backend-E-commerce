@@ -1,8 +1,6 @@
 import { Server } from "socket.io";
-import { ProductsDao } from "./dao/mongo/products.mdb.dao.js";
 import { messageService, productService } from "./services/index.js";
 
-const pmm=new ProductsDao();
 export const initSocketServer=(httpServer)=>{
 
     const io=new Server(httpServer);

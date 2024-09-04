@@ -9,6 +9,7 @@ form.addEventListener('submit', async (e) => {
         });
         const responseData = await response.json();
         alert(responseData.message)
+        reloadPageAfterDelay(100);
     } catch (error) {
         alert('Ocurrió un error al subir los documentos.');
         console.error(error);
@@ -16,3 +17,8 @@ form.addEventListener('submit', async (e) => {
 
 })
 
+function reloadPageAfterDelay(delay = 1000) {
+    setTimeout(() => {
+        window.location.reload();
+    }, delay);
+}
