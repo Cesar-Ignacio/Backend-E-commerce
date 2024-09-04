@@ -8,7 +8,6 @@ import errorsDictionary from '../error/errorDictionary.error.js';
 export const validateFileUpload = (multerInstance, uploadType = 'single', fieldName = 'thumbnail', maxArraySize = 3) => {
     return (req, res, next) => {
         let uploadHandler;
-
         // Selección del método de subida según el tipo
         switch (uploadType) {
             case 'single':
@@ -20,9 +19,9 @@ export const validateFileUpload = (multerInstance, uploadType = 'single', fieldN
             default:
                 const errorMessage = `El tipo de carga especificado "${uploadType}" no es válido. Los valores permitidos son "single" o "array".`;
                 req.logger.warning(errorMessage);
-                return next(new CustomError(errorsDictionary.FEW_PARAMETERS, { message: errorMessage }));               
+                return next(new CustomError(errorsDictionary.FEW_PARAMETERS, { message: errorMessage }));
         }
-
+       
         // Ejecución del método seleccionado
         uploadHandler(req, res, (err) => {
             if (err instanceof multer.MulterError) {

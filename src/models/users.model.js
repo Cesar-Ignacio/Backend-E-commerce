@@ -20,7 +20,8 @@ const schema = new mongoose.Schema({
                 reference: { type: String, required: true }
             }
         ]
-    }
+    },
+    hasDocuments: { type: Boolean, default: false }
 })
 
 export const modelUser = mongoose.model(collection, schema);

@@ -1,5 +1,5 @@
 import { response, Router } from "express";
-import { renderViewTickets, renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister, renderViewPasswordReset, renderViewNewPasswordEmail, renderViewPremiumDocsUpload } from "../controllers/views.controller.js";
+import { renderViewTickets, renderViewCarts, renderViewChat, renderViewCreateProduct, renderViewHoma, renderViewLogin, renderViewProductDetails, renderViewRegister, renderViewPasswordReset, renderViewNewPasswordEmail, renderViewPremiumDocsUpload, renderViewPremium } from "../controllers/views.controller.js";
 import { handlePolice } from "../middleware/handlePolice.middleware.js";
 import { verifyToken } from "../middleware/verifyToken.middleware.js";
 
@@ -26,5 +26,7 @@ routes.get("/newPasswordEmailTemplate", verifyToken, renderViewNewPasswordEmail)
 routes.get("/ticket/:ticketId", handlePolice(["USER", "PREMIUM"]), renderViewTickets);
 
 routes.get("/premiumDocsUpload", handlePolice(["USER", "PREMIUM"]), renderViewPremiumDocsUpload)
+
+routes.get("/premium", renderViewPremium);
 
 export default routes;

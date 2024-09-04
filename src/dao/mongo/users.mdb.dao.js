@@ -57,9 +57,11 @@ export class UsersDao {
         }
     }
 
-    async addDocument(userId,documents) {
+    async addDocument(userId, documents) {
         try {
             const updatedUser = await modelUser.findByIdAndUpdate(userId, { $push: { documents: { $each: documents } } }, { new: true, useFindAndModify: false }).lean();
+            const hasDocuments = updatedUser.documents && updatedUser.documents.length > 0;
+            await modelUser.findByIdAndUpdate(userId, { hasDocuments: hasDocuments }, { new: true, useFindAndModify: false });
             return updatedUser;
         } catch (error) {
             throw error

@@ -43,7 +43,13 @@ const handleUserRoleChange = async (req, res, next) => {
             req.logger.warning(`ID de usuario no encontrado: ${userId}`);
             throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
         }
+        if (!foundUser.hasDocuments) {
+            const message = `El usuario ${req.session.user.email} no puede ser promovido a Premium sin haber proporcionado la documentación necesaria.`;
+            req.logger.warning(message);
+            throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message });
+        }
         const userWithNewRole = await userService.UserRoleChange(foundUser)
+        req.session.user.role = userWithNewRole.role
         sendResponse(res, 200, true, "Cambio de rol exitoso", { userWithNewRole })
         req.logger.info(`Usuario ${foundUser.email} cambio de rol ${foundUser.role}->${userWithNewRole.role} `)
     }
@@ -54,6 +60,7 @@ const handleUserRoleChange = async (req, res, next) => {
 
 const handleDocumentUpload = async (req, res, next) => {
     try {
+
         const { userId } = req.params;
         const foundUser = await userService.findOneById(userId);
         if (!foundUser) {
@@ -70,12 +77,9 @@ const handleDocumentUpload = async (req, res, next) => {
                 reference: path
             }
         })
-        await userService.addDocumentToUserDocumentsField(userId, documents)
-        const userWithNewRole = await userService.UserRoleChange(foundUser);
-        req.session.user.role = userWithNewRole.role;
-        sendResponse(res, 200, true, "Ahora es usuario Premium", userWithNewRole)
+        const updatedUser = await userService.addDocumentToUserDocumentsField(userId, documents)
+        sendResponse(res, 200, true, "Los documentos fueron cargados con éxito", updatedUser)
         req.logger.info(`El usuario con el correo ${foundUser.email} ha cargado documentos para solicitar la actualización a Premium.`);
-        req.logger.info(`Usuario ${foundUser.email} cambió de rol ${foundUser.role} a ${userWithNewRole.role} `)
     } catch (error) {
         next(error);
     }

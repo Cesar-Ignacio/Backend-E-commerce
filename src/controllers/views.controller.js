@@ -61,3 +61,8 @@ export const renderViewPremiumDocsUpload = async (req, res) => {
     const user = req.session.user;
     res.render('premiumDocsUpload', user)
 }
+
+export const renderViewPremium=async(req,res)=>{
+    const user=req.session.user;
+    res.render('premiumView',user);
+}
