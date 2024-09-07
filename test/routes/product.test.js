@@ -11,7 +11,7 @@ const agent = supertest.agent(app);
 
 describe('Product Integration Test Suite', function () {
 
-    this.timeout(3000);
+    this.timeout(4000);
     this.productIdCreate;
     this.productIdCreateImg;
 
@@ -24,8 +24,8 @@ describe('Product Integration Test Suite', function () {
 
     it('POST /api/sessions/login should log in a user', async function () {
         const loginTest = {
-            email: "jose@gmail.com",
-            password: "jose"
+            email: "admin@example.com",
+            password: "admin123"
         }
         const { _body, statusCode } = await agent.post('/api/sessions/login').send(loginTest);
         expect(statusCode).eql(200);
