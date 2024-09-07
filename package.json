@@ -5,12 +5,12 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file .env.production  src/app.js ",
-    "dev": "node --env-file .env --watch src/app.js",
+    "start": "node --env-file .env.prod src/app.js ",
+    "dev": "node --env-file .env.dev --watch src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:utils:bcrypt": "npx mocha test/utils/bcrypt.test.js",
-    "test:routes:product": "npx mocha test/routes/product.test.js",
-    "test:dao:user": "npx mocha test/dao/userDao.test.js"
+    "test:utils:bcrypt": "npx mocha test/utils/bcrypt.test.js --mode=dev",
+    "test:routes:product": "npx mocha test/routes/product.test.js --mode=dev ",
+    "test:dao:user": "npx mocha test/dao/userDao.test.js --mode=dev"
     
   },
   "author": "",

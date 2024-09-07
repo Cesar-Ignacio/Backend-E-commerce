@@ -3,14 +3,15 @@ import dotenv from 'dotenv';
 import { Command } from 'commander'
 
 
-dotenv.config();
-
 const commandLine = new Command();
 commandLine
-    .option('--port <port>')
-    .option('--mode <mode>')
+.option('--port <port>')
+.option('--mode <mode>')
 commandLine.parse();
 const clOptions = commandLine.opts();
+
+dotenv.config({path:`.env.${clOptions.mode}`});
+
 
 export const config = {
     PORT: process.env.PORT || clOptions.port || 5050,
