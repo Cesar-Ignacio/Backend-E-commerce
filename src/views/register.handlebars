@@ -53,10 +53,11 @@
         });
 
         const responseData= await res.json();
+        console.log(responseData)
         if (responseData.status) {
           window.location.href = responseData.data.url;
         } else {
-           info.innerText = responseData.message;
+           info.innerText = responseData.data.errorDescription.message;
         }
 
     })

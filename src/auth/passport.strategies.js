@@ -1,17 +1,11 @@
 import passport from "passport";
 import local from 'passport-local';
 import GitHubStrategy from 'passport-github2'
-import { UsersDao } from "../dao/mongo/users.mdb.dao.js";
 import { checkPassword, hashPassword } from "../utils/bcrypt.js";
 import { config } from "../config.js";
-import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
 import { userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
-import UserDTO from "../dto/user.dto.js";
 
-
-const umm = new UsersDao();
-const cmm = new CartDao();
 const localStrategy = local.Strategy;
 
 export const initAuthStrategies = () => {
