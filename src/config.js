@@ -5,12 +5,12 @@ import { Command } from 'commander'
 
 const commandLine = new Command();
 commandLine
-.option('--port <port>')
-.option('--mode <mode>')
+    .option('--port <port>')
+    .option('--mode <mode>')
 commandLine.parse();
 const clOptions = commandLine.opts();
 
-dotenv.config({path:`.env.${clOptions.mode}`});
+dotenv.config({ path: `.env.${clOptions.mode}` });
 
 
 export const config = {
@@ -22,9 +22,10 @@ export const config = {
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL,
-    GMAIL_APP_USER:process.env.GMAIL_APP_USER,
-    PASS_APP_GMAIL:process.env.PASS_APP_GMAIL,
-    get DOC_API_DIR(){return `${this.DIRNAME}/docs/apiDocs.yaml`},
+    GMAIL_APP_USER: process.env.GMAIL_APP_USER,
+    PASS_APP_GMAIL: process.env.PASS_APP_GMAIL,
+    EMAIL_CALLBACK_URL: process.env.EMAIL_CALLBACK_URL,
+    get DOC_API_DIR() { return `${this.DIRNAME}/docs/apiDocs.yaml` },
     get UPLOAD_DIR() { return `${this.DIRNAME}/public/upload` },
     get VIEWS_DIR() { return `${this.DIRNAME}/views` },
     get STATIC_DIR() { return `${this.DIRNAME}/public` }

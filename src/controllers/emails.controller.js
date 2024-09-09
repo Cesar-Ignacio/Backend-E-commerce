@@ -35,7 +35,7 @@ const handleSendResetLink = async (req, res, next) => {
                     <p>Hola,</p>
                     <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no realizaste esta solicitud, por favor ignora este correo. De lo contrario, haz clic en el botón a continuación para recuperar tu contraseña:</p>
                     <div style="text-align: center; margin: 20px 0;">
-                        <a href="http://localhost:8080/newPasswordEmailTemplate" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Recuperar contraseña</a>
+                        <a href="${config.EMAIL_CALLBACK_URL}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Recuperar contraseña</a>
                     </div>
                     <p>Gracias,</p>
                     <p>El equipo de E-commerce</p>
