@@ -24,7 +24,7 @@ export const config = {
     GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL,
     GMAIL_APP_USER: process.env.GMAIL_APP_USER,
     PASS_APP_GMAIL: process.env.PASS_APP_GMAIL,
-    EMAIL_CALLBACK_URL: process.env.EMAIL_CALLBACK_URL,
+    WHITELIST_URL:process.env.WHITELIST_URL,
     get DOC_API_DIR() { return `${this.DIRNAME}/docs/apiDocs.yaml` },
     get UPLOAD_DIR() { return `${this.DIRNAME}/public/upload` },
     get VIEWS_DIR() { return `${this.DIRNAME}/views` },

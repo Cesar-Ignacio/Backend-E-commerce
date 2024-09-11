@@ -6,7 +6,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import swaggerUiExpress from 'swagger-ui-express'
 import yaml from 'yamljs';
-
+import cors from 'cors';
 
 import { config } from './config.js';
 import { initSocketServer } from './sockets.js';
@@ -24,6 +24,19 @@ import routesMocking from './routes/mocking.routes.js';
 
 const app = express();
 
+/**CORS */
+const whitelist = ['http://localhost:5173']
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions));
+
 /**Middleware de aplicacion */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,9 +46,9 @@ app.use(cookieParser(config.SECRET));
 /**Configuracion para handlebars */
 const hbs = exphbs.create({
   helpers: {
-      eq: function (a, b) {
-          return a === b;
-      }
+    eq: function (a, b) {
+      return a === b;
+    }
   }
 });
 app.engine('handlebars', hbs.engine);
