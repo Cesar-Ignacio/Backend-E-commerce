@@ -1,9 +1,20 @@
+import { DateTime, Interval } from "luxon";
 
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
 import { userService } from "../services/index.js";
 import { hashPassword } from "../utils/bcrypt.js";
 import sendResponse from "../utils/sendResponse.js";
+
+
+const handleGetUserList = async (req, res, next) => {
+    try {
+        const users = await userService.getUserList();
+        sendResponse(res, 200, true, "Lista de usuarios", users);
+    } catch (error) {
+        next(error);
+    }
+}
 
 const handleCreateUserPassport = async (req, res, next) => {
     try {
@@ -86,4 +97,26 @@ const handleDocumentUpload = async (req, res, next) => {
     }
 }
 
-export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload }
+const handleRemoveInactiveUsers = async (req, res, next) => {
+    try {
+        const users = await userService.getUserList();
+        const now = DateTime.now();
+        users.forEach(({ last_connection, email, role }) => {
+
+            const interval = Interval.fromDateTimes(last_connection, now);
+
+            const duration = interval.toDuration(['days', 'hours', 'minutes']);
+
+            if (duration.toObject().days > 1 && role != "ADMIN") {
+                console.log(`Eliminar al user ${email} y enviar mail`);
+            }
+
+            console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
+        });
+        sendResponse(res, 200, true, "Comenzamos", users);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload, handleGetUserList, handleRemoveInactiveUsers }

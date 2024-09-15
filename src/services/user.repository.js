@@ -1,9 +1,18 @@
-import UserDTO from "../dto/user.dto.js";
+import { DateTime } from "luxon";
 
+import UserDTO from "../dto/user.dto.js";
 export class UserRepository {
     constructor(daoUser, daoCart) {
         this.daoUser = new daoUser();
         this.daoCart = new daoCart();
+    }
+
+    async getUserList() {
+        const userList = await this.daoUser.getAll();
+        const list = userList.map((user) => {
+            return new UserDTO(user).getPublicFields();
+        })
+        return list;
     }
 
     async findOneByEmail(email) {
@@ -42,13 +51,12 @@ export class UserRepository {
     }
 
     async updateLastConnection(userId) {
-        const updateUser = await this.daoUser.update(userId, { last_connection: Date.now() })
+        const updateUser = await this.daoUser.update(userId, { last_connection: DateTime.now() })
         return new UserDTO(updateUser);
     }
 
-    async addDocumentToUserDocumentsField(userId,documents)
-    {
-        const updatedUser= await this.daoUser.addDocument(userId,documents)
+    async addDocumentToUserDocumentsField(userId, documents) {
+        const updatedUser = await this.daoUser.addDocument(userId, documents)
         return new UserDTO(updatedUser)
     }
 

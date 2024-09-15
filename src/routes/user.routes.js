@@ -13,6 +13,8 @@ const routesUser = Router();
 
 initAuthStrategies();
 
+routesUser.get('/', userController.handleGetUserList);
+
 routesUser.post('/createUser', validateRequest(registerSchema), passportCall('register'), userController.handleCreateUserPassport);
 
 routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset);
@@ -20,5 +22,8 @@ routesUser.put('/passwordReset', verifyToken, userController.hadlePasswordReset)
 routesUser.put('/premium/:userId', handlePolice(["USER", "PREMIUM"]), validateObjectIds, userController.handleUserRoleChange);
 
 routesUser.post('/:userId/documents', handlePolice(["USER", "PREMIUM"]), validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
+
+routesUser.delete('/removeInactiveUsers', userController.handleRemoveInactiveUsers);
+
 
 export default routesUser;
