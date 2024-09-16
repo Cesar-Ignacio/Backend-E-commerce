@@ -103,39 +103,37 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
     try {
         const users = await userService.getUserListDev();
         const now = DateTime.now();
-        users.forEach(async ({ id, last_connection, email, role, cart_id }) => {
-            const interval = Interval.fromDateTimes(last_connection, now);
+        const inactiveUsers = [];
+        users.forEach(async (user) => {
+            const interval = Interval.fromDateTimes(user.last_connection, now);
             const duration = interval.toDuration(['days', 'hours', 'minutes']);
-            if (duration.toObject().hours >= 20 && role != "ADMIN") { 
+            if (duration.toObject().hours >= 1 && user.role != "ADMIN") {
+                inactiveUsers.push(user)
                 const response = await transport.sendMail({
                     from: `E-commerce <${config.GMAIL_APP_USER}>`,
-                    to: email,
+                    to: `${user.email}`,
                     subject: "Cuenta Eliminada por Inactividad",
                     html: `
-                      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #555;">Cuenta Eliminada por Inactividad</h2>
-                        <p>Hola,</p>
-                        <p>Lamentamos informarte que tu cuenta ha sido eliminada debido a un periodo prolongado de inactividad. Para nosotros es importante mantener la seguridad y el buen funcionamiento de nuestra plataforma.</p>
-                        <p>Si crees que esto ha sido un error o deseas reactivar tu cuenta, por favor, contáctanos lo antes posible.</p>
-                        <p>Gracias por tu comprensión.</p>
-                        <p>El equipo de E-commerce</p>
-                      </div>
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                    <h2 style="color: #555;">Cuenta Eliminada por Inactividad</h2>
+                    <p>Hola,</p>
+                    <p>Lamentamos informarte que tu cuenta ha sido eliminada debido a un periodo prolongado de inactividad. Para nosotros es importante mantener la seguridad y el buen funcionamiento de nuestra plataforma.</p>
+                    <p>Si crees que esto ha sido un error o deseas reactivar tu cuenta, por favor, contáctanos lo antes posible.</p>
+                    <p>Gracias por tu comprensión.</p>
+                    <p>El equipo de E-commerce</p>
+                    </div>
                     `
                 });
-               await userService.deleteUser(id);
-               await cartService.deleteCart(cart_id)  
+                await userService.deleteUser(user.id);
+                await cartService.deleteCart(user.cart_id)
+                req.logger.info(`Se ha eliminado la cuenta que le pertenece al user ${user.email}, por inactividad`)
             }
-            console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
+            // console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
         });
-        sendResponse(res, 200, true, "Comenzamos", users);
+        sendResponse(res, 200, true, "Eliminacion de usuarios inactivos", inactiveUsers);
     } catch (error) {
         next(error);
     }
 }
 
 export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload, handleGetUserList, handleRemoveInactiveUsers }
-/**
-                 * Enviar emial
-                 * Eliminar el user del collection user
-                 * Eliminar el cart relacionado al user
-                 */
