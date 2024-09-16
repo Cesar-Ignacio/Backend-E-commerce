@@ -19,6 +19,16 @@ class UserDTO {
             last_connection: this.last_connection
         };
     }
+
+    getPublicFieldsDev() {
+        return {
+            id: this._id,
+            email: this.email,
+            role: this.role,
+            cart_id: this.cart_id,
+            last_connection: this.last_connection
+        };
+    }
 }
 
 export default UserDTO;

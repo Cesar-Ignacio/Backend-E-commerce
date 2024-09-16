@@ -15,6 +15,14 @@ export class UserRepository {
         return list;
     }
 
+    async getUserListDev() {
+        const userList = await this.daoUser.getAll();
+        const list = userList.map((user) => {
+            return new UserDTO(user).getPublicFieldsDev();
+        })
+        return list;
+    }
+
     async findOneByEmail(email) {
         const user = await this.daoUser.getByEmail(email);
         if (!user) {
@@ -58,6 +66,10 @@ export class UserRepository {
     async addDocumentToUserDocumentsField(userId, documents) {
         const updatedUser = await this.daoUser.addDocument(userId, documents)
         return new UserDTO(updatedUser)
+    }
+
+    async deleteUser(userId){
+        return await this.daoUser.delete(userId);
     }
 
 }

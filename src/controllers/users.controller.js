@@ -2,9 +2,11 @@ import { DateTime, Interval } from "luxon";
 
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
-import { userService } from "../services/index.js";
+import { cartService, userService } from "../services/index.js";
 import { hashPassword } from "../utils/bcrypt.js";
 import sendResponse from "../utils/sendResponse.js";
+import { transport } from "../utils/transportNodeMailer.js";
+import { config } from "../config.js";
 
 
 const handleGetUserList = async (req, res, next) => {
@@ -99,18 +101,30 @@ const handleDocumentUpload = async (req, res, next) => {
 
 const handleRemoveInactiveUsers = async (req, res, next) => {
     try {
-        const users = await userService.getUserList();
+        const users = await userService.getUserListDev();
         const now = DateTime.now();
-        users.forEach(({ last_connection, email, role }) => {
-
+        users.forEach(async ({ id, last_connection, email, role, cart_id }) => {
             const interval = Interval.fromDateTimes(last_connection, now);
-
             const duration = interval.toDuration(['days', 'hours', 'minutes']);
-
-            if (duration.toObject().days > 1 && role != "ADMIN") {
-                console.log(`Eliminar al user ${email} y enviar mail`);
+            if (duration.toObject().hours >= 20 && role != "ADMIN") { 
+                const response = await transport.sendMail({
+                    from: `E-commerce <${config.GMAIL_APP_USER}>`,
+                    to: email,
+                    subject: "Cuenta Eliminada por Inactividad",
+                    html: `
+                      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                        <h2 style="color: #555;">Cuenta Eliminada por Inactividad</h2>
+                        <p>Hola,</p>
+                        <p>Lamentamos informarte que tu cuenta ha sido eliminada debido a un periodo prolongado de inactividad. Para nosotros es importante mantener la seguridad y el buen funcionamiento de nuestra plataforma.</p>
+                        <p>Si crees que esto ha sido un error o deseas reactivar tu cuenta, por favor, contáctanos lo antes posible.</p>
+                        <p>Gracias por tu comprensión.</p>
+                        <p>El equipo de E-commerce</p>
+                      </div>
+                    `
+                });
+               await userService.deleteUser(id);
+               await cartService.deleteCart(cart_id)  
             }
-
             console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
         });
         sendResponse(res, 200, true, "Comenzamos", users);
@@ -120,3 +134,8 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
 }
 
 export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload, handleGetUserList, handleRemoveInactiveUsers }
+/**
+                 * Enviar emial
+                 * Eliminar el user del collection user
+                 * Eliminar el cart relacionado al user
+                 */
