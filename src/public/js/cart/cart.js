@@ -1,9 +1,11 @@
+import { agregarElementoAdmin, agregarElementoUserRegular } from "../utils.js";
+
 const btnEndBuy = document.querySelector("#btnEndBuy");
 const btnDeleteProduct = document.querySelectorAll('.btnDeleteProduct');
 const cartId = document.querySelector("#cartId").value;
 const btnIncrement = document.querySelectorAll(".btnIncrement");
 const btnDecrement = document.querySelectorAll(".btnDecrement");
-
+const userRole = document.querySelector('#userRole').value;
 
 btnEndBuy.addEventListener("click", async (e) => {
     const response = await fetch(`/api/carts/${cartId}/purchase`, {
@@ -80,10 +82,23 @@ function reloadPageAfterDelay(delay = 1000) {
     }, delay);
 }
 
-window.onload = () => {
+
+document.addEventListener("DOMContentLoaded", () => {
     const totalSpan = document.querySelector("#total");
     const tagsTr = document.querySelectorAll("tr");
     let total = 0;
+
+    switch (userRole) {
+        case "ADMIN":
+            agregarElementoAdmin("/panelControl", "Panel de control");
+            break;
+        case "USER":
+            agregarElementoUserRegular();
+            break;
+        default:
+            console.warn('Rol de usuario no reconocido:', userRole);
+            break;
+    }
     tagsTr.forEach(tr => {
         const tdPrice = tr.querySelector("td.price");
         const quantityInput = tr.querySelector("td > input");
@@ -103,5 +118,4 @@ window.onload = () => {
         }
     });
     totalSpan.innerText = total
-
-};
+});

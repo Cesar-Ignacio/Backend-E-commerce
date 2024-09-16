@@ -3,6 +3,7 @@ import { ProductsDao } from "../dao/mongo/products.mdb.dao.js";
 import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
 import { cartService, productService, ticketService } from "../services/index.js";
 
+
 const pmm = new ProductsDao();
 const cmm = new CartDao();
 
@@ -11,7 +12,7 @@ export const renderViewHoma = async (req, res) => {
 };
 
 export const renderViewCreateProduct = (req, res) => {
-    res.status(200).render('createProduct');
+    res.status(200).render('createProduct', { user: req.user });
 }
 
 export const renderViewChat = (req, res) => {
@@ -58,11 +59,13 @@ export const renderViewNewPasswordEmail = async (req, res) => {
 }
 
 export const renderViewPremiumDocsUpload = async (req, res) => {
-    const user = req.session.user;
-    res.render('premiumDocsUpload', user)
+    res.render('premiumDocsUpload', { user: req.user })
 }
 
-export const renderViewPremium=async(req,res)=>{
-    const user=req.session.user;
-    res.render('premiumView',user);
+export const renderViewPremium = async (req, res) => {
+    res.render('premiumView', { user: req.user });
+}
+
+export const renderViewPanelAdmin = async (req, res) => {
+    res.render('panelAdmin', { user: req.user });
 }

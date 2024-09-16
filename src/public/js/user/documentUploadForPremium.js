@@ -1,7 +1,11 @@
+import { agregarElementoAdmin, agregarElementoUserRegular } from "../utils.js";
+
 const uploadForm = document.querySelector("#uploadForm");
 const documents = document.querySelector('#documents');
 const userId = document.querySelector('#userId').value;
 const hasDocuments = document.querySelector("#hasDocuments").value;
+const userRole = document.querySelector('#userRole').value;
+
 uploadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -48,3 +52,16 @@ function reloadPageAfterDelay(delay = 1000) {
 }
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    switch (userRole) {
+        case "ADMIN":
+            agregarElementoAdmin("/panelControl", "Panel de control");
+            break;
+        case "USER":
+            agregarElementoUserRegular();
+            break;
+        default:
+            console.warn('Rol de usuario no reconocido:', userRole);
+            break;
+    }
+});
