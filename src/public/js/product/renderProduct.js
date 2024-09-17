@@ -12,7 +12,6 @@ const spantotPag = document.querySelector("#totPag");
 const spanPage = document.querySelector("#page");
 const btnNext = document.querySelector("#btnNext");
 const btnPrev = document.querySelector("#btnPrev");
-const btnLogout = document.querySelector("#btnlogout");
 const cartId = document.querySelector('#cartId').value;
 const userRole = document.querySelector('#userRole').value;
 let next = true;
@@ -119,20 +118,6 @@ btnPrev.addEventListener('click', async ({ target: { value } }) => {
     }
 });
 
-btnLogout.addEventListener('click', async () => {
-    const response = await fetch('/api/sessions/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const responseData = await response.json();
-
-    if (responseData.status) {
-        window.location.href = responseData.data.url;
-    }
-
-});
 
 
 

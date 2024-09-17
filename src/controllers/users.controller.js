@@ -57,12 +57,15 @@ const handleUserRoleChange = async (req, res, next) => {
             throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
         }
         if (!foundUser.hasDocuments) {
-            const message = `El usuario ${req.session.user.email} no puede ser promovido a Premium sin haber proporcionado la documentación necesaria.`;
+            const message = `El usuario ${foundUser.email} no puede ser promovido a Premium sin haber proporcionado la documentación necesaria.`;
             req.logger.warning(message);
             throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message });
         }
         const userWithNewRole = await userService.UserRoleChange(foundUser)
-        req.session.user.role = userWithNewRole.role
+        if(req.session.user.role!="ADMIN")
+        {
+            req.session.user.role = userWithNewRole.role
+        }
         sendResponse(res, 200, true, "Cambio de rol exitoso", { userWithNewRole })
         req.logger.info(`Usuario ${foundUser.email} cambio de rol ${foundUser.role}->${userWithNewRole.role} `)
     }
@@ -94,6 +97,23 @@ const handleDocumentUpload = async (req, res, next) => {
         req.session.user.hasDocuments = updatedUser.hasDocuments
         sendResponse(res, 200, true, "Los documentos fueron cargados con éxito", updatedUser)
         req.logger.info(`El usuario con el correo ${foundUser.email} ha cargado documentos para solicitar la actualización a Premium.`);
+    } catch (error) {
+        next(error);
+    }
+}
+
+const handleDeleteUser = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const foundUser = await userService.findOneById(userId);
+        if (!foundUser) {
+            req.logger.warning(`ID de usuario no encontrado: ${userId}`);
+            throw new CustomError(errorsDictionary.ID_NOT_FOUND, { message: "No se encontro el ID del usuario" });
+        }
+        const userDelete = await userService.deleteUser(userId);
+        await cartService.deleteCart(foundUser.cart_id)
+        sendResponse(res, 200, true, "Usuario Eliminado", userDelete);
+        req.logger.info(`El usuario con emial: ${foundUser.email} fue eliminado con exito`);
     } catch (error) {
         next(error);
     }
@@ -136,4 +156,4 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
     }
 }
 
-export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload, handleGetUserList, handleRemoveInactiveUsers }
+export default { handleCreateUserPassport, handleUserRoleChange, hadlePasswordReset, handleDocumentUpload, handleGetUserList, handleRemoveInactiveUsers, handleDeleteUser }

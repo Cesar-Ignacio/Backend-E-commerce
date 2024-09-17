@@ -3,6 +3,10 @@ import { modelUser } from "../../models/users.model.js";
 export class UsersDao {
     constructor() { }
 
+    async getUserAll() {
+        return await modelUser.find({ role: { $ne: 'ADMIN' } }).lean();
+    }
+
     async getAll() {
         return await modelUser.find().lean();
     }

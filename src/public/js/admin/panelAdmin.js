@@ -10,45 +10,62 @@ const users = [
     { id: 4, name: 'Ana', email: 'ana@mail.com', role: 'USER', active: true },
 ];
 
+async function getUserList() {
+    const response = await fetch("/api/users");
+    const responseData = await response.json();
+    return responseData.data;
+}
+
 // Renderizar usuarios en la tabla
-function renderUsers(usersList) {
+async function renderUsers(usersList) {
     const tbody = document.querySelector('#usersTable tbody');
     tbody.innerHTML = ''; // Limpiar la tabla antes de renderizar
-
     usersList.forEach(user => {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-                    <td>${user.id}</td>
-                    <td>${user.name}</td>
+                    <td>${user._id}</td>
+                    <td>${user.fullName}</td>
                     <td>${user.email}</td>
                     <td>${user.role}</td>
-                    <td>
-                        <button class="delete-btn" onclick="deleteUser(${user.id})">Eliminar</button>
-                        <button class="role-btn" onclick="changeRole(${user.id})">Cambiar Rol</button>
-                    </td>
+                    
                 `;
-
+        const colum = document.createElement("td");
+        const btnEliminar = document.createElement("button");
+        const btnCambiarRole = document.createElement("button");
+        btnEliminar.className = "delete-btn";
+        btnEliminar.innerText = 'Eliminar';
+        btnEliminar.addEventListener('click', () => deleteUser(user._id))
+        btnCambiarRole.className = "role-btn";
+        btnCambiarRole.innerText = "Cambiar Rol"
+        btnCambiarRole.addEventListener('click', () => changeRole(user._id))
+        colum.appendChild(btnEliminar)
+        colum.appendChild(btnCambiarRole)
+        row.appendChild(colum);
         tbody.appendChild(row);
     });
 }
 
 // Función para eliminar un usuario
-function deleteUser(userId) {
-    const index = users.findIndex(user => user.id === userId);
-    if (index > -1) {
-        users.splice(index, 1); // Eliminar del array
-        renderUsers(users); // Volver a renderizar la lista
-    }
+async function deleteUser(userId) {
+    const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE'
+    });
+    const responseData = await response.json();
+    alert(responseData.message);
+    const userList = await getUserList();
+    renderUsers(userList);
 }
 
 // Función para cambiar el rol de un usuario
-function changeRole(userId) {
-    const user = users.find(user => user.id === userId);
-    if (user) {
-        user.role = user.role === 'ADMIN' ? 'USER' : 'ADMIN'; // Cambiar entre ADMIN y USER
-        renderUsers(users); // Volver a renderizar la lista
-    }
+async function changeRole(userId) {
+    const response = await fetch(`/api/users/premium/${userId}`, {
+        method: 'PUT'
+    })
+    const responseData = await response.json();
+    alert(responseData.message);
+    const userList = await getUserList();
+    renderUsers(userList);
 }
 
 // Función para eliminar usuarios inactivos
@@ -61,9 +78,10 @@ function deleteInactiveUsers() {
 document.getElementById('deleteInactiveBtn').addEventListener('click', deleteInactiveUsers);
 
 // Renderizar la tabla al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     if (userRole === "ADMIN") {
         agregarElementoAdmin("/panelControl", "Panel de control");
     }
-    renderUsers(users);
+    const userList = await getUserList();
+    renderUsers(userList);
 });

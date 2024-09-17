@@ -38,9 +38,8 @@
         if (responseData.status) {
             window.location.href = responseData.data.url
         } else {
-            pinfo.innerText = responseData.message
+            pinfo.innerText = responseData.data.errorDescription.message
         }
-
     })
 
 </script>

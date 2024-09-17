@@ -8,7 +8,7 @@ export class UserRepository {
     }
 
     async getUserList() {
-        const userList = await this.daoUser.getAll();
+        const userList = await this.daoUser.getUserAll();
         const list = userList.map((user) => {
             return new UserDTO(user).getPublicFields();
         })
@@ -68,7 +68,7 @@ export class UserRepository {
         return new UserDTO(updatedUser)
     }
 
-    async deleteUser(userId){
+    async deleteUser(userId) {
         return await this.daoUser.delete(userId);
     }
 

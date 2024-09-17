@@ -1,7 +1,7 @@
 
 import { ProductsDao } from "../dao/mongo/products.mdb.dao.js";
 import { CartDao } from "../dao/mongo/carts.mdb.dao.js";
-import { cartService, productService, ticketService } from "../services/index.js";
+import { cartService, productService, ticketService, userService } from "../services/index.js";
 
 
 const pmm = new ProductsDao();

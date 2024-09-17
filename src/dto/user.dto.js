@@ -13,6 +13,7 @@ class UserDTO {
 
     getPublicFields() {
         return {
+            _id:this._id,
             fullName: this.fullName,
             email: this.email,
             role: this.role,
