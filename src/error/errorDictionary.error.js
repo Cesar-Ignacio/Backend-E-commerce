@@ -7,7 +7,7 @@ const errorsDictionary = {
 
     // Errores de autenticación y autorización
     AUTHORIZATION_ERROR: { code: 11, status: 403, message: 'No tiene permiso para acceder a este recurso' },
-    
+
     // Errores de parámetros y formato
     FEW_PARAMETERS: { code: 2, status: 400, message: 'Faltan parámetros obligatorios o se enviaron vacíos' },
     INVALID_MONGOID_FORMAT: { code: 3, status: 400, message: 'El ID no contiene un formato válido de MongoDB' },

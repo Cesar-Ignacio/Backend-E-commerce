@@ -16,7 +16,7 @@ export class UserRepository {
     }
 
     async getUserListDev() {
-        const userList = await this.daoUser.getAll();
+        const userList = await this.daoUser.getUserAll();
         const list = userList.map((user) => {
             return new UserDTO(user).getPublicFieldsDev();
         })

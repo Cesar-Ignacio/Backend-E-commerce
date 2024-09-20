@@ -13,6 +13,7 @@ const users = [
 async function getUserList() {
     const response = await fetch("/api/users");
     const responseData = await response.json();
+
     return responseData.data;
 }
 
@@ -22,7 +23,7 @@ async function renderUsers(usersList) {
     tbody.innerHTML = ''; // Limpiar la tabla antes de renderizar
     usersList.forEach(user => {
         const row = document.createElement('tr');
-
+        row.id = `${user._id}`;
         row.innerHTML = `
                     <td>${user._id}</td>
                     <td>${user.fullName}</td>
@@ -46,6 +47,18 @@ async function renderUsers(usersList) {
     });
 }
 
+async function renderRemoveUsers(usersList) {
+    const tbody = document.querySelector("#removeUsersTable tbody");
+    tbody.innerHTML = " ";
+    usersList.forEach(user => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${user.id}</td>
+        <td>${user.email}</td>
+        <td>${user.role}</td>`
+        tbody.appendChild(row);
+    })
+}
+
 // Función para eliminar un usuario
 async function deleteUser(userId) {
     const response = await fetch(`/api/users/${userId}`, {
@@ -55,6 +68,7 @@ async function deleteUser(userId) {
     alert(responseData.message);
     const userList = await getUserList();
     renderUsers(userList);
+
 }
 
 // Función para cambiar el rol de un usuario
@@ -69,9 +83,28 @@ async function changeRole(userId) {
 }
 
 // Función para eliminar usuarios inactivos
-function deleteInactiveUsers() {
-    const activeUsers = users.filter(user => user.active); // Filtrar solo los activos
-    renderUsers(activeUsers);
+async function deleteInactiveUsers() {
+    try {
+        const response = await fetch('/api/users/removeInactiveUsers', {
+            method: 'DELETE'
+        });
+        const responseData = await response.json();
+        if (responseData?.status) {
+            renderRemoveUsers(responseData.data);
+            const ListTr = document.querySelectorAll("#usersTable tbody tr");
+            responseData.data.forEach(user=>{
+                ListTr.forEach(tr => {
+                    if (user.id === tr.id) {
+                        tr.remove()
+                    }
+                })
+            })
+        }    
+    } catch (error) {
+        alert("No se encontro usuarios inactivos");
+        console.log(error.message)
+    }
+    
 }
 
 // Evento para eliminar usuarios inactivos

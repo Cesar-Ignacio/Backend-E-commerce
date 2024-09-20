@@ -62,8 +62,7 @@ const handleUserRoleChange = async (req, res, next) => {
             throw new CustomError(errorsDictionary.NO_DOCUMENTS_PROVIDED, { message });
         }
         const userWithNewRole = await userService.UserRoleChange(foundUser)
-        if(req.session.user.role!="ADMIN")
-        {
+        if (req.session.user.role != "ADMIN") {
             req.session.user.role = userWithNewRole.role
         }
         sendResponse(res, 200, true, "Cambio de rol exitoso", { userWithNewRole })
@@ -127,7 +126,7 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
         users.forEach(async (user) => {
             const interval = Interval.fromDateTimes(user.last_connection, now);
             const duration = interval.toDuration(['days', 'hours', 'minutes']);
-            if (duration.toObject().hours >= 1 && user.role != "ADMIN") {
+            if (duration.toObject().days >= 1 && user.role != "ADMIN") {
                 inactiveUsers.push(user)
                 const response = await transport.sendMail({
                     from: `E-commerce <${config.GMAIL_APP_USER}>`,
@@ -145,11 +144,15 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
                     `
                 });
                 await userService.deleteUser(user.id);
-                await cartService.deleteCart(user.cart_id)
-                req.logger.info(`Se ha eliminado la cuenta que le pertenece al user ${user.email}, por inactividad`)
+                await cartService.deleteCart(user.cart_id);
+                req.logger.info(`Se ha eliminado la cuenta que le pertenece al user ${user.email}, por inactividad`);
             }
-            // console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
+            //console.log(`Intervalo: ${duration.toObject().days} días, ${duration.toObject().hours} horas, ${duration.toObject().minutes} minutos`);
         });
+        if (!inactiveUsers.length) {
+            req.logger.info("No se encontro usuarios inactivos");
+            return res.status(204).end(); 
+        }
         sendResponse(res, 200, true, "Eliminacion de usuarios inactivos", inactiveUsers);
     } catch (error) {
         next(error);

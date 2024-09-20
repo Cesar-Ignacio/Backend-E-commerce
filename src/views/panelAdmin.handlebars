@@ -1,5 +1,4 @@
 <style>
- 
     h1 {
         color: #333;
     }
@@ -42,7 +41,7 @@
     }
 
     #deleteInactiveBtn {
-        margin-top: 20px;
+        
         background-color: orange;
         color: white;
         padding: 10px 20px;
@@ -52,22 +51,40 @@
 <div>
     <h1>Gestión de Usuarios</h1>
     <input type="hidden" id="userRole" value={{user.role}}>
-    <table id="usersTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Usuarios serán generados dinámicamente -->
-        </tbody>
-    </table>
-
-    <button id="deleteInactiveBtn">Eliminar Usuarios Inactivos</button>
+    <div>
+        <h2>Lista de Usuarios </h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Usuarios serán generados dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h2>Lista de usuarios eliminados por inactividad</h2>
+        <p>Al presionar el bontón se mostrará una lista con los usuarios eliminados</p>
+        <button id="deleteInactiveBtn">Eliminar Usuarios Inactivos</button>
+        <table id="removeUsersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Usuarios eliminados sera -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script type="module" src="/static/js/admin/panelAdmin.js"></script>

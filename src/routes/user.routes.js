@@ -23,9 +23,9 @@ routesUser.put('/premium/:userId', handlePolice(["USER", "PREMIUM", "ADMIN"]), v
 
 routesUser.post('/:userId/documents', handlePolice(["USER", "PREMIUM"]), validateObjectIds, validateFileUpload(uploader.document, 'array', 'documents'), userController.handleDocumentUpload)
 
-routesUser.delete('/:userId', handlePolice(["ADMIN"]), validateObjectIds, userController.handleDeleteUser)
+routesUser.delete('/removeInactiveUsers', handlePolice(["ADMIN"]), userController.handleRemoveInactiveUsers);
 
-routesUser.delete('/removeInactiveUsers', userController.handleRemoveInactiveUsers);
+routesUser.delete('/:userId', handlePolice(["ADMIN"]), validateObjectIds, userController.handleDeleteUser)
 
 
 export default routesUser;
