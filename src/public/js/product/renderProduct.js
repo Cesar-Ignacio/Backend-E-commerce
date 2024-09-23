@@ -73,7 +73,7 @@ const cardProduct = (product) => {
     const btnAddCart = document.createElement("button");
     btnAddCart.innerText = "Add Cart "
     btnAddCart.addEventListener('click', async () => {
-        const response = await fetch(`/api/carts/${cartId}/products/${product._id}`, {
+        const response = await fetch(`/api/carts/${cartId}/product/${product._id}`, {
             method: 'POST'
         })
         const { message } = await response.json();
@@ -99,15 +99,6 @@ const cardProduct = (product) => {
 
     catalogo.appendChild(cardProducto);
 }
-
-// const renderListCategorys = (tag,productCategoryList) => {
-//     productCategoryList.forEach(name => {
-//         const optionTag = document.createElement('option');
-//         optionTag.innerText = name;
-//         optionTag.value = name;
-//         tag.appendChild(optionTag);
-//     })
-// }
 
 const renderizarProductos = (data) => {
     spanLimit.innerText = data.limit;
