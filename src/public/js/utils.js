@@ -7,7 +7,7 @@
 
 export function agregarElementoAdmin(href, texto) {
     const ulTag = document.querySelector("ul");
-    const liTags=document.querySelectorAll("ul li");
+    const liTags = document.querySelectorAll("ul li");
     liTags[1].remove()
     liTags[2].remove()
     liTags[4].remove()
@@ -25,6 +25,29 @@ export function agregarElementoAdmin(href, texto) {
 }
 
 export function agregarElementoUserRegular() {
-    const liTags=document.querySelectorAll("ul li");
+    const liTags = document.querySelectorAll("ul li");
     liTags[3].remove()
+}
+
+export const productCategoryList = [
+    "Televisions",
+    "Refrigerators",
+    "Washing Machines",
+    "Air Conditioners",
+    "Microwaves",
+    "Laptops",
+    "Smartphones",
+    "Speakers",
+    "Vacuum Cleaners",
+    "Dishwashers",
+    "Headphones"
+];
+
+export const renderListCategorys = (tag) => {
+    productCategoryList.forEach(name => {
+        const optionTag = document.createElement('option');
+        optionTag.innerText = name;
+        optionTag.value = name;
+        tag.appendChild(optionTag);
+    })
 }

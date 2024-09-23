@@ -1,6 +1,6 @@
 // import { io } from 'socket.io-client';
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
-import { agregarElementoAdmin, agregarElementoUserRegular } from "../utils.js";
+import { agregarElementoAdmin, agregarElementoUserRegular, renderListCategorys} from "../utils.js";
 
 
 const socketClient = io()
@@ -17,6 +17,10 @@ const userRole = document.querySelector('#userRole').value;
 const userEmail = document.querySelector('#userEmail').value;
 const sortPrice = document.querySelector("#sortPrice");
 const formProductSearch = document.querySelector("#formProductSearch");
+const selectCategory = document.querySelector('#selectCategory');
+const btnFiltro = document.querySelector("#btnFiltro");
+const btnLimpiarFiltro = document.querySelector("#btnLimpiarFiltro");
+
 let next = true;
 let previou = true;
 
@@ -36,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.warn('Rol de usuario no reconocido:', userRole);
             break;
     }
+    renderListCategorys(selectCategory);
 });
 
 
@@ -95,6 +100,14 @@ const cardProduct = (product) => {
     catalogo.appendChild(cardProducto);
 }
 
+// const renderListCategorys = (tag,productCategoryList) => {
+//     productCategoryList.forEach(name => {
+//         const optionTag = document.createElement('option');
+//         optionTag.innerText = name;
+//         optionTag.value = name;
+//         tag.appendChild(optionTag);
+//     })
+// }
 
 const renderizarProductos = (data) => {
     spanLimit.innerText = data.limit;
@@ -127,8 +140,14 @@ btnPrev.addEventListener('click', async ({ target: { value } }) => {
     }
 });
 
-sortPrice.addEventListener('change', async ({ target }) => {
-    const response = await fetch(`/api/products?sort=${target.value}`);
+btnFiltro.addEventListener('click', async () => {
+    const response = await fetch(`/api/products?sort=${sortPrice.value}&query={"category": "${selectCategory.value}"}`);
+    const { data } = await response.json();
+    renderizarProductos(data);
+})
+
+btnLimpiarFiltro.addEventListener('click', async () => {
+    const response = await fetch('/api/products');
     const { data } = await response.json();
     renderizarProductos(data);
 })

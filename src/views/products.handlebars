@@ -23,25 +23,41 @@
     {{!-- FILTROS --}}
     <div style="margin-bottom: 20px;">
         <div class="search-container" style="text-align: center; margin: 20px 0;">
-            <form id="formProductSearch" >
+            <form id="formProductSearch">
                 <label for="productSearch">Buscar productos</label>
                 <input type="search" id="productSearch" name="query" placeholder="Buscar productos..."
                     aria-label="Buscar productos"
                     style="padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px;">
-                <button type="submit" 
+                <button type="submit"
                     style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
                     Buscar
                 </button>
             </form>
         </div>
 
-        <div>
-            <label for="sortPrice" style="font-size: 16px; font-weight: bold;">Ordenar por precio:</label>
-            <select name="sortPrice" id="sortPrice" style="padding: 5px; font-size: 14px; margin-left: 10px;">
-                <option value="1">Menor a Mayor</option>
-                <option value="-1">Mayor a Menor</option>
-            </select>
-            
+        <div style="border: solid 1px black; display: flex; align-items: center; gap: 1rem;">
+            <h3>FILTROS</h3>
+            <div>
+                <label for="sortPrice" style="font-size: 16px; font-weight: bold;">Ordenar por precio:</label>
+                <select name="sortPrice" id="sortPrice" style="padding: 5px; font-size: 14px; margin-left: 10px;">
+                    <option value="1">Menor a Mayor</option>
+                    <option value="-1">Mayor a Menor</option>
+                </select>
+            </div>
+            <div>
+                <label for="selectCategory" style="font-size: 16px; font-weight: bold;">Categorias</label>
+                <select name="selectCategory" id="selectCategory"
+                    style="padding: 5px; font-size: 14px; margin-left: 10px;">
+                </select>
+            </div>
+            <button id="btnFiltro"
+                style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Aplicar filtros
+            </button>
+             <button id="btnLimpiarFiltro"
+                style="padding: 10px 20px; background-color: #ff0084; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Limpiar filtros
+            </button>
         </div>
     </div>
 
