@@ -14,6 +14,9 @@ const btnNext = document.querySelector("#btnNext");
 const btnPrev = document.querySelector("#btnPrev");
 const cartId = document.querySelector('#cartId').value;
 const userRole = document.querySelector('#userRole').value;
+const userEmail = document.querySelector('#userEmail').value;
+const sortPrice = document.querySelector("#sortPrice");
+const formProductSearch = document.querySelector("#formProductSearch");
 let next = true;
 let previou = true;
 
@@ -36,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-const cardProduct = (pro) => {
+const cardProduct = (product) => {
     const cardProducto = document.createElement("div");
     cardProducto.setAttribute("style", "border: 2px solid gray;padding: 0.5em;")
 
@@ -44,28 +47,28 @@ const cardProduct = (pro) => {
     const img = document.createElement("img");
     img.setAttribute("style", "width: 100%; height: 100%")
     img.alt = "img";
-    img.src = `/static/upload/products/${pro.thumbnail}`;
+    img.src = `/static/upload/products/${product.thumbnail}`;
     contenedorImg.appendChild(img);
 
     const contenedorInfo = document.createElement("div");
     contenedorInfo.setAttribute("style", "display:flex; flex-direction: column;")
     const titulo = document.createElement("strong");
-    titulo.innerText = `${pro.title}`;
+    titulo.innerText = `${product.title}`;
     const precio = document.createElement("strong");
-    precio.innerText = `$${pro.price}`;
+    precio.innerText = `$${product.price}`;
     contenedorInfo.append(titulo, precio);
 
     const btnSee = document.createElement("button");
     btnSee.innerText = "See";
 
     btnSee.addEventListener('click', async () => {
-        window.location.href = `/productDetails/${pro._id}`;
+        window.location.href = `/productDetails/${product._id}`;
     })
 
     const btnAddCart = document.createElement("button");
     btnAddCart.innerText = "Add Cart "
     btnAddCart.addEventListener('click', async () => {
-        const response = await fetch(`/api/carts/${cartId}/product/${pro._id}`, {
+        const response = await fetch(`/api/carts/${cartId}/products/${product._id}`, {
             method: 'POST'
         })
         const { message } = await response.json();
@@ -75,17 +78,23 @@ const cardProduct = (pro) => {
     const btnEliminar = document.createElement("button");
     btnEliminar.innerText = "Delete";
     btnEliminar.addEventListener("click", async () => {
-        const response = await fetch(`/api/products/${pro._id}`, {
+        fetch(`/api/products/${product._id}`, {
             method: "DELETE"
-        })
-        const { message } = await response.json();
-        alert(`${message}`)
+        }).then(response => response.json())
+            .then(({ message }) => { alert(`${message}`) })
+
     })
 
-    cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
+    if (product.owner === userEmail || userRole === "ADMIN") {
+        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
+    }
+    else {
+        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnAddCart);
+    }
 
     catalogo.appendChild(cardProducto);
 }
+
 
 const renderizarProductos = (data) => {
     spanLimit.innerText = data.limit;
@@ -97,8 +106,8 @@ const renderizarProductos = (data) => {
     previou = data.hasPrevPage;
     next = data.hasNextPage;
     catalogo.innerHTML = " ";
-    data.docs.forEach(pro => {
-        cardProduct(pro);
+    data.docs.forEach(product => {
+        cardProduct(product);
     })
 }
 
@@ -118,7 +127,17 @@ btnPrev.addEventListener('click', async ({ target: { value } }) => {
     }
 });
 
+sortPrice.addEventListener('change', async ({ target }) => {
+    const response = await fetch(`/api/products?sort=${target.value}`);
+    const { data } = await response.json();
+    renderizarProductos(data);
+})
 
-
-
+formProductSearch.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const productSearch = document.querySelector("#productSearch").value;
+    const response = await fetch(`/api/products?keyword=${productSearch}`);
+    const { data } = await response.json();
+    renderizarProductos(data);
+})
 

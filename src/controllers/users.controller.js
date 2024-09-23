@@ -126,7 +126,7 @@ const handleRemoveInactiveUsers = async (req, res, next) => {
         users.forEach(async (user) => {
             const interval = Interval.fromDateTimes(user.last_connection, now);
             const duration = interval.toDuration(['days', 'hours', 'minutes']);
-            if (duration.toObject().days >= 1 && user.role != "ADMIN") {
+            if (duration.toObject().days >= 2 && user.role != "ADMIN") {
                 inactiveUsers.push(user)
                 const response = await transport.sendMail({
                     from: `E-commerce <${config.GMAIL_APP_USER}>`,
