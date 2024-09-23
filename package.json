@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file .env.prod src/app.js ",
+    "start": "node src/app.js ",
     "dev": "node --env-file .env.dev --watch src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:utils:bcrypt": "npx mocha test/utils/bcrypt.test.js --mode=dev",
