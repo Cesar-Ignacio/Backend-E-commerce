@@ -1,0 +1,90 @@
+<style>
+    h1 {
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #ccc;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    button {
+        padding: 5px 10px;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    .delete-btn {
+        background-color: red;
+        color: white;
+    }
+
+    .role-btn {
+        background-color: blue;
+        color: white;
+    }
+
+    #deleteInactiveBtn {
+        
+        background-color: orange;
+        color: white;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+</style>
+<div>
+    <h1>Gestión de Usuarios</h1>
+    <input type="hidden" id="userRole" value={{user.role}}>
+    <div>
+        <h2>Lista de Usuarios </h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Usuarios serán generados dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h2>Lista de usuarios eliminados por inactividad</h2>
+        <p>Al presionar el bontón se mostrará una lista con los usuarios eliminados</p>
+        <button id="deleteInactiveBtn">Eliminar Usuarios Inactivos</button>
+        <table id="removeUsersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Usuarios eliminados sera -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module" src="/static/js/admin/panelAdmin.js"></script>

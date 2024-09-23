@@ -10,162 +10,72 @@
     }
 </style>
 <div>
-    <div style="border-bottom:solid 2px yellow ;">
-        <p>Bienvenido {{user.fullName}}</p>
+    <div>
+        <h1>Productos</h1>
+        <h2>Bienvenido {{user.fullName}}</h2>
         <p>{{user.role}}</p>
         <input type="hidden" id="cartId" value={{user.cart_id}}>
         <input type="hidden" id="userId" value={{user._id}}>
-        <button id="btnlogout">Log Out</button>
-        {{!-- <button id="btnPremium">Premium</button> --}}
+        <input type="hidden" id="userRole" value={{user.role}}>
+        <input type="hidden" id="userEmail" value={{user.email}}>
     </div>
-    <h1>Productos</h1>
-    <div style="border: solid 1px black; display: flex; gap: 1rem; margin-bottom: 1rem;">
+
+    {{!-- FILTROS --}}
+    <div style="margin-bottom: 20px;">
+        <div class="search-container" style="text-align: center; margin: 20px 0;">
+            <form id="formProductSearch">
+                <label for="productSearch">Buscar productos</label>
+                <input type="search" id="productSearch" name="query" placeholder="Buscar productos..."
+                    aria-label="Buscar productos"
+                    style="padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px;">
+                <button type="submit"
+                    style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Buscar
+                </button>
+            </form>
+        </div>
+
+        <div style="border: solid 1px black; display: flex; align-items: center; gap: 1rem;">
+            <h3>FILTROS</h3>
+            <div>
+                <label for="sortPrice" style="font-size: 16px; font-weight: bold;">Ordenar por precio:</label>
+                <select name="sortPrice" id="sortPrice" style="padding: 5px; font-size: 14px; margin-left: 10px;">
+                    <option value="1">Menor a Mayor</option>
+                    <option value="-1">Mayor a Menor</option>
+                </select>
+            </div>
+            <div>
+                <label for="selectCategory" style="font-size: 16px; font-weight: bold;">Categorias</label>
+                <select name="selectCategory" id="selectCategory"
+                    style="padding: 5px; font-size: 14px; margin-left: 10px;">
+                </select>
+            </div>
+            <button id="btnFiltro"
+                style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Aplicar filtros
+            </button>
+             <button id="btnLimpiarFiltro"
+                style="padding: 10px 20px; background-color: #ff0084; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Limpiar filtros
+            </button>
+        </div>
+    </div>
+
+    <div style="border: solid 1px black; display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
         <p>Limit: <span id="limit"></span></p>
         <p>CantPro: <span id="cantPro"></span></p>
         <p>Page: <span id="page"></span></p>
         <p>Total Pages: <span id="totPag"></span></p>
     </div>
+
     <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;" id="catalogo">
         {{!-- List Products --}}
     </div>
-    <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+
+    <div style="display: flex; gap: 1rem; margin: 1rem 0; border:solid 1px; padding: 1rem 0; ">
         <button id="btnPrev">Previous</button>
         <button id="btnNext">Next</button>
     </div>
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-
-    const socketClient = io();
-
-    const catalogo = document.querySelector("#catalogo");
-    const spanLimit = document.querySelector("#limit");
-    const spanCantPro = document.querySelector("#cantPro");
-    const spantotPag = document.querySelector("#totPag");
-    const spanPage = document.querySelector("#page");
-    const btnNext = document.querySelector("#btnNext");
-    const btnPrev = document.querySelector("#btnPrev");
-    const btnPremium = document.querySelector("#btnPremium");
-    const btnLogout = document.querySelector("#btnlogout");
-    const cartId = document.querySelector('#cartId').value;
-    const userId = document.querySelector('#userId').value;
-    let next = true;
-    let previou = true;
-
-    socketClient.on("getProducts", data => {
-        renderizarProductos(data)
-    })
-    const cardProduct = (pro) => {
-        const cardProducto = document.createElement("div");
-        cardProducto.setAttribute("style", "border: 2px solid gray;padding: 0.5em;")
-
-        const contenedorImg = document.createElement("div");
-        const img = document.createElement("img");
-        img.setAttribute("style", "width: 100%; height: 100%")
-        img.alt = "img";
-        img.src = `/static/upload/products/${pro.thumbnail}`;
-        contenedorImg.appendChild(img);
-
-        const contenedorInfo = document.createElement("div");
-        contenedorInfo.setAttribute("style", "display:flex; flex-direction: column;")
-        const titulo = document.createElement("strong");
-        titulo.innerText = `${pro.title}`;
-        const precio = document.createElement("strong");
-        precio.innerText = `$${pro.price}`;
-        contenedorInfo.append(titulo, precio);
-
-        const btnSee = document.createElement("button");
-        btnSee.innerText = "See";
-
-        btnSee.addEventListener('click', async () => {
-            window.location.href = `/productDetails/${pro._id}`;
-        })
-
-        const btnAddCart = document.createElement("button");
-        btnAddCart.innerText = "Add Cart "
-        btnAddCart.addEventListener('click', async () => {
-            const response = await fetch(`/api/carts/${cartId}/product/${pro._id}`, {
-                method: 'POST'
-            })
-            const { message } = await response.json();
-            alert(`${message}`)
-        })
-
-        const btnEliminar = document.createElement("button");
-        btnEliminar.innerText = "Delete";
-        btnEliminar.addEventListener("click", async () => {
-            const response = await fetch(`/api/products/${pro._id}`, {
-                method: "DELETE"
-            })
-            const { message } = await response.json();
-            alert(`${message}`)
-        })
-
-        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
-
-        catalogo.appendChild(cardProducto);
-    }
-
-    const renderizarProductos = (data) => {
-        spanLimit.innerText = data.limit;
-        spanCantPro.innerText = data.totalDocs;
-        spanPage.innerText = data.page;
-        spantotPag.innerText = data.totalPages;
-        btnNext.value = data.nextPage;
-        btnPrev.value = data.prevPage;
-        previou = data.hasPrevPage;
-        next = data.hasNextPage;
-        catalogo.innerHTML = " ";
-        data.docs.forEach(pro => {
-            cardProduct(pro);
-        })
-    }
-
-    btnNext.addEventListener('click', async ({ target: { value } }) => {
-        if (next) {
-            const res = await fetch(`/api/products?page=${value}`);
-            const dataResponse = await res.json();
-            renderizarProductos(dataResponse.data)
-        }
-    });
-
-    btnPrev.addEventListener('click', async ({ target: { value } }) => {
-        if (previou) {
-            const res = await fetch(`/api/products?page=${value}`);
-            const dataResponse = await res.json();
-            renderizarProductos(dataResponse.data)
-        }
-    });
-
-    btnLogout.addEventListener('click', async () => {
-        const response = await fetch('/api/sessions/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const responseData = await response.json();
-
-        if (responseData.status) {
-            window.location.href = responseData.data.url;
-        }
-
-    });
-
-    btnPremium.addEventListener("click", async () => {
-        const response = await fetch(`/api/users/premium/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const responseData = await response.json();
-
-        console.log(responseData);
-
-    });
-
-
-
-</script>
+<script type="module" src="/static/js/product/renderProduct.js"></script>

@@ -1,4 +1,7 @@
 node_modules
+.env.dev
+.env.prod
 .idx
 .vscode
+
 

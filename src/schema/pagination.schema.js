@@ -7,5 +7,7 @@ export const paginationSchema = Joi.object({
         .custom((value, helpers) => parseInt(value, 10), 'Convert to integer'),
     query: Joi.string().default('{}'),
     sort: Joi.string().regex(/^-1|1$/).default(1) // Acepta solo '-1' o '1' como cadenas
-        .custom((value, helpers) => parseInt(value, 10), 'Convert to integer')
+        .custom((value, helpers) => parseInt(value, 10), 'Convert to integer'),
+    keyword: Joi.string()
+        .allow('') // Permite que el campo sea una cadena vacía
 });

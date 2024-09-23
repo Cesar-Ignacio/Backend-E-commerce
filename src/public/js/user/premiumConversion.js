@@ -1,5 +1,8 @@
+import { agregarElementoAdmin, agregarElementoUserRegular } from "../utils.js";
+
 const form = document.querySelector("form");
 const userId = document.querySelector('#userId').value;
+const userRole = document.querySelector('#userRole').value;
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -22,3 +25,17 @@ function reloadPageAfterDelay(delay = 1000) {
         window.location.reload();
     }, delay);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    switch (userRole) {
+        case "ADMIN":
+            agregarElementoAdmin("/panelControl", "Panel de control");
+            break;
+        case "USER":
+            agregarElementoUserRegular();
+            break;
+        default:
+            console.warn('Rol de usuario no reconocido:', userRole);
+            break;
+    }
+});

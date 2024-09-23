@@ -49,8 +49,9 @@
 <div class="container">
     <h1>Solicitar Actualización a Premium</h1>
     <p>Por favor, carga hasta tres documentos necesarios para completar tu solicitud de actualización a Premium.</p>
-    <input type="hidden" name="" id="userId" value="{{_id}}">
-    <input type="hidden" name="" id="hasDocuments" value="{{hasDocuments}}">
+    <input type="hidden" name="" id="userId" value="{{user._id}}">
+    <input type="hidden" name="" id="hasDocuments" value="{{user.hasDocuments}}">
+    <input type="hidden" id="userRole" value={{user.role}}>
     <form id="uploadForm" action="/upload-documents" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="documents">Cargar Documentos:</label>
@@ -63,4 +64,4 @@
     </form>
 </div>
 
-<script src="/static/js/user/documentUploadForPremium.js"></script>
+<script type="module" src="/static/js/user/documentUploadForPremium.js"></script>

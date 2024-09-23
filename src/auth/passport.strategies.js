@@ -5,6 +5,8 @@ import { checkPassword, hashPassword } from "../utils/bcrypt.js";
 import { config } from "../config.js";
 import { userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
+import CustomError from "../error/customError.error.js";
+import errorsDictionary from "../error/errorDictionary.error.js";
 
 const localStrategy = local.Strategy;
 
@@ -103,7 +105,7 @@ export const passportCall = (stategy) => {
             };
             if (!user) {
                 req.logger.warning(`${info.message} ${info.email || ''} ${req.ip}`);
-                return sendResponse(res, 401, false, info.message);
+                return next(new CustomError(errorsDictionary.PASSWORD_INCORRECT,{message:info.message}));
             }
             req.authInfo = { message: info.message };
             req.user = user;

@@ -1,19 +1,12 @@
 import { config } from '../config.js';
-import nodemailer from 'nodemailer';
+
 import { createToken } from '../utils/jwt.js';
 import { userService } from '../services/index.js';
 import CustomError from '../error/customError.error.js';
 import errorsDictionary from '../error/errorDictionary.error.js';
 import sendResponse from '../utils/sendResponse.js';
+import { transport } from '../utils/transportNodeMailer.js';
 
-const transport = nodemailer.createTransport({
-    service: 'gmail',
-    port: 587,
-    auth: {
-        user: config.GMAIL_APP_USER,
-        pass: config.PASS_APP_GMAIL
-    }
-})
 
 const handleSendResetLink = async (req, res, next) => {
     try {

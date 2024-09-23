@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DateTime } from "luxon";
 
 mongoose.pluralize(null);
 
@@ -10,7 +11,7 @@ const schema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     age: { type: Number, required: true },
-    last_connection: { type: Date, default: Date.now },
+    last_connection: { type: Date, default: DateTime.now() },
     cart_id: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
     role: { type: String, enum: ['ADMIN', 'PREMIUM', 'USER'], default: 'USER' },
     documents: {

@@ -37,10 +37,13 @@ export class ProductsDao {
         }
     }
 
-    async getPaginated(limit, page, query, sort) {
+    async getPaginated(limit, page, query, sort, keyword = undefined) {
         try {
+            
+            const filerd = keyword ? { $text: { $search: keyword } } : JSON.parse(query);
             const filter = JSON.parse(query);
-            const products = await modelProduct.paginate(filter, { page: page, limit: limit, sort: { price: sort } });
+
+            const products = await modelProduct.paginate(filerd, { page: page, limit: limit, sort: { price: sort } });
             return products;
 
         } catch (error) {
@@ -58,5 +61,13 @@ export class ProductsDao {
         }
     }
 
+    async getByCode(productCode) {
+        try {
+            const product = await modelProduct.findOne({ code: productCode }).lean();
+            return product
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }

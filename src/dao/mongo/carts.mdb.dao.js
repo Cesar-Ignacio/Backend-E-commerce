@@ -54,6 +54,14 @@ export class CartDao {
         }
     }
 
+    async deleteCart(cartId){
+        try {
+            return await modelCart.findByIdAndDelete(cartId);
+        } catch (error) {
+            throw error
+        }
+    }
+
     async delete(cartId, productId) {
         try {
             const cart = await modelCart.findOneAndUpdate({ _id: cartId }, { $pull: { products: { _id: productId } } }, { new: true })

@@ -25,10 +25,10 @@ import routesMocking from './routes/mocking.routes.js';
 const app = express();
 
 /**CORS */
-const whitelist = ['http://localhost:5173']
+const whitelist = ['http://localhost:5173','http://localhost:8080','https://backend-e-commerce-y9ud.onrender.com']
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {    
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))

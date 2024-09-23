@@ -32,6 +32,10 @@ export class CartRepository {
         return await this.dao.deleteAll(cartId);
     }
 
+    async deleteCart(cartId){
+        return await this.dao.deleteCart(cartId);
+    }
+
     async checkProductExistsInCart(cartId,productId)
     {
         return await this.dao.getByCartIdAndProductId(cartId,productId);

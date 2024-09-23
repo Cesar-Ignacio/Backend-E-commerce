@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
     status: { type: Boolean, default: true }
 })
 
+schema.index({ title: 'text', description: 'text' });
 schema.plugin(mongoosePaginate);
 
 export const modelProduct = mongoose.model(collection, schema);

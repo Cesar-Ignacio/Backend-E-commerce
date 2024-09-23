@@ -33,8 +33,9 @@
 </style>
 <div>
     <h1>Cart</h1>
-    <p>ID Cart:{{user.cart_id}}</p>
     <input type="hidden" name="" id="cartId" value="{{user.cart_id}}">
+    <input type="hidden" id="userRole" value={{user.role}}>
+
     <hr>
     <h2>Producto</h2>
     <button style="padding: 0.5em 2em;" id="btnEndBuy">Finalizar compra</button>
@@ -59,8 +60,8 @@
             {{#each products}}
             <tr>
                 <input type="hidden" value="{{_id}}">
-                <td style="border: 1px solid #ddd; padding: 8px;"><img src="/static/upload/products/{{thumbnail}}" alt=""
-                        style="width: 5rem;"></td>
+                <td style="border: 1px solid #ddd; padding: 8px;"><img src="/static/upload/products/{{thumbnail}}"
+                        alt="" style="width: 5rem;"></td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{title}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;" class="price">{{price}}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{stock}}</td>
@@ -81,4 +82,4 @@
 
 </div>
 
-<script src="/static/js/cart/cart.js"></script>
+<script type="module" src="/static/js/cart/cart.js"></script>

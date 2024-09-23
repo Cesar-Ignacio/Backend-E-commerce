@@ -45,20 +45,21 @@
 </style>
 
 <div class="container">
-    {{#if (eq role 'PREMIUM')}}
-    <p style="margin: 5px 0;"><strong>Status:</strong>{{role}}</p>
+    <input type="hidden" id="userRole" value={{user.role}}>
+    {{#if (eq user.role 'PREMIUM')}}
+    <p style="margin: 5px 0;"><strong>Status:</strong>{{user.role}}</p>
     <h1>Cancelar Suscripción Premium</h1>
     <p>¿Estás seguro de que quieres cancelar tu suscripción Premium? Perderás acceso a las funciones adicionales.</p>
     <form>
-        <input type="hidden" name="" id="userId" value="{{_id}}">
+        <input type="hidden" name="" id="userId" value="{{user._id}}">
         <button type="submit" class="btn-cancel">Cancelar Suscripción</button>
     </form>
     {{else}}
-    <p style="margin: 5px 0;"><strong>Status:</strong>{{role}}</p>
+    <p style="margin: 5px 0;"><strong>Status:</strong>{{user.role}}</p>
     <h1>Hazte Usuario Premium</h1>
     <p>¡Actualiza a Premium y disfruta de funciones adicionales!</p>
     <form>
-        <input type="hidden" name="" id="userId" value="{{_id}}">
+        <input type="hidden" name="" id="userId" value="{{user._id}}">
         <button type="submit" class="btn-upgrade">Actualizar a Premium</button>
     </form>
     {{/if}}
@@ -66,4 +67,4 @@
 </div>
 
 
-<script src="/static/js/user/premiumConversion.js"></script>
+<script type="module" src="/static/js/user/premiumConversion.js"></script>
