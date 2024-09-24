@@ -76,6 +76,8 @@ btnDecrement.forEach(btn => {
     })
 })
 
+
+
 function reloadPageAfterDelay(delay = 1000) {
     setTimeout(() => {
         window.location.reload();

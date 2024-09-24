@@ -43,14 +43,20 @@
 
 <div class="ticket">
     <div class="ticket-header">
-        <h1>Ticket #{{code}}</h1>
+        <h1>Ticket #{{ticketId}}</h1>
+        <input type="hidden" name="" id="ticketId" value={{ticketId}}>
+        <button id="btnPrueba">Prueba</button>
+        <iframe id="pdfViewer" width="600" height="400"></iframe>
     </div>
-    <div class="ticket-body">
+
+    {{!-- <div class="ticket-body">
         <p><strong>Cliente:</strong> {{purchaser}}</p>
         <p><strong>Fecha:</strong> {{purchase_datetime}}</p>
         <p><strong>Descripción:</strong> Compra de productos varios</p>
     </div>
     <div class="ticket-footer">
         <p><strong>Total:</strong> ${{amount}}</p>
-    </div>
+    </div> --}}
 </div>
+
+<script src="/static/js/ticket/generateTicket.js"></script>

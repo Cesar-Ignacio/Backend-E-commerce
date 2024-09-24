@@ -6,7 +6,7 @@ export class TicketsDao {
 
     async create(ticketData) {
         try {
-            const ticket = await modelTicket.create(ticketData)
+            const ticket = await modelTicket.create(ticketData);
             return ticket;
         } catch (error) {
             console.error("Error al crear ticket:", error)

@@ -21,6 +21,8 @@ import viewsRoutes from './routes/views.routes.js';
 import routesUser from './routes/user.routes.js';
 import routesEmail from './routes/email.routes.js';
 import routesMocking from './routes/mocking.routes.js';
+import routesTicket from './routes/ticket.routes.js';
+
 
 const app = express();
 
@@ -87,9 +89,10 @@ app.use("/api/carts", cartRoutes);
 app.use("/api/products", productoRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/sessions", routesSession);
-app.use("/api/users", routesUser)
-app.use("/mockingproducts", routesMocking)
-app.use("/api/emails", routesEmail)
+app.use("/api/users", routesUser);
+app.use("/mockingproducts", routesMocking);
+app.use("/api/emails", routesEmail);
+app.use("/api/ticket",routesTicket)
 app.use(viewsRoutes);
 
 /**Configuración de swagger */

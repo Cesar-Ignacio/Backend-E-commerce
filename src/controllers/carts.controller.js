@@ -1,11 +1,13 @@
+import { v4 as uuidv4 } from "uuid";
+
 import CustomError from "../error/customError.error.js";
 import errorsDictionary from "../error/errorDictionary.error.js";
 import { cartService, productService, ticketService, userService } from "../services/index.js";
 import sendResponse from "../utils/sendResponse.js";
-import { v4 as uuidv4 } from "uuid";
 
 const handleGetCartById = async (req, res, next) => {
     try {
+
         const { cartId } = req.params;
         const data = await cartService.getCartById(cartId);
         if (!data) {
@@ -100,7 +102,7 @@ const handleDeleteProductCartById = async (req, res, next) => {
     }
 }
 
-const handleUpdateProductQuantity = async (req, res,next) => {
+const handleUpdateProductQuantity = async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
         const { quantity } = req.body;
@@ -156,21 +158,26 @@ const handleCompletePurchase = async (req, res, next) => {
         const ticket = {
             code: uuidv4(),
             amount: 0,
-            purchaser: req.session.user.email
+            purchaser: req.session.user.email,
+            products: []
         };
         const zeroStockProductIds = [];
         const { products } = cart;
         for (const product of products) {
             if (product.quantity <= product._id.stock) {
                 ticket.amount += product.quantity * product._id.price;
+                ticket.products.push({
+                    code: product._id.code,       // O el código adecuado
+                    title: product._id.title,    // Título del producto
+                    quantity: product.quantity,  // La cantidad puede ser 1 por defecto si no se especifica
+                    price: product._id.price
+                });
                 await cartService.deleteProductFromCartById(cartId, product._id._id);
                 const productData = { stock: product._id.stock - product.quantity };
                 await productService.updateProduct(product._id._id, productData);
             }
             else { zeroStockProductIds.push(product._id._id) }
-
         }
-
         if (!ticket.amount) // Evaluará si ticket.amount es distinto de 0
         {
             return sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock", zeroStockProductIds);

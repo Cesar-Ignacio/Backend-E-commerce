@@ -35,6 +35,7 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
+    "pdfkit": "^0.15.0",
     "session-file-store": "^1.5.0",
     "socket.io": "^4.7.5",
     "swagger-jsdoc": "^6.2.8",
