@@ -63,10 +63,10 @@ const cardProduct = (product) => {
     precio.innerText = `$${product.price}`;
     contenedorInfo.append(titulo, precio);
 
-    const btnSee = document.createElement("button");
-    btnSee.innerText = "See";
+    const btnView = document.createElement("button");
+    btnView.innerText = "View";
 
-    btnSee.addEventListener('click', async () => {
+    btnView.addEventListener('click', async () => {
         window.location.href = `/productDetails/${product._id}`;
     })
 
@@ -91,10 +91,10 @@ const cardProduct = (product) => {
     })
 
     if (product.owner === userEmail || userRole === "ADMIN") {
-        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnEliminar, btnAddCart);
+        cardProducto.append(contenedorImg, contenedorInfo, btnView, btnEliminar, btnAddCart);
     }
     else {
-        cardProducto.append(contenedorImg, contenedorInfo, btnSee, btnAddCart);
+        cardProducto.append(contenedorImg, contenedorInfo, btnView, btnAddCart);
     }
 
     catalogo.appendChild(cardProducto);

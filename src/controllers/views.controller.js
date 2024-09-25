@@ -46,8 +46,8 @@ export const renderViewRegister = async (req, res) => {
 
 export const renderViewTickets = async (req, res) => {
     const { ticketId } = req.params;
-    const ticket = await ticketService.getTicketById(ticketId);
-    res.status(200).render('tickets', ticket);
+    //const ticket = await ticketService.getTicketById(ticketId);
+    res.status(200).render('tickets', { ticketId: ticketId });
 }
 
 export const renderViewPasswordReset = async (req, res) => {
