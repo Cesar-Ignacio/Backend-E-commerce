@@ -167,10 +167,10 @@ const handleCompletePurchase = async (req, res, next) => {
             if (product.quantity <= product._id.stock) {
                 ticket.amount += product.quantity * product._id.price;
                 ticket.products.push({
-                    code: product._id.code,       // O el código adecuado
-                    title: product._id.title,    // Título del producto
-                    quantity: product.quantity,  // La cantidad puede ser 1 por defecto si no se especifica
-                    price: product._id.price
+                    'product_code':product._id.code,
+                    'title': product._id.title,    
+                    'quantity': product.quantity,  
+                    'price': product._id.price
                 });
                 await cartService.deleteProductFromCartById(cartId, product._id._id);
                 const productData = { stock: product._id.stock - product.quantity };
@@ -178,7 +178,7 @@ const handleCompletePurchase = async (req, res, next) => {
             }
             else { zeroStockProductIds.push(product._id._id) }
         }
-        if (!ticket.amount) // Evaluará si ticket.amount es distinto de 0
+        if (!ticket.amount) 
         {
             return sendResponse(res, 409, false, "No se pudo completar la compra debido a productos sin stock", zeroStockProductIds);
         }
@@ -188,7 +188,6 @@ const handleCompletePurchase = async (req, res, next) => {
     } catch (error) {
         req.logger.warning(`Error al completar la compra ${error.message}`);
         next(error);
-
     }
 };
 

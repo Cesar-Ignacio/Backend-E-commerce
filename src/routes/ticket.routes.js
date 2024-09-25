@@ -25,7 +25,7 @@ routes.get('/generateTicketPdf/:ticketId', async (req, res) => {
 
     // Información del comprador
     doc.fontSize(15).text(`Comprador: ${ticket.purchaser}`);
-    doc.text(`Fecha de compra: ${new Date(ticket.purchase_datetime).toLocaleString()}`);
+    doc.text(`Fecha de compra: ${ticket.purchase_datetime}`);
     doc.moveDown();
 
     // Detalle de productos
@@ -34,7 +34,7 @@ routes.get('/generateTicketPdf/:ticketId', async (req, res) => {
 
     ticket.products.forEach(product => {
         doc.fontSize(12).text(`Producto: ${product.title}`);
-        doc.text(`Código: ${product.code}`);
+        doc.text(`Código: ${product.product_code}`);
         doc.text(`Cantidad: ${product.quantity}`);
         doc.text(`Precio unitario: $${product.price.toFixed(2)}`);
         doc.moveDown();
@@ -42,7 +42,7 @@ routes.get('/generateTicketPdf/:ticketId', async (req, res) => {
 
     // Total
     doc.moveDown();
-    doc.fontSize(20).text(`Total: $${ticket.amount.toFixed(2)}`, { align: 'right' });
+    doc.fontSize(20).text(`Total: $${ticket.amount}`, { align: 'right' });
 
     // Termina el documento
     doc.end();

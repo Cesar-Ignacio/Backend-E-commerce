@@ -9,7 +9,6 @@ export class TicketsDao {
             const ticket = await modelTicket.create(ticketData);
             return ticket;
         } catch (error) {
-            console.error("Error al crear ticket:", error)
             throw error;
         }
     }

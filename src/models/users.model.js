@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 
 mongoose.pluralize(null);
 
-const collection = 'users-test';
+const collection = 'users';
 
 const schema = new mongoose.Schema({
     firstName: { type: String, required: true },
