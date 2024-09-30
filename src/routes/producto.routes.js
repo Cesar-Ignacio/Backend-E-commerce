@@ -17,7 +17,7 @@ const routes = Router();
 routes.get("/", validatePagination(paginationSchema), productController.handleGetProductsRequest);
 
 /**Devuelve un producto  */
-routes.get("/:productId", handlePolice(["ADMIN", "PREMIUM", "USER"]), validateObjectIds, productController.handleGetProductByIdRequest);
+routes.get("/:productId", handlePolice(["PUBLIC"]), validateObjectIds, productController.handleGetProductByIdRequest);
 
 /**Crea un nuevo producto */
 routes.post("/", handlePolice(["ADMIN", "PREMIUM"]), validateFileUpload(uploader.product, 'single', 'thumbnail'), validateRequest(productSchema), productController.handleCreateProduct);
