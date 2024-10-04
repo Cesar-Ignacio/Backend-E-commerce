@@ -81,7 +81,12 @@ npm run dev
 ## Documentación Completa
 
 Para ver la documentación completa de los endpoints y los datos de prueba, visita:
-- [Documentación de Endpoints y Respuestas]([ruta/a/tu/documentacion-endpoints](https://backend-e-commerce-y9ud.onrender.com/api/docs/))
+- [Documentación de Endpoints y Respuestas]((https://backend-e-commerce-y9ud.onrender.com/api/docs/))
 - [Explicación y Datos de Prueba](https://automatic-doom-2f5.notion.site/Gu-a-de-Uso-y-Recursos-34baf4e0459c4a8ab4a9e38094b0aed0?pvs=4)
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](https://choosealicense.com/licenses/mit/) para más detalles.
+
 
 ---
